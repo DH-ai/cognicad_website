@@ -44,10 +44,18 @@ export default function ContactPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!fields.email || !fields.name) return;
+    if (!fields.email || !fields.name || !fields.message) return;
     setState("loading");
-    await new Promise((r) => setTimeout(r, 800));
-    setState("success");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(fields),
+      });
+      setState(res.ok ? "success" : "error");
+    } catch {
+      setState("error");
+    }
   }
 
   return (
@@ -195,6 +203,12 @@ export default function ContactPage() {
                     onChange={(e) => setFields((f) => ({ ...f, message: e.target.value }))}
                   />
                 </div>
+
+                {state === "error" && (
+                  <p className="text-sm text-red-400/80">
+                    Submission failed. Please try again or email us at hello@cognicad.io.
+                  </p>
+                )}
 
                 <button
                   type="submit"

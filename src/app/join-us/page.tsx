@@ -88,8 +88,16 @@ function ApplicationForm({ role }: { role: string }) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setState("loading");
-    await new Promise((r) => setTimeout(r, 900));
-    setState("success");
+    try {
+      const res = await fetch("/api/join", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...fields, role }),
+      });
+      setState(res.ok ? "success" : "error");
+    } catch {
+      setState("error");
+    }
   }
 
   if (state === "success") {
@@ -172,6 +180,12 @@ function ApplicationForm({ role }: { role: string }) {
           onChange={(e) => setFields((f) => ({ ...f, favoriteProblem: e.target.value }))}
         />
       </div>
+
+      {state === "error" && (
+        <p className="text-sm text-red-400/80">
+          Submission failed. Please try again or email us at hello@cognicad.io.
+        </p>
+      )}
 
       <button
         type="submit"
