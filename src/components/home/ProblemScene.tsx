@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 
 const FLOATING_SYSTEMS = [
@@ -51,7 +51,6 @@ function SystemTag({
 
 export default function ProblemScene() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const fragmentRef = useRef(false);
   const isInView = useInView(sectionRef, { amount: 0.2, once: true });
 
   return (

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import type { Metadata } from "next";
 import { MapPin, Phone, EnvelopeSimple, ArrowUpRight } from "@phosphor-icons/react";
 
 const CONTACT_INFO = [
