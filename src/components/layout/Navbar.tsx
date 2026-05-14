@@ -7,19 +7,20 @@ import { List, X, Sun, Moon } from "@phosphor-icons/react";
 import { useTheme } from "@/components/providers/ThemeProvider";
 
 const NAV_LINKS = [
-  { label: "Progress", href: "/progress" },
-  { label: "Manifesto", href: "/manifesto" },
-  { label: "Technology", href: "/technology" },
-  { label: "Founders", href: "/founders" },
+  { label: "Home", href: "/" },
   { label: "About", href: "/about" },
+  { label: "Blog", href: "/blog" },
   { label: "Join Us", href: "/join-us" },
+  { label: "Contact", href: "/contact" },
 ];
 
 function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
   return (
     <motion.button
-      onClick={toggleTheme}
+      onClick={(e) =>
+        toggleTheme({ clientX: e.clientX, clientY: e.clientY })
+      }
       className="w-8 h-8 flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-accent)] transition-colors duration-200 cursor-pointer"
       whileTap={{ scale: 0.88 }}
       aria-label="Toggle theme"
@@ -83,8 +84,8 @@ export default function Navbar() {
         <div className="max-w-[1400px] mx-auto px-6 md:px-12 h-16 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <span className="font-script text-[2rem] text-[var(--color-accent)] leading-none tracking-wide select-none">
-              CogniCAD
+            <span className="font-display text-xl text-[var(--color-accent)] leading-none select-none">
+              Cogni<span className="text-[var(--color-glow)]">C</span>AD
             </span>
           </Link>
 

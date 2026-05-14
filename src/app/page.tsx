@@ -1,21 +1,22 @@
-import HeroScene from "@/components/home/HeroScene";
+import { BackgroundPaths } from "@/components/ui/background-paths";
 import ProblemScene from "@/components/home/ProblemScene";
 import CognitionScene from "@/components/home/CognitionScene";
-import ArchitectureScene from "@/components/home/ArchitectureScene";
 import ObjectFormationScene from "@/components/home/ObjectFormationScene";
-import ResearchCards from "@/components/home/ResearchCards";
 import BetaForm from "@/components/home/BetaForm";
 import FinalStatement from "@/components/home/FinalStatement";
 
 export default function HomePage() {
   return (
-    <main>
-      <HeroScene />
+    <main className="relative z-10">
+      <BackgroundPaths
+        title="CogniCAD"
+        subtitle="An AI-native cognitive layer for engineering. Today: an orchestrator across CAD, simulation, and analysis. Tomorrow: a foundation model that reasons over geometry, physics, and constraints."
+        ctaLabel="Join the Beta"
+        ctaHref="/beta"
+      />
       <ProblemScene />
       <CognitionScene />
-      <ArchitectureScene />
       <ObjectFormationScene />
-      <ResearchCards />
       <BetaForm />
       <FinalStatement />
     </main>

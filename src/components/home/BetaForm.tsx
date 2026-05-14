@@ -97,7 +97,7 @@ export default function BetaForm() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[100dvh] flex items-center bg-[var(--color-void)] overflow-hidden"
+      className="relative min-h-[100dvh] flex items-center bg-transparent overflow-hidden"
       id="beta"
     >
       {/* Subtle grid */}
@@ -130,8 +130,8 @@ export default function BetaForm() {
               transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
               className="text-4xl md:text-5xl tracking-tighter leading-[0.95] text-[var(--color-accent)] font-light mb-8"
             >
-              Help shape the future
-              of engineering systems.
+              Compress design cycles
+              from weeks to hours.
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 16 }}
@@ -139,8 +139,9 @@ export default function BetaForm() {
               transition={{ duration: 0.9, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
               className="text-[var(--color-muted)] leading-relaxed max-w-[38ch] text-base"
             >
-              We are building CogniCAD with engineers who think deeply about
-              the tools they use. Early access is limited and curated.
+              We integrate into the CAD, simulation, and analysis tools you
+              already use. Early access is limited and curated — for engineers
+              who think deeply about the cost of every iteration.
             </motion.p>
           </div>
 

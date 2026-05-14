@@ -57,7 +57,7 @@ export default function ProblemScene() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[100dvh] flex items-center bg-[var(--color-void)] overflow-hidden"
+      className="relative min-h-[100dvh] flex items-center bg-transparent overflow-hidden"
     >
       {/* Subtle vignette — theme-aware */}
       <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-void)]/40 via-transparent to-[var(--color-void)]/40 pointer-events-none" />
@@ -128,10 +128,10 @@ export default function ProblemScene() {
               The Problem
             </p>
             <h2 className="text-4xl md:text-6xl lg:text-7xl tracking-tighter leading-[0.93] text-[var(--color-accent)] font-light mb-10">
-              Modern engineering workflows
+              Engineering software
               <br />
-              are fragmented{" "}
-              <span className="text-[var(--color-muted)]">by design.</span>
+              is{" "}
+              <span className="text-[var(--color-muted)]">passive.</span>
             </h2>
           </motion.div>
 
@@ -145,7 +145,7 @@ export default function ProblemScene() {
             }}
           >
             <p className="text-xl md:text-2xl text-[var(--color-muted)] font-light leading-relaxed max-w-[52ch]">
-              Tools execute commands.
+              CAD, simulation, control, VLSI — they execute instructions.
               <br />
               They do not understand intent.
             </p>

@@ -60,7 +60,7 @@ export default function FinalStatement() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[100dvh] flex items-center justify-center bg-[var(--color-void)] overflow-hidden"
+      className="relative min-h-[100dvh] flex items-center justify-center bg-transparent overflow-hidden"
     >
       <ParticleField />
 
@@ -102,8 +102,8 @@ export default function FinalStatement() {
           animate={isInView ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 1.4, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
         >
-          <h2 className="font-script text-[5rem] md:text-[8rem] lg:text-[11rem] text-[var(--color-accent)] leading-none tracking-wide select-none">
-            CogniCAD
+          <h2 className="font-display text-[3.5rem] md:text-[6rem] lg:text-[8.5rem] text-[var(--color-accent)] leading-none select-none">
+            Cogni<span className="text-[var(--color-glow)]">C</span>AD
           </h2>
         </motion.div>
 
@@ -118,9 +118,9 @@ export default function FinalStatement() {
               Join Beta
             </button>
           </Link>
-          <Link href="/manifesto">
+          <Link href="/about">
             <button className="px-8 py-3.5 text-[var(--color-muted)]/60 text-[11px] tracking-[0.18em] uppercase hover:text-[var(--color-accent)] active:-translate-y-px transition-all duration-200 cursor-pointer">
-              Read Manifesto
+              Read the Thesis
             </button>
           </Link>
         </motion.div>

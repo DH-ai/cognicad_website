@@ -50,9 +50,9 @@ export default function ObjectFormationScene() {
             }}
             className="text-5xl md:text-7xl tracking-tighter leading-[0.93] text-[#E6EDF3] font-light mb-10"
           >
-            From CAD
+            A physics-aware
             <br />
-            to Cognition.
+            latent space.
           </motion.h2>
 
           <motion.p
@@ -65,9 +65,10 @@ export default function ObjectFormationScene() {
             }}
             className="text-[#8B949E] leading-relaxed text-base max-w-[42ch]"
           >
-            Engineering geometry is not the end-state.
-            It is the language in which cognition speaks.
-            CogniCAD treats geometry as thought made physical.
+            Most generative design produces plausible shapes without physical
+            grounding. We represent geometry, constraints, materials, and
+            governing equations as one interconnected entity — designs the
+            system can reason about, not just sample from.
           </motion.p>
         </div>
       </div>

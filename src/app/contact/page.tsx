@@ -59,7 +59,7 @@ export default function ContactPage() {
   }
 
   return (
-    <main className="min-h-[100dvh] bg-[var(--color-void)] pt-28 pb-32">
+    <main className="relative z-10 min-h-[100dvh] pt-28 pb-32">
       <div className="max-w-[1400px] mx-auto px-6 md:px-16 lg:px-24">
 
         {/* Header */}

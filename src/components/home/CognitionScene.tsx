@@ -175,7 +175,7 @@ export default function CognitionScene() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[100dvh] flex items-center bg-[var(--color-void)] overflow-hidden"
+      className="relative min-h-[100dvh] flex items-center bg-transparent overflow-hidden"
     >
       <div className="max-w-[1400px] mx-auto w-full px-6 md:px-16 lg:px-24">
         <div className="grid grid-cols-1 md:grid-cols-[1fr_1.1fr] gap-16 md:gap-24 items-center">
@@ -200,8 +200,8 @@ export default function CognitionScene() {
               }}
               className="text-4xl md:text-5xl lg:text-6xl tracking-tighter leading-[0.94] text-[var(--color-accent)] font-light mb-10"
             >
-              What if engineering software could reason
-              <span className="text-[var(--color-glow)]"> alongside humans?</span>
+              An orchestrator that reasons across
+              <span className="text-[var(--color-glow)]"> geometry and physics.</span>
             </motion.h2>
 
             <motion.div
@@ -219,8 +219,9 @@ export default function CognitionScene() {
                 Not a chatbot bolted onto a toolbar.
               </p>
               <p className="text-lg text-[var(--color-accent)]/70 font-light leading-relaxed mt-4 max-w-[44ch]">
-                A system that understands design intent, navigates trade-spaces,
-                and reasons through physical constraints — with you.
+                Domain-aware agents — geometry, simulation, optimization,
+                validation — coordinated by an orchestrator that holds context
+                across every iteration.
               </p>
             </motion.div>
           </div>

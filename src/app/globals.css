@@ -4,26 +4,26 @@
    THEME TOKENS
 ────────────────────────────────────── */
 :root {
-  /* Dark theme (default) */
-  --color-void: #0D1117;
-  --color-graphite: #161B22;
-  --color-surface: #1C2128;
+  /* Dark theme (default) — deep futuristic black + electric cyan accent */
+  --color-void: #06080C;
+  --color-graphite: #0E1218;
+  --color-surface: #161B22;
   --color-accent: #E6EDF3;
   --color-muted: #8B949E;
-  --color-glow: #58A6FF;
-  --color-glow-dim: rgba(88, 166, 255, 0.6);
+  --color-glow: #5DDBFF;
+  --color-glow-dim: rgba(93, 219, 255, 0.6);
   --color-border-subtle: rgba(255, 255, 255, 0.07);
   --color-border-light: rgba(255, 255, 255, 0.12);
 
   /* Glass — dark */
-  --glass-bg: rgba(22, 27, 34, 0.65);
+  --glass-bg: rgba(14, 18, 24, 0.65);
   --glass-border: rgba(255, 255, 255, 0.09);
   --glass-inset: rgba(255, 255, 255, 0.06);
   --glass-blur: 14px;
   --glass-saturate: 140%;
 
   /* Nav */
-  --nav-scrolled-bg: rgba(13, 17, 23, 0.82);
+  --nav-scrolled-bg: rgba(6, 8, 12, 0.85);
   --nav-border: rgba(255, 255, 255, 0.06);
 
   /* Transitions */
@@ -33,26 +33,27 @@
 }
 
 [data-theme="light"] {
-  --color-void: #F5F4EF;
-  --color-graphite: #ECEAE3;
+  /* Light theme — cool blueprint white, no cream/brown, electric blue accent */
+  --color-void: #EEF1F5;
+  --color-graphite: #DDE3EB;
   --color-surface: #FFFFFF;
-  --color-accent: #0F0F0F;
-  --color-muted: #6B7280;
-  --color-glow: #1D6FF3;
-  --color-glow-dim: rgba(29, 111, 243, 0.7);
-  --color-border-subtle: rgba(0, 0, 0, 0.07);
-  --color-border-light: rgba(0, 0, 0, 0.12);
+  --color-accent: #0A0E14;
+  --color-muted: #4E5764;
+  --color-glow: #0057FF;
+  --color-glow-dim: rgba(0, 87, 255, 0.7);
+  --color-border-subtle: rgba(10, 14, 20, 0.08);
+  --color-border-light: rgba(10, 14, 20, 0.14);
 
   /* Glass — light */
   --glass-bg: rgba(255, 255, 255, 0.72);
-  --glass-border: rgba(0, 0, 0, 0.09);
+  --glass-border: rgba(10, 14, 20, 0.09);
   --glass-inset: rgba(255, 255, 255, 0.95);
   --glass-blur: 18px;
   --glass-saturate: 160%;
 
   /* Nav */
-  --nav-scrolled-bg: rgba(245, 244, 239, 0.85);
-  --nav-border: rgba(0, 0, 0, 0.07);
+  --nav-scrolled-bg: rgba(238, 241, 245, 0.85);
+  --nav-border: rgba(10, 14, 20, 0.08);
 }
 
 /* ──────────────────────────────────────
@@ -141,6 +142,13 @@ html.lenis, html.lenis body {
   font-family: var(--font-pinyon-script, 'Pinyon Script', cursive);
 }
 
+/* Brand wordmark — Helvetica, tight, corporate-precision */
+.font-display {
+  font-family: 'Helvetica Neue', Helvetica, 'Inter', Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
 ::selection {
   background: rgba(88, 166, 255, 0.18);
   color: var(--color-accent);
@@ -206,6 +214,45 @@ textarea.cad-input {
 @keyframes theme-ripple {
   from { r: 0; }
   to { r: 1500; }
+}
+
+/* ──────────────────────────────────────
+   THEME SWITCH — radial wipe via View Transitions API
+   The browser snapshots old/new root and we clip-reveal the new one
+   from the click coordinates outward.
+────────────────────────────────────── */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+}
+
+html[data-theme-transition]::view-transition-new(root) {
+  animation: theme-wave 0.65s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes theme-wave {
+  from {
+    clip-path: circle(0px at var(--theme-x, 50%) var(--theme-y, 50%));
+  }
+  to {
+    clip-path: circle(var(--theme-r, 1500px) at var(--theme-x, 50%) var(--theme-y, 50%));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
 }
 
 /* Horizontal scroll */
