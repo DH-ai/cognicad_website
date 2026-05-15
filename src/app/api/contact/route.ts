@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { appendToSheet } from "@/lib/google-sheets";
+import { contactConfirmationEmail, teamNotificationTemplate } from "@/lib/email-templates";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 interface ContactInquiry {
   name: string;
@@ -28,41 +30,57 @@ export async function POST(request: Request) {
     }
 
     const resendKey = process.env.RESEND_API_KEY;
+    const spreadsheetId = process.env.GOOGLE_SHEETS_SPREADSHEET_ID;
+
+    // Save to Google Sheets if credentials available
+    if (spreadsheetId) {
+      try {
+        await appendToSheet(spreadsheetId, "Contact Inquiries", {
+          timestamp: new Date().toISOString(),
+          name: body.name,
+          email: body.email,
+          form_type: "Contact",
+          role_type: body.type || "",
+          organization_message: body.message,
+          additional_info: "",
+          status: "new",
+          notes: "",
+        });
+      } catch (sheetError) {
+        console.error("Failed to save to Google Sheets:", sheetError);
+        // Continue with email even if sheet save fails
+      }
+    }
 
     if (resendKey) {
       const resend = new Resend(resendKey);
 
       // Notify team
       await resend.emails.send({
-        from: "CogniCAD <noreply@cognicad.io>",
-        to: "hello@cognicad.io",
+        from: "CogniCAD <noreply@cognicad.xyz>",
+        to: "dhruvchaturvedi@cognicad.xyz",
         replyTo: body.email,
         subject: `Contact: ${body.type ?? "General Inquiry"} — ${body.name}`,
-        html: `
-          <h2>New Contact Inquiry</h2>
-          <p><strong>Name:</strong> ${body.name}</p>
-          <p><strong>Email:</strong> <a href="mailto:${body.email}">${body.email}</a></p>
-          <p><strong>Type:</strong> ${body.type ?? "General"}</p>
-          <p><strong>Message:</strong><br>${body.message.replace(/\n/g, "<br>")}</p>
-          <p><em>Submitted: ${new Date().toISOString()}</em></p>
-        `,
+        html: teamNotificationTemplate("Contact Inquiry", {
+          Name: body.name,
+          Email: body.email,
+          Type: body.type || "General",
+          Message: body.message,
+        }),
       });
 
       // Confirmation to sender
       await resend.emails.send({
-        from: "CogniCAD <noreply@cognicad.io>",
+        from: "CogniCAD <noreply@cognicad.xyz>",
         to: body.email,
         subject: "We received your message",
-        html: `
-          <p>Hi ${body.name},</p>
-          <p>Thanks for reaching out. We typically respond within 24 hours.</p>
-          <p>— The CogniCAD team</p>
-        `,
+        html: contactConfirmationEmail(body.name),
       });
     }
 
     return NextResponse.json({ success: true }, { status: 200 });
-  } catch {
+  } catch (error) {
+    console.error("Error in contact route:", error);
     return NextResponse.json(
       { error: "Invalid request body." },
       { status: 400 }

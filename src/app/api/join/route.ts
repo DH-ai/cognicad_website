@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { appendToSheet } from "@/lib/google-sheets";
+import { jobApplicationConfirmationEmail, teamNotificationTemplate } from "@/lib/email-templates";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 interface JoinApplication {
   name: string;
@@ -30,43 +32,59 @@ export async function POST(request: Request) {
     }
 
     const resendKey = process.env.RESEND_API_KEY;
+    const spreadsheetId = process.env.GOOGLE_SHEETS_SPREADSHEET_ID;
+
+    // Save to Google Sheets if credentials available
+    if (spreadsheetId) {
+      try {
+        await appendToSheet(spreadsheetId, "Job Applications", {
+          timestamp: new Date().toISOString(),
+          name: body.name,
+          email: body.email,
+          form_type: "Job Application",
+          role_type: body.role,
+          organization_message: body.whyCognicad || "",
+          additional_info: `Portfolio: ${body.portfolio || "—"}`,
+          status: "new",
+          notes: `Favorite problem: ${body.favoriteProblem || "—"}`,
+        });
+      } catch (sheetError) {
+        console.error("Failed to save to Google Sheets:", sheetError);
+        // Continue with email even if sheet save fails
+      }
+    }
 
     if (resendKey) {
       const resend = new Resend(resendKey);
 
       // Notify team
       await resend.emails.send({
-        from: "CogniCAD <noreply@cognicad.io>",
-        to: "hello@cognicad.io",
+        from: "CogniCAD <noreply@cognicad.xyz>",
+        to: "dhruvchaturvedi@cognicad.xyz",
         replyTo: body.email,
-        subject: `Application — ${body.role} — ${body.name}`,
-        html: `
-          <h2>New Internship Application</h2>
-          <p><strong>Name:</strong> ${body.name}</p>
-          <p><strong>Email:</strong> <a href="mailto:${body.email}">${body.email}</a></p>
-          <p><strong>Role:</strong> ${body.role}</p>
-          <p><strong>Portfolio:</strong> ${body.portfolio ? `<a href="${body.portfolio}">${body.portfolio}</a>` : "—"}</p>
-          <p><strong>Why CogniCAD:</strong><br>${body.whyCognicad ?? "—"}</p>
-          <p><strong>Favorite problem:</strong><br>${body.favoriteProblem ?? "—"}</p>
-          <p><em>Submitted: ${new Date().toISOString()}</em></p>
-        `,
+        subject: `Job Application — ${body.role} — ${body.name}`,
+        html: teamNotificationTemplate("Job Application", {
+          Name: body.name,
+          Email: body.email,
+          Role: body.role,
+          Portfolio: body.portfolio || "—",
+          "Why CogniCAD": body.whyCognicad || "—",
+          "Favorite problem": body.favoriteProblem || "—",
+        }),
       });
 
       // Confirmation to applicant
       await resend.emails.send({
-        from: "CogniCAD <noreply@cognicad.io>",
+        from: "CogniCAD <noreply@cognicad.xyz>",
         to: body.email,
         subject: "We received your application",
-        html: `
-          <p>Hi ${body.name},</p>
-          <p>Thanks for applying for the ${body.role} role at CogniCAD. We review every application carefully and will be in touch if there is a fit.</p>
-          <p>— The CogniCAD team</p>
-        `,
+        html: jobApplicationConfirmationEmail(body.name, body.role),
       });
     }
 
     return NextResponse.json({ success: true }, { status: 200 });
-  } catch {
+  } catch (error) {
+    console.error("Error in join route:", error);
     return NextResponse.json(
       { error: "Invalid request body." },
       { status: 400 }
