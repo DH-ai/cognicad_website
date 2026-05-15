@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { memo } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 
-function FloatingPaths({ position }: { position: number }) {
-  const paths = Array.from({ length: 36 }, (_, i) => ({
+const FloatingPaths = memo(function FloatingPaths({ position }: { position: number }) {
+  const paths = Array.from({ length: 16 }, (_, i) => ({
     id: i,
     d: `M-${380 - i * 5 * position} -${189 + i * 6}C-${
       380 - i * 5 * position
@@ -23,6 +24,7 @@ function FloatingPaths({ position }: { position: number }) {
         className="w-full h-full text-[var(--color-accent)]"
         viewBox="0 0 696 316"
         fill="none"
+        style={{ willChange: "opacity" }}
       >
         <title>Background Paths</title>
         {paths.map((path) => (
@@ -32,11 +34,9 @@ function FloatingPaths({ position }: { position: number }) {
             stroke="currentColor"
             strokeWidth={path.width}
             strokeOpacity={0.1 + path.id * 0.03}
-            initial={{ pathLength: 0.3, opacity: 0.6 }}
+            initial={{ opacity: 0.6 }}
             animate={{
-              pathLength: 1,
               opacity: [0.3, 0.6, 0.3],
-              pathOffset: [0, 1, 0],
             }}
             transition={{
               duration: 20 + Math.random() * 10,
@@ -48,7 +48,7 @@ function FloatingPaths({ position }: { position: number }) {
       </svg>
     </div>
   );
-}
+});
 
 export function BackgroundPaths({
   title = "Background Paths",
@@ -126,12 +126,13 @@ export function BackgroundPaths({
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.6, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-            className="inline-block group relative bg-gradient-to-b from-[var(--color-accent)]/10 to-[var(--color-accent)]/0 p-px rounded-2xl backdrop-blur-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+            className="inline-block group relative bg-gradient-to-b from-[var(--color-accent)]/10 to-[var(--color-accent)]/0 p-px rounded-2xl backdrop-blur-sm overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+            style={{ willChange: "transform" }}
           >
             <Link href={ctaHref}>
               <Button
                 variant="ghost"
-                className="rounded-[1.15rem] px-8 py-6 text-[11px] tracking-[0.2em] uppercase font-medium backdrop-blur-md bg-[var(--color-void)]/85 hover:bg-[var(--color-void)] text-[var(--color-accent)] transition-all duration-300 group-hover:-translate-y-0.5 border border-[var(--color-accent)]/15 hover:border-[var(--color-accent)]/35 cursor-pointer"
+                className="rounded-[1.15rem] px-8 py-6 text-[11px] tracking-[0.2em] uppercase font-medium bg-[var(--color-void)]/85 hover:bg-[var(--color-void)] text-[var(--color-accent)] transition-all duration-300 group-hover:-translate-y-0.5 border border-[var(--color-accent)]/15 hover:border-[var(--color-accent)]/35 cursor-pointer"
               >
                 <span className="opacity-90 group-hover:opacity-100 transition-opacity">
                   {ctaLabel}
