@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 
 const FLOATING_SYSTEMS = [
-  { label: "CAD", sub: "Geometry Authoring", x: "12%", y: "30%", dx: -80, dy: -50 },
+  { label: "CAD", sub: "Geometry ", x: "12%", y: "30%", dx: -80, dy: -50 },
   { label: "Simulation", sub: "FEA / CFD", x: "75%", y: "20%", dx: 90, dy: -70 },
   { label: "Optimization", sub: "Topology / DOE", x: "60%", y: "65%", dx: 60, dy: 80 },
   { label: "Analysis", sub: "Stress / Thermal", x: "20%", y: "70%", dx: -70, dy: 90 },
@@ -144,7 +144,7 @@ export default function ProblemScene() {
             }}
           >
             <p className="text-xl md:text-2xl text-[var(--color-muted)] font-light leading-relaxed max-w-[52ch]">
-              CAD, simulation, control, VLSI — they execute instructions.
+              CAD softwares — they execute instructions.
               <br />
               They do not understand intent.
             </p>

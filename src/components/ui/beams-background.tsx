@@ -53,11 +53,6 @@ export function BeamsBackground({
   const animationFrameRef = useRef<number>(0);
   const MINIMUM_BEAMS = 20;
 
-  const opacityMap = {
-    subtle: 0.7,
-    medium: 0.85,
-    strong: 1,
-  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -65,6 +60,12 @@ export function BeamsBackground({
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+
+    const opacityMap = {
+      subtle: 0.7,
+      medium: 0.85,
+      strong: 1,
+    };
 
     // Read theme from <html data-theme="...">. Dark = cyan/blue beams; light = electric blue/violet.
     const readThemeParams = (): ThemeParams => {
@@ -182,7 +183,7 @@ export function BeamsBackground({
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [intensity, opacityMap]);
+  }, [intensity]);
 
   return (
     <div

@@ -8,24 +8,28 @@ const NODES = [
   { id: "cad", label: "CAD Kernel", x: 18, y: 28, r: 5 },
   { id: "reasoning", label: "Reasoning", x: 52, y: 14, r: 5 },
   { id: "sim", label: "Simulation", x: 82, y: 30, r: 5 },
-  { id: "knowledge", label: "Knowledge", x: 14, y: 68, r: 5 },
-  { id: "optim", label: "Optimization", x: 50, y: 80, r: 5 },
+  // { id: "knowledge", label: "Knowledge", x: 14, y: 68, r: 5 },
+  { id: "optim", label: "Optimization", x: 25, y: 67, r: 5 },
   { id: "analysis", label: "Analysis", x: 84, y: 66, r: 5 },
-  { id: "interface", label: "Interface", x: 50, y: 48, r: 3 },
+  { id: "dfm", label: "DFM", x: 55, y: 78, r: 5 },
 ];
 
 const EDGES = [
   ["center", "cad"],
   ["center", "reasoning"],
   ["center", "sim"],
-  ["center", "knowledge"],
+  ["center", "dfm"],
   ["center", "optim"],
+  ["cad", "optim"],
+  ["analysis", "dfm"],
+  ["dfm", "optim"],
+
   ["center", "analysis"],
   ["reasoning", "cad"],
   ["reasoning", "sim"],
   ["sim", "analysis"],
-  ["knowledge", "optim"],
-  ["cad", "knowledge"],
+  // ["knowledge", "optim"],
+  // ["cad", "knowledge"],
 ];
 
 function getNode(id: string) {
@@ -200,7 +204,7 @@ export default function CognitionScene() {
               }}
               className="text-4xl md:text-5xl lg:text-6xl tracking-tighter leading-[0.94] text-[var(--color-accent)] font-light mb-10"
             >
-              An orchestrator that reasons across
+              A system that will reason across
               <span className="text-[var(--color-glow)]"> geometry and physics.</span>
             </motion.h2>
 
@@ -219,9 +223,8 @@ export default function CognitionScene() {
                 Not a chatbot bolted onto a toolbar.
               </p>
               <p className="text-lg text-[var(--color-accent)]/70 font-light leading-relaxed mt-4 max-w-[44ch]">
-                Domain-aware agents — geometry, simulation, optimization,
-                validation — coordinated by an orchestrator that holds context
-                across every iteration.
+                Domain-specific agents for geometry, simulation, optimization, and validation coordinated by a context-aware orchestrator across iterative design cycles.
+
               </p>
             </motion.div>
           </div>

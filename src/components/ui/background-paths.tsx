@@ -55,11 +55,13 @@ export function BackgroundPaths({
   ctaLabel = "Join the Beta",
   ctaHref = "/beta",
   subtitle,
+  subtitle2,
 }: {
   title?: string;
   ctaLabel?: string;
   ctaHref?: string;
   subtitle?: string;
+  subtitle2?: string;
 }) {
   const words = title.split(" ");
 
@@ -118,8 +120,20 @@ export function BackgroundPaths({
               transition={{ delay: 1.2, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
               className="text-base sm:text-lg md:text-xl text-[var(--color-muted)] max-w-2xl mx-auto mb-10 leading-relaxed tracking-tight"
             >
-              {subtitle}
+              {subtitle} 
             </motion.p>
+            
+          )}
+           {subtitle2 && (
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.2, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+              className="text-base sm:text-lg md:text-xl text-[var(--color-muted)] max-w-2xl mx-auto mb-10 leading-relaxed tracking-tight"
+            >
+              {subtitle2} 
+            </motion.p>
+            
           )}
 
           <motion.div

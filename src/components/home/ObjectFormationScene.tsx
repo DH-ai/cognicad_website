@@ -66,8 +66,8 @@ export default function ObjectFormationScene() {
             className="text-[#8B949E] leading-relaxed text-base max-w-[42ch]"
           >
             Most generative design produces plausible shapes without physical
-            grounding. We represent geometry, constraints, materials, and
-            governing equations as one interconnected entity — designs the
+            grounding. We want to represent geometry, constraints, materials, and
+            governing equations as one interconnected entity — designs that can be sampled, optimized, and reasoned about with equal fidelity.
             system can reason about, not just sample from.
           </motion.p>
         </div>
