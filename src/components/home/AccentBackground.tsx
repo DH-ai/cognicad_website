@@ -36,8 +36,8 @@ export default function AccentBackground() {
   const { scrollY } = useScroll();
 
   // Always declare both motion values so hook order is stable across routes.
-  const scrollBlur = useTransform(scrollY, [0, vh], [2, 28], { clamp: true });
-  const scrollTint = useTransform(scrollY, [0, vh], [5, 25], { clamp: true });
+  const scrollBlur = useTransform(scrollY, [0, vh/2], [2, 28/2], { clamp: true });
+  const scrollTint = useTransform(scrollY, [0, vh/2], [5, 25/2], { clamp: true });
   const constantBlur = useMotionValue(48);
   const constantTint = useMotionValue(30);
 

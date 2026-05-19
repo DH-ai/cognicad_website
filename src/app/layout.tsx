@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Pinyon_Script } from "next/font/google";
-import "./globals.css";
+// import "./globals.css";
+import "@/app/globals.css";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import Navbar from "@/components/layout/Navbar";
@@ -52,7 +53,7 @@ export default function RootLayout({
       <body>
         <ThemeProvider>
           <SmoothScrollProvider>
-            <AccentBackground />
+            {/* <AccentBackground /> */}
             <Navbar />
             {children}
             <Footer />
