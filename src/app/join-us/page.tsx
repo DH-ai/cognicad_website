@@ -6,9 +6,9 @@ const OPEN_ROLES = [
   {
     title: "Frontend Engineering Intern",
     team: "Engineering",
-    location: "Remote / San Francisco",
+    location: "Remote / Mumbai",
     type: "Internship",
-    duration: "3–6 months",
+    duration: "3 months",
     description:
       "Working on the CogniCAD interface layer — the surface through which engineers interact with the cognitive engine. You care deeply about how information is presented, how interactions feel, and how to make complex engineering state visible and navigable.",
     requirements: [
@@ -21,9 +21,9 @@ const OPEN_ROLES = [
   {
     title: "MLOps Intern",
     team: "AI Infrastructure",
-    location: "Remote / San Francisco",
+    location: "Remote / Mumbai",
     type: "Internship",
-    duration: "3–6 months",
+    duration: "3 months",
     description:
       "Owning the infrastructure that trains, evaluates, and deploys the models powering CogniCAD's reasoning layer. You will work on model serving pipelines, evaluation harnesses, and the feedback loops that connect production behavior to training data.",
     requirements: [
@@ -36,7 +36,7 @@ const OPEN_ROLES = [
   {
     title: "Product Design Intern",
     team: "Design",
-    location: "Remote / San Francisco",
+    location: "Remote / Mumbai",
     type: "Internship",
     duration: "3–6 months",
     description:
@@ -304,9 +304,9 @@ export default function JoinUsPage() {
         <div className="border-t border-[var(--color-border-subtle)] pt-12">
           <p className="text-sm text-[var(--color-muted)] leading-relaxed max-w-[55ch]">
             Not a student? We occasionally hire exceptional full-time engineers
-            directly. If you are deeply technical and want to work on a multi-decade
+            directly on contracts basis. If you are deeply technical and want to work on a multi-decade
             problem, reach out at{" "}
-            <span className="text-[var(--color-glow)]">team@cognicad.io</span>.
+            <span className="text-[var(--color-glow)]">dhruvchaturvedi@cognicad.xyz</span>.
           </p>
         </div>
       </div>

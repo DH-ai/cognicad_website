@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "About — CogniCAD",
   description:
-    "An AI-native engineering platform that turns engineering software from a passive instrument into an active collaborator — and a foundation model for engineering itself.",
+    "We’re building an AI-native engineering platform that transforms how complex physical systems are designed — and, over time, evolves toward a new class of foundation model for engineering itself.",
 };
 
 const FOUNDERS = [
@@ -11,15 +12,29 @@ const FOUNDERS = [
     name: "Dhruv Chaturvedi",
     role: "Co-founder",
     background:
-      "Building the orchestration layer and physics-aware latent space at the core of CogniCAD. Background in computational geometry and applied ML for engineering systems.",
+      "Researching on ai native cad archtectural black boxes like cad tokenizer, multimodal cad transformers and physics-aware latent space at the core of CogniCAD. Background in Aerospace Engineering and  applied ML for engineering systems.",
     initials: "DC",
+    photo: "/founders/dhruv.jpeg", // Add photo path
+    email: "dhruvchaturvedi@cognicad.xyz",
+    socials: {
+      twitter: "https://x.com/dhruvatafgc",
+      linkedin: "https://www.linkedin.com/in/dhruv-chaturvedi-a01610283/",
+      github: "https://github.com/dh-ai",
+    },
   },
   {
-    name: "[Co-founder Name]",
+    name: "Shresht Kesari",
     role: "Co-founder",
     background:
-      "[Replace this placeholder with your co-founder's bio — background, prior work, and the part of CogniCAD they own.]",
-    initials: "—",
+      "Co-founding CogniCAD with a focus on developing the physics-aware latent space and generative design capabilities. Background in computational mechanics and machine learning for engineering applications.",
+    initials: "SK",
+    photo: "/founders/shresht.jpg", // Add photo path
+    email: "shreshtkesari@cognicad.xyz",
+    socials: {
+      // twitter: "https://twitter.com",
+      linkedin: "https://www.linkedin.com/in/shresth-keshari-626b2a267/",
+      github: "https://github.com/shresth-keshari",
+    },
   },
 ];
 
@@ -28,25 +43,25 @@ const PILLARS = [
     index: "01",
     title: "From passive tools to active collaborators",
     description:
-      "CAD, simulation, control, VLSI — today's engineering software executes instructions but doesn't understand intent. We sit on top of existing tools as a domain-aware orchestration layer that translates natural-language intent into structured design artifacts.",
+      "Traditional engineering tools execute commands but do not understand intent. CogniCAD acts as a domain-aware orchestration layer that converts natural-language objectives into structured engineering workflows across CAD, simulation, optimization, and validation systems.",
   },
   {
     index: "02",
     title: "Physics-aware latent space",
     description:
-      "Generative design today produces plausible shapes without physical grounding — Gaussian noise dressed as engineering. We represent geometry, constraints, materials, and governing equations as a single interconnected entity the system can reason about, not just sample from.",
+      "Most generative design systems produce geometrically plausible outputs without true physical understanding. We represent geometry, constraints, materials, simulation states, and governing equations within a unified latent representation — enabling the system to reason about engineering behavior, not merely generate shapes.",
   },
   {
     index: "03",
     title: "Orchestrator of specialized agents",
     description:
-      "An orchestrator decomposes engineering problems into sub-tasks and delegates to geometry, simulation, optimization, and validation agents. They maintain context across iterations and converge toward outputs that are syntactically correct and physically valid.",
+      "Complex engineering tasks are decomposed into coordinated sub-problems handled by specialized agents for geometry generation, simulation, optimization, verification, and manufacturability analysis. A central orchestrator maintains cross-stage context and iteratively converges toward designs that are both physically valid and operationally useful.",
   },
   {
     index: "04",
     title: "A horizontal intelligence layer",
     description:
-      "Mechanical, aerospace, electrical, chemical. If OpenAI and Anthropic are becoming the productivity layer for knowledge work, we aim to become the intelligence layer for engineering — starting with AI-assisted CAD and simulation, compressing design cycles from weeks to hours.",
+      "MMechanical, aerospace, electronics, robotics, thermal systems, and beyond — our goal is to build a shared intelligence layer across engineering disciplines. If frontier AI models are becoming the productivity layer for knowledge work, CogniCAD aims to become the intelligence layer for engineering workflows — accelerating design cycles from weeks to hours.",
   },
 ];
 
@@ -80,24 +95,19 @@ export default function AboutPage() {
           </div>
           <div className="flex flex-col gap-6">
             <p className="text-[var(--color-muted)] leading-relaxed text-base">
-              An engineer describes a system in natural language — a drone
-              propulsion assembly, a structural bracket under load, a thermal
-              management loop. The platform translates that into structured
-              design artifacts, then orchestrates the sequence: generate
-              geometry, apply constraints, run simulations, evaluate
-              performance, iterate.
+              An engineer describes a system in natural language — a propulsion assembly, a structural bracket under load, a thermal management loop. The platform translates that intent into structured engineering artifacts, then orchestrates the workflow: generate geometry, apply constraints, run simulations, evaluate performance, and iterate.
+
             </p>
             <p className="text-[var(--color-muted)] leading-relaxed text-base">
-              Engineering is reasoning under constraints — every design
-              balances strength against weight, performance against cost,
-              efficiency against manufacturability. Most current AI-native
-              approaches operate at the surface. We don&rsquo;t.
+              Engineering is fundamentally reasoning under constraints — balancing strength against weight, performance against cost, efficiency against manufacturability. Most AI systems operate at the surface level of engineering. We aim to model the underlying structure and physics.
+
             </p>
             <p className="text-[var(--color-accent)]/70 leading-relaxed text-base">
-              We integrate into existing workflows — augmenting CAD,
-              simulation, and analysis with intelligence that speaks both the
-              language of engineering and the underlying physics.
+              Rather than replacing existing engineering software, CogniCAD integrates with CAD, simulation, and analysis workflows as an intelligence layer that understands both engineering language and physical behavior.
+
             </p>
+            
+
           </div>
         </div>
 
@@ -131,24 +141,90 @@ export default function AboutPage() {
           <p className="text-[11px] tracking-[0.25em] uppercase text-[var(--color-glow)]/60 mb-16">
             Founders
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
             {FOUNDERS.map((f) => (
-              <div key={f.name} className="flex gap-6">
-                <div className="flex-shrink-0 w-12 h-12 border border-[var(--color-accent)]/15 flex items-center justify-center">
-                  <span className="text-sm font-[family-name:var(--font-geist-mono)] text-[var(--color-muted)]/80 tracking-widest">
-                    {f.initials}
-                  </span>
+              <div key={f.name} className="flex flex-col">
+                {/* Photo Section */}
+                <div className="relative mb-6 w-64 h-64 bg-[var(--color-border-subtle)] border border-[var(--color-border-subtle)] flex items-center justify-center overflow-hidden">
+                  {f.photo ? (
+                    <Image
+                      src={f.photo}
+                      alt={f.name}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <span className="text-sm font-[family-name:var(--font-geist-mono)] text-[var(--color-muted)]/40 tracking-widest">
+                      Photo
+                    </span>
+                  )}
                 </div>
+
+                {/* Info Section */}
+                <div className="flex gap-6 mb-6">
+                  <div>
+                    <h3 className="text-lg tracking-tight text-[var(--color-accent)] font-light mb-0.5">
+                      {f.name}
+                    </h3>
+                    <p className="text-[11px] tracking-[0.12em] uppercase text-[var(--color-glow)]/60 mb-4">
+                      {f.role}
+                    </p>
+                    <p className="text-sm text-[var(--color-muted)]/70 leading-relaxed">
+                      {f.background}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Email Section */}
+                <div className="mb-4 pb-4 border-b border-[var(--color-border-subtle)]">
+                  <p className="text-[11px] tracking-[0.12em] uppercase text-[var(--color-glow)]/60 mb-2">
+                    Email
+                  </p>
+                  <a
+                    href={`mailto:${f.email}`}
+                    className="text-sm text-[var(--color-accent)] hover:text-[var(--color-accent)]/80 transition-colors"
+                  >
+                    {f.email}
+                  </a>
+                </div>
+
+                {/* Social Links Section */}
                 <div>
-                  <h3 className="text-base tracking-tight text-[var(--color-accent)] font-light mb-0.5">
-                    {f.name}
-                  </h3>
-                  <p className="text-[11px] tracking-[0.12em] uppercase text-[var(--color-glow)]/60 mb-4">
-                    {f.role}
+                  <p className="text-[11px] tracking-[0.12em] uppercase text-[var(--color-glow)]/60 mb-3">
+                    Connect
                   </p>
-                  <p className="text-sm text-[var(--color-muted)]/70 leading-relaxed">
-                    {f.background}
-                  </p>
+                  <div className="flex gap-4">
+                    {f.socials.twitter && (
+                      <a
+                        href={f.socials.twitter}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-[var(--color-muted)]/60 hover:text-[var(--color-accent)] transition-colors"
+                      >
+                        Twitter
+                      </a>
+                    )}
+                    {f.socials.linkedin && (
+                      <a
+                        href={f.socials.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-[var(--color-muted)]/60 hover:text-[var(--color-accent)] transition-colors"
+                      >
+                        LinkedIn
+                      </a>
+                    )}
+                    {f.socials.github && (
+                      <a
+                        href={f.socials.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-[var(--color-muted)]/60 hover:text-[var(--color-accent)] transition-colors"
+                      >
+                        GitHub
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}

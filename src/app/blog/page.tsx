@@ -12,18 +12,19 @@ export default function BlogPage() {
     <main className="relative z-10 min-h-[100dvh] pt-28 pb-32">
       <div className="max-w-[800px] mx-auto px-6 md:px-12">
         <div className="mb-16">
-          <p className="text-[11px] tracking-[0.25em] uppercase text-[var(--color-glow)]/60 mb-6">
+          {/* <p className="text-[11px] tracking-[0.25em] uppercase text-[var(--color-glow)]/60 mb-6">
             Thesis · 4 min read
-          </p>
-          <h1 className="text-4xl md:text-6xl tracking-tighter leading-[0.95] text-[var(--color-accent)] font-light mb-8">
-            Why AI in CAD Is the Path to AGI.
+          </p> */}
+          <h1 className="text-4xl md:text-6xl tracking-tighter leading-[0.1] text-[var(--color-accent)] font-light mb-8">
+            Coming Soon
           </h1>
-          <p className="text-lg text-[var(--color-muted)] leading-relaxed">
+          {/* <p className="text-lg text-[var(--color-muted)] leading-relaxed">
             Frontier models can write essays, prove theorems, and ship code.
             They still cannot reason about a load path. That gap is not an
             edge case — it is the missing modality.
-          </p>
+          </p>*/}
         </div>
+        {/*
 
         <article className="flex flex-col gap-7 text-[var(--color-accent)]/85 leading-[1.75] text-[17px]">
           <p>
@@ -100,8 +101,8 @@ export default function BlogPage() {
             className="text-[11px] tracking-[0.18em] uppercase text-[var(--color-muted)] hover:text-[var(--color-accent)] transition-colors duration-200"
           >
             Read the full thesis →
-          </Link>
-        </div>
+          </Link> 
+        </div> */}
       </div>
     </main>
   );

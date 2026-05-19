@@ -1,23 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { MapPin, Phone, EnvelopeSimple, ArrowUpRight } from "@phosphor-icons/react";
+// import { MapPin, Phone, EnvelopeSimple, ArrowUpRight } from "@phosphor-icons/react";1
+import { PhoneIcon, MapPinIcon, EnvelopeSimpleIcon,ArrowUUpRightIcon} from "@phosphor-icons/react";
 
 const CONTACT_INFO = [
   {
-    icon: MapPin,
+    icon: MapPinIcon,
     label: "Address",
-    lines: ["742 Market Street, Suite 1200", "San Francisco, CA 94102", "United States"],
+    lines: ["Desai Sethi School of Entrepreneurship", "Indian Institute of Technology Bombay", "Powai", "Mumbai, Maharashtra 400076", "India"],
   },
   {
-    icon: Phone,
+    icon: PhoneIcon,
     label: "Phone",
-    lines: ["+1 (415) 847-2391"],
+    lines: ["+91 9171981824"],
   },
   {
-    icon: EnvelopeSimple,
+    icon: EnvelopeSimpleIcon,
     label: "Email",
-    lines: ["hello@cognicad.io", "research@cognicad.io"],
+    lines: ["enquire@cognicad.xyz", "dhruvchaturvedi@cognicad.xyz"],
   },
 ];
 
@@ -100,20 +101,7 @@ export default function ContactPage() {
             })}
 
             {/* Map placeholder */}
-            <div className="relative overflow-hidden border border-[var(--color-border-subtle)] aspect-[4/3] max-w-[320px]">
-              {/* Simplified map SVG placeholder */}
-              <div className="w-full h-full bg-[var(--color-graphite)] flex items-center justify-center">
-                <div className="text-center">
-                  <MapPin size={24} weight="light" style={{ color: "var(--color-glow)", opacity: 0.6, margin: "0 auto 8px" }} />
-                  <p className="text-[10px] tracking-[0.15em] uppercase text-[var(--color-muted)]/40">
-                    San Francisco, CA
-                  </p>
-                  <p className="text-[9px] text-[var(--color-muted)]/25 mt-1">
-                    Market Street District
-                  </p>
-                </div>
-              </div>
-            </div>
+            {/* <div claNa·  */}
 
             {/* Office hours */}
             <div className="border-t border-[var(--color-border-subtle)] pt-8">
@@ -205,7 +193,7 @@ export default function ContactPage() {
 
                 {state === "error" && (
                   <p className="text-sm text-red-400/80">
-                    Submission failed. Please try again or email us at hello@cognicad.io.
+                    Submission failed. Please try again or email us at enquiry@cognicad.xyz.
                   </p>
                 )}
 
@@ -215,7 +203,7 @@ export default function ContactPage() {
                   className="px-10 py-4 bg-[var(--color-accent)] text-[var(--color-void)] text-[11px] tracking-[0.18em] uppercase font-medium self-start hover:opacity-90 active:scale-[0.98] disabled:opacity-50 transition-all duration-200 cursor-pointer flex items-center gap-2"
                 >
                   {state === "loading" ? "Sending..." : "Send Message"}
-                  {state !== "loading" && <ArrowUpRight size={12} weight="bold" />}
+                  {state !== "loading" && <ArrowUUpRightIcon size={12} weight="bold" />}
                 </button>
               </form>
             )}
