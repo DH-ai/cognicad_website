@@ -77,22 +77,25 @@ type FormState = "idle" | "loading" | "success" | "error";
 
 function ApplicationForm({ role }: { role: string }) {
   const [state, setState] = useState<FormState>("idle");
-  const [fields, setFields] = useState({
-    name: "",
-    email: "",
-    portfolio: "",
-    whyCognicad: "",
-    favoriteProblem: "",
-  });
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setState("loading");
+    const form = e.currentTarget as HTMLFormElement;
+    const formData = new FormData(form);
+
     try {
       const res = await fetch("/api/join", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...fields, role }),
+        body: JSON.stringify({
+          name: String(formData.get("name") ?? ""),
+          email: String(formData.get("email") ?? ""),
+          portfolio: String(formData.get("portfolio") ?? ""),
+          whyCognicad: String(formData.get("whyCognicad") ?? ""),
+          favoriteProblem: String(formData.get("favoriteProblem") ?? ""),
+          role,
+        }),
       });
       setState(res.ok ? "success" : "error");
     } catch {
@@ -119,65 +122,80 @@ function ApplicationForm({ role }: { role: string }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="flex flex-col gap-2">
-          <label className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/70">
+          <label
+            htmlFor={`name-${role}`}
+            className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/70"
+          >
             Name
           </label>
           <input
+            id={`name-${role}`}
+            name="name"
             className="cad-input"
             placeholder="Fenris Okafor"
-            value={fields.name}
-            onChange={(e) => setFields((f) => ({ ...f, name: e.target.value }))}
             required
           />
         </div>
         <div className="flex flex-col gap-2">
-          <label className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/70">
+          <label
+            htmlFor={`email-${role}`}
+            className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/70"
+          >
             Email
           </label>
           <input
+            id={`email-${role}`}
+            name="email"
             type="email"
             className="cad-input"
             placeholder="fenris@geometrylabs.io"
-            value={fields.email}
-            onChange={(e) => setFields((f) => ({ ...f, email: e.target.value }))}
             required
           />
         </div>
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/70">
+        <label
+          htmlFor={`portfolio-${role}`}
+          className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/70"
+        >
           Resume / Portfolio
         </label>
         <input
+          id={`portfolio-${role}`}
+          name="portfolio"
           className="cad-input"
           placeholder="Link to resume, portfolio, or GitHub"
-          value={fields.portfolio}
-          onChange={(e) => setFields((f) => ({ ...f, portfolio: e.target.value }))}
         />
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/70">
+        <label
+          htmlFor={`why-cognicad-${role}`}
+          className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/70"
+        >
           Why CogniCAD?
         </label>
         <textarea
+          id={`why-cognicad-${role}`}
+          name="whyCognicad"
           className="cad-input"
           placeholder="What about this problem draws you in specifically..."
-          value={fields.whyCognicad}
-          onChange={(e) => setFields((f) => ({ ...f, whyCognicad: e.target.value }))}
         />
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/70">
+        <label
+          htmlFor={`favorite-problem-${role}`}
+          className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/70"
+        >
           Favorite technical problem you have solved
         </label>
         <textarea
+          id={`favorite-problem-${role}`}
+          name="favoriteProblem"
           className="cad-input"
           placeholder="Tell us about something technically hard you worked through..."
-          value={fields.favoriteProblem}
-          onChange={(e) => setFields((f) => ({ ...f, favoriteProblem: e.target.value }))}
         />
       </div>
 
