@@ -23,12 +23,12 @@ const FOUNDERS = [
     },
   },
   {
-    name: "Shresht Kesari",
+    name: "Shresth Keshari",
     role: "Co-founder",
     background:
-      "Co-founding CogniCAD with a focus on developing the physics-aware latent space and generative design capabilities. Background in computational mechanics and machine learning for engineering applications.",
+      "Co-founding CogniCAD with a focus on developing the physics-aware latent space, manufacturing and synthesis capabilities. Background in Computational Mechanics, Neural Networks and Machine Learning for engineering applications.",
     initials: "SK",
-    photo: "/founders/shresht.jpg", // Add photo path
+    photo: "/founders/shresht.jpeg", // Add photo path
     email: "shreshtkesari@cognicad.xyz",
     socials: {
       // twitter: "https://twitter.com",
