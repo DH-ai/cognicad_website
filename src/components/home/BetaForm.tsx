@@ -18,6 +18,36 @@ const ROLE_OPTIONS = [
   "Other",
 ];
 
+function Field({
+  id,
+  label,
+  helper,
+  error,
+  children,
+}: {
+  id: string;
+  label: string;
+  helper?: string;
+  error?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <label
+        htmlFor={id}
+        className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/70"
+      >
+        {label}
+      </label>
+      {children}
+      {helper && !error && (
+        <span className="text-[11px] text-[var(--color-muted)]/40">{helper}</span>
+      )}
+      {error && <span className="text-[11px] text-red-400/80">{error}</span>}
+    </div>
+  );
+}
+
 export default function BetaForm() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { amount: 0.1, once: true });
@@ -62,36 +92,6 @@ export default function BetaForm() {
     } catch {
       setFormState("error");
     }
-  }
-
-  function Field({
-    id,
-    label,
-    helper,
-    children,
-  }: {
-    id: string;
-    label: string;
-    helper?: string;
-    children: React.ReactNode;
-  }) {
-    return (
-      <div className="flex flex-col gap-2">
-        <label
-          htmlFor={id}
-          className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/70"
-        >
-          {label}
-        </label>
-        {children}
-        {helper && !errors[id] && (
-          <span className="text-[11px] text-[var(--color-muted)]/40">{helper}</span>
-        )}
-        {errors[id] && (
-          <span className="text-[11px] text-red-400/80">{errors[id]}</span>
-        )}
-      </div>
-    );
   }
 
   return (
@@ -167,7 +167,7 @@ export default function BetaForm() {
             ) : (
               <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <Field id="name" label="Name" >
+                  <Field id="name" label="Name" error={errors.name}>
                     <input
                       id="name"
                       className="cad-input"
@@ -178,7 +178,7 @@ export default function BetaForm() {
                       }
                     />
                   </Field>
-                  <Field id="email" label="Email">
+                  <Field id="email" label="Email" error={errors.email}>
                     <input
                       id="email"
                       type="email"
@@ -193,7 +193,7 @@ export default function BetaForm() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <Field id="role" label="Role">
+                  <Field id="role" label="Role" error={errors.role}>
                     <select
                       id="role"
                       className="cad-input"
@@ -212,7 +212,12 @@ export default function BetaForm() {
                       ))}
                     </select>
                   </Field>
-                  <Field id="organization" label="Organization" helper="Company, lab, or institution">
+                  <Field
+                    id="organization"
+                    label="Organization"
+                    helper="Company, lab, or institution"
+                    error={errors.organization}
+                  >
                     <input
                       id="organization"
                       className="cad-input"
@@ -225,7 +230,11 @@ export default function BetaForm() {
                   </Field>
                 </div>
 
-                <Field id="whatYouBuild" label="What do you build?">
+                <Field
+                  id="whatYouBuild"
+                  label="What do you build?"
+                  error={errors.whatYouBuild}
+                >
                   <textarea
                     id="whatYouBuild"
                     className="cad-input"
@@ -237,7 +246,11 @@ export default function BetaForm() {
                   />
                 </Field>
 
-                <Field id="frustration" label="Biggest workflow frustration?">
+                <Field
+                  id="frustration"
+                  label="Biggest workflow frustration?"
+                  error={errors.frustration}
+                >
                   <textarea
                     id="frustration"
                     className="cad-input"
