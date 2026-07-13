@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { appendToSheet } from "@/lib/google-sheets";
 import { jobApplicationConfirmationEmail, teamNotificationTemplate } from "@/lib/email-templates";
-
+import { getTimeStamp } from "@/lib/get-time-stamp";
 export const runtime = "nodejs";
 
 interface JoinApplication {
@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     if (spreadsheetId) {
       try {
         await appendToSheet(spreadsheetId, "Job Applications", {
-          timestamp: new Date().toISOString(),
+          timestamp: getTimeStamp(),
           name: body.name,
           email: body.email,
           form_type: "Job Application",

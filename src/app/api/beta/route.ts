@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { appendToSheet } from "@/lib/google-sheets";
 import { betaWelcomeEmail, teamNotificationTemplate } from "@/lib/email-templates";
+import { getTimeStamp } from "@/lib/get-time-stamp";
 
 export const runtime = "nodejs";
 
@@ -37,7 +38,7 @@ export async function POST(request: Request) {
     if (spreadsheetId) {
       try {
         await appendToSheet(spreadsheetId, "Beta Users", {
-          timestamp: new Date().toISOString(),
+          timestamp: getTimeStamp(),
           name: body.name,
           email: body.email,
           // form_type: "Beta Signup", # no longer needed
