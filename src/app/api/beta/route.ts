@@ -10,10 +10,10 @@ interface BetaApplication {
   email: string;
   role?: string;
   organization?: string;
-  whatYouBuild?: string;
-  frustration?: string;
   operating_system?: string;
   feature_requests?: string;
+  whatYouBuild?: string;
+  frustration?: string;
 }
 
 export async function POST(request: Request) {
@@ -40,14 +40,13 @@ export async function POST(request: Request) {
           timestamp: new Date().toISOString(),
           name: body.name,
           email: body.email,
-          form_type: "Beta Signup",
+          // form_type: "Beta Signup", # no longer needed
           role_type: body.role || "",
           organization_message: body.organization || "",
           operating_system: body.operating_system || "",
           features_requests: body.feature_requests || "",
-          additional_info: body.whatYouBuild || "",
-          status: "new",
-          notes: `Frustration: ${body.frustration || "—"}`,
+          whatYouBuild: body.whatYouBuild || "",
+          frustration: `Frustration: ${body.frustration || "—"}`,
         });
       } catch (sheetError) {
         console.error("Failed to save to Google Sheets:", sheetError);

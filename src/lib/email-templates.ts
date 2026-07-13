@@ -64,7 +64,7 @@ export const betaWelcomeEmail = (name: string) => `
 
       <p>Thank you for joining the CogniCAD Beta Program! We're excited to have you as part of this journey to revolutionize AI-native engineering.</p>
 
-      <p><strong>You now have early access to:</strong></p>
+      <p><strong>We are still in development phase, We will reach out to you very soon, features coming soon!</strong></p>
       <ul>
         <li>Cutting-edge AI-powered CAD orchestration</li>
         <li>Real-time collaboration features</li>
@@ -143,7 +143,7 @@ export const contactConfirmationEmail = (name: string) => `
 
       <p>Our team typically responds within 24 hours. We look forward to discussing how we can help you.</p>
 
-      <p>In the meantime, feel free to explore our platform or visit our <a href="https://cognicad.xyz">website</a> for more information.</p>
+      <p>In the meantime visit our <a href="https://cognicad.xyz">website</a> for more information.</p>
 
       <p>Best regards,<br>The CogniCAD Team</p>
 

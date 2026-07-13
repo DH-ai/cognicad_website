@@ -28,14 +28,14 @@ export async function appendToSheet(
       "Timestamp",
       "Name",
       "Email",
-      "Form Type",
+      // "Form Type", TODO: Removing
       "Role/Type",
       "Organization/Message",
       "Operating System",
       "Feature Requests",
-      "Additional Info",
-      "Status",
-      "Notes",
+      "whatYouBuild",
+      "frustration",
+      // "Notes",  TODO: Removing
     ];
 
     const rowValues = headers.map((header) => {
