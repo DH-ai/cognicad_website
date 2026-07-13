@@ -41,11 +41,11 @@ export async function POST(request: Request) {
           name: body.name,
           email: body.email,
           // form_type: "Beta Signup", # no longer needed
-          role_type: body.role || "",
+          role: body.role || "",
           organization_message: body.organization || "",
           operating_system: body.operating_system || "",
           features_requests: body.feature_requests || "",
-          whatYouBuild: body.whatYouBuild || "",
+          message: body.whatYouBuild || "",
           frustration: `Frustration: ${body.frustration || "—"}`,
         });
       } catch (sheetError) {

@@ -28,20 +28,54 @@ export async function appendToSheet(
       "Timestamp",
       "Name",
       "Email",
-      // "Form Type", TODO: Removing
-      "Role/Type",
-      "Organization/Message",
+      // above same in all 
+
+      // Beta Users
+
+      "Role",
+      "Organization",
       "Operating System",
       "Feature Requests",
-      "whatYouBuild",
-      "frustration",
-      // "Notes",  TODO: Removing
+      "frustration message",
+      // build message = message 
+
+
+      // Contact inquries
+      "inquiry",
+      //inqiuery message = message
+
+
+
+      //job applications
+      "resume",
+      "fav_problem",
+      // why cognicad = message
+
+      //common 
+      "message",
     ];
 
-    const rowValues = headers.map((header) => {
+    const rowValues = headers.reduce<Array<string | number | boolean>>((acc, header) => {
       const key = header.toLowerCase().replace(/\s+/g, "_");
-      return values[key] || "";
-    });
+      const value = values[key];
+
+      if (!(value === undefined || value === null || value === "")) {
+        acc.push(value as string | number | boolean);
+      }
+
+      return acc;
+    }, []);
+    console.log("Row values to append:", rowValues);
+
+    // remove spaces 
+
+    // const rowValues = rowValues.map(element => {
+    //   if (typeof element === 'string') {
+    //     return element.trim();
+    //   }
+    //   return element;
+    // });
+
 
     const response = await sheets.spreadsheets.values.append({
       auth,

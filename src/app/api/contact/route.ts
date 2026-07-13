@@ -31,20 +31,16 @@ export async function POST(request: Request) {
 
     const resendKey = process.env.RESEND_API_KEY;
     const spreadsheetId = process.env.GOOGLE_SHEETS_SPREADSHEET_ID;
-
+    if (!spreadsheetId) {console.log("Google Sheets Spreadsheet ID:", spreadsheetId);}
     // Save to Google Sheets if credentials available
-    if (spreadsheetId) {
+    if (spreadsheetId) { // temperory will remove it later
       try {
-        await appendToSheet(spreadsheetId, "Contact Inquiries", {
-          timestamp: new Date().toISOString(),
+        await appendToSheet("spreadsheetId", "Contact Inquiries", {
+          timestamp: new Date().toDateString(),
           name: body.name,
           email: body.email,
-          form_type: "Contact",
-          role_type: body.type || "",
-          organization_message: body.message,
-          additional_info: "",
-          status: "new",
-          notes: "",
+          inquiry: body.type || "General Inquiry",
+          message:body.message || "",
         });
       } catch (sheetError) {
         console.error("Failed to save to Google Sheets:", sheetError);
@@ -64,7 +60,7 @@ export async function POST(request: Request) {
         html: teamNotificationTemplate("Contact Inquiry", {
           Name: body.name,
           Email: body.email,
-          Type: body.type || "General",
+          Inquiry: body.type || "General Inquiry",
           Message: body.message,
         }),
       });

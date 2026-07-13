@@ -42,7 +42,7 @@ export default function ContactPage() {
     message: "",
   });
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!fields.email || !fields.name || !fields.message) return;
     setState("loading");
