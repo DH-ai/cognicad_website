@@ -12,6 +12,8 @@ interface BetaApplication {
   organization?: string;
   whatYouBuild?: string;
   frustration?: string;
+  operating_system?: string;
+  feature_requests?: string;
 }
 
 export async function POST(request: Request) {
@@ -41,6 +43,8 @@ export async function POST(request: Request) {
           form_type: "Beta Signup",
           role_type: body.role || "",
           organization_message: body.organization || "",
+          operating_system: body.operating_system || "",
+          features_requests: body.feature_requests || "",
           additional_info: body.whatYouBuild || "",
           status: "new",
           notes: `Frustration: ${body.frustration || "—"}`,

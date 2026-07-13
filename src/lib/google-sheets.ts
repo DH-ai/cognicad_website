@@ -31,6 +31,8 @@ export async function appendToSheet(
       "Form Type",
       "Role/Type",
       "Organization/Message",
+      "Operating System",
+      "Feature Requests",
       "Additional Info",
       "Status",
       "Notes",

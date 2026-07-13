@@ -59,6 +59,8 @@ export default function BetaForm() {
     email: "",
     role: "",
     organization: "",
+    operating_system: "",
+    features_requests: "",
     whatYouBuild: "",
     frustration: "",
   });
@@ -70,8 +72,7 @@ export default function BetaForm() {
       errs.email = "Valid email is required.";
     return errs;
   }
-
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length > 0) {
@@ -229,7 +230,38 @@ export default function BetaForm() {
                     />
                   </Field>
                 </div>
-
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <Field
+                    id="operating_system"
+                    label="Operating System"
+                    error={errors.operating_system}
+                  >
+                    <input
+                      id="operating_system"
+                      className="cad-input"
+                      placeholder="Windows, macOS, Linux..."
+                      value={fields.operating_system}
+                      onChange={(e) =>
+                        setFields((f) => ({ ...f, operating_system: e.target.value }))
+                      }
+                    />
+                  </Field>
+                  <Field
+                    id="feature_requests"
+                    label="Feature Requests"
+                    error={errors.features_requests}
+                  >
+                    <input
+                      id="feature_requests"
+                      className="cad-input"
+                      placeholder="What features would you like to see?"
+                      value={fields.features_requests}
+                      onChange={(e) =>
+                        setFields((f) => ({ ...f, features_requests: e.target.value }))
+                      }
+                    />
+                  </Field>
+                </div>
                 <Field
                   id="whatYouBuild"
                   label="What do you build?"

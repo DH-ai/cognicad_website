@@ -3,49 +3,49 @@
 import { useState } from "react";
 
 const OPEN_ROLES = [
-  {
-    title: "Frontend Engineering Intern",
-    team: "Engineering",
-    location: "Remote / Mumbai",
-    type: "Internship",
-    duration: "3 months",
-    description:
-      "Working on the CogniCAD interface layer — the surface through which engineers interact with the cognitive engine. You care deeply about how information is presented, how interactions feel, and how to make complex engineering state visible and navigable.",
-    requirements: [
-      "Strong command of React and TypeScript",
-      "Experience with animation (Framer Motion, GSAP, or similar)",
-      "Comfort with 3D or data-dense UI is a plus",
-      "Portfolio of work that demonstrates taste and precision",
-    ],
-  },
-  {
-    title: "MLOps Intern",
-    team: "AI Infrastructure",
-    location: "Remote / Mumbai",
-    type: "Internship",
-    duration: "3 months",
-    description:
-      "Owning the infrastructure that trains, evaluates, and deploys the models powering CogniCAD's reasoning layer. You will work on model serving pipelines, evaluation harnesses, and the feedback loops that connect production behavior to training data.",
-    requirements: [
-      "Experience with model training pipelines (PyTorch, HuggingFace)",
-      "Familiarity with infrastructure tooling (Docker, K8s, Ray, or similar)",
-      "Understanding of evaluation methodology for generative models",
-      "Prior internship or project experience in ML systems",
-    ],
-  },
+  // {
+  //   title: "Frontend Engineering Intern",
+  //   team: "Engineering",
+  //   location: "Remote / Mumbai",
+  //   type: "Internship",
+  //   duration: "3 months",
+  //   description:
+  //     "Working on the CogniCAD interface layer — the surface through which engineers interact with the cognitive engine. You care deeply about how information is presented, how interactions feel, and how to make complex engineering state visible and navigable.",
+  //   requirements: [
+  //     "Strong command of React and TypeScript",
+  //     "Experience with animation (Framer Motion, GSAP, or similar)",
+  //     "Comfort with 3D or data-dense UI is a plus",
+  //     "Portfolio of work that demonstrates taste and precision",
+  //   ],
+  // },
+  // {
+  //   title: "MLOps Intern",
+  //   team: "AI Infrastructure",
+  //   location: "Remote / Mumbai",
+  //   type: "Internship",
+  //   duration: "3 months",
+  //   description:
+  //     "Owning the infrastructure that trains, evaluates, and deploys the models powering CogniCAD's reasoning layer. You will work on model serving pipelines, evaluation harnesses, and the feedback loops that connect production behavior to training data.",
+  //   requirements: [
+  //     "Experience with model training pipelines (PyTorch, HuggingFace)",
+  //     "Familiarity with infrastructure tooling (Docker, K8s, Ray, or similar)",
+  //     "Understanding of evaluation methodology for generative models",
+  //     "Prior internship or project experience in ML systems",
+  //   ],
+  // },
   {
     title: "Product Design Intern",
     team: "Design",
     location: "Remote / Mumbai",
     type: "Internship",
-    duration: "3–6 months",
+    duration: "3 months",
     description:
-      "Designing the language of cognitive engineering — from how design intent is entered to how reasoning state is communicated back to the engineer. You will work on interaction patterns that do not yet have precedent in existing software.",
+      "Developing an independent FreeCAD AI Workbench. A working desktop application both for Windows 11, AI Workbench for FreeCad (partially opensource), backend integration, redesigned interface for better UI and UX,",
     requirements: [
-      "Strong foundation in interaction design and visual systems",
-      "Experience with Figma at a high level of craft",
-      "Comfort with ambiguity and designing for novel problem spaces",
-      "Interest in engineering tools or technical domains is a strong plus",
+      "Strong foundation in C++ and Python",
+      "Understand optimization workflows, networking, and bulding binaries both c++ and python, explore freecad guide https://freecad.github.io/DevelopersHandbook/gettingstarted/",
+      "Understanding of good UI and bad UI and some understanding of UX and desgining with Figma canva, need good taste, does not matter if its claude design, nano banana or figma from scratch",
+      "Interest in backedn architecture domains is a strong plus",
     ],
   },
 ];

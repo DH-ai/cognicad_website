@@ -6,7 +6,7 @@ import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvide
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import AccentBackground from "@/components/home/AccentBackground";
+// import AccentBackground from "@/components/home/AccentBackground";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
