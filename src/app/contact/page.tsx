@@ -166,7 +166,7 @@ export default function ContactPage() {
               </div>
 
             {/* Office hours */}
-            <div className="border-t border-[var(--color-border-subtle)] pt-8">
+            {/* <div className="border-t border-[var(--color-border-subtle)] pt-8">
               <p className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/50 mb-3">
                 Office Hours
               </p>
@@ -176,7 +176,7 @@ export default function ContactPage() {
               <p className="text-xs text-[var(--color-muted)]/40 mt-1">
                 We typically respond within 24 hours.
               </p>
-            </div>
+            </div> */}
           </div>
 
           {/* Right — form */}
