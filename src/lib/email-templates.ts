@@ -73,7 +73,7 @@ export const betaWelcomeEmail = (name: string) => `
 
       <div class="links-section">
         <p><strong>Join our community:</strong></p>
-        <a href="https://discord.com/channels/1526630645663531229/1526630645663531232" class="button">Join Discord</a>
+        <a href="https://discord.gg/Mt3JxYDpf" class="button">Join Discord</a>
         <a href="https://instagram.com/cognicad/" class="button">Follow on Instagram</a>
       </div>
 
