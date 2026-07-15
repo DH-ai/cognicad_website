@@ -2,7 +2,14 @@
 
 import { useState } from "react";
 // import { MapPin, Phone, EnvelopeSimple, ArrowUpRight } from "@phosphor-icons/react";1
-import { PhoneIcon, MapPinIcon, EnvelopeSimpleIcon,ArrowUUpRightIcon} from "@phosphor-icons/react";
+import {
+  PhoneIcon,
+  MapPinIcon,
+  EnvelopeSimpleIcon,
+  ArrowUUpRightIcon,
+  DiscordLogoIcon,
+  InstagramLogoIcon,
+} from "@phosphor-icons/react";
 
 const CONTACT_INFO = [
   {
@@ -29,6 +36,19 @@ const CONTACT_TYPES = [
   { label: "Press & Media", value: "press" },
   { label: "Investor Relations", value: "investor" },
   { label: "Partnership", value: "partnership" },
+];
+
+const SOCIAL_LINKS = [
+  {
+    icon: DiscordLogoIcon,
+    label: "Discord",
+    href: "https://discord.gg/Mt3JxYDpf",
+  },
+  {
+    icon: InstagramLogoIcon,
+    label: "Instagram",
+    href: "https://instagram.com/cognicad",
+  },
 ];
 
 type State = "idle" | "loading" | "success" | "error";
@@ -102,6 +122,37 @@ export default function ContactPage() {
 
             {/* Map placeholder */}
             {/* <div claNa·  */}
+
+            <div className="border-t border-[var(--color-border-subtle)] pt-8">
+              <p className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/50 mb-4">
+                Join us
+              </p>
+              <div className="flex flex-col gap-3">
+                {SOCIAL_LINKS.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <a
+                      key={item.label}
+                      href={item.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="glass flex items-center gap-4 px-4 py-3 border border-[var(--color-border-subtle)]/60 hover:border-[var(--color-glow)]/30 transition-colors duration-200"
+                    >
+                      <div className="w-10 h-10 rounded-full border border-[var(--color-border-subtle)]/70 bg-[var(--color-void)]/20 backdrop-blur-sm flex items-center justify-center text-[var(--color-muted)]/75">
+                        <Icon size={18} weight="light" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-sm text-[var(--color-accent)]">{item.label}</p>
+                        <p className="text-xs text-[var(--color-muted)]/55">
+                          {item.href.replace(/^https?:\/\//, "")}
+                        </p>
+                      </div>
+                      <ArrowUUpRightIcon size={12} weight="bold" style={{ color: "var(--color-glow)" }} />
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
 
             {/* Office hours */}
             <div className="border-t border-[var(--color-border-subtle)] pt-8">
