@@ -43,11 +43,13 @@ const SOCIAL_LINKS = [
     icon: DiscordLogoIcon,
     label: "Discord",
     href: "https://discord.gg/Mt3JxYDpf",
+    hoverColor: "#5865F2",
   },
   {
     icon: InstagramLogoIcon,
     label: "Instagram",
     href: "https://instagram.com/cognicad",
+    hoverColor: "#E1306C",
   },
 ];
 
@@ -136,18 +138,21 @@ export default function ContactPage() {
                       href={item.href}
                       target="_blank"
                       rel="noreferrer"
-                      className="glass flex items-center gap-4 px-4 py-3 border border-[var(--color-border-subtle)]/60 hover:border-[var(--color-glow)]/30 transition-colors duration-200"
+                      className="group glass flex items-center gap-4 px-4 py-3 border border-[var(--color-border-subtle)]/60 transition-all duration-300 hover:scale-[1.01] hover:border-transparent"
+                      style={{
+                        ["--hover-color" as string]: item.hoverColor,
+                      }}
                     >
-                      <div className="w-10 h-10 rounded-full border border-[var(--color-border-subtle)]/70 bg-[var(--color-void)]/20 backdrop-blur-sm flex items-center justify-center text-[var(--color-muted)]/75">
-                        <Icon size={18} weight="light" />
+                      <div className="w-10 h-10 rounded-full border border-[var(--color-border-subtle)]/70 bg-[var(--color-void)]/20 backdrop-blur-sm flex items-center justify-center text-[var(--color-muted)]/75 transition-all duration-300 group-hover:border-transparent group-hover:bg-[var(--hover-color)]/15 group-hover:text-[var(--hover-color)]">
+                        <Icon size={18} weight="light" className="transition-colors duration-300" />
                       </div>
                       <div className="flex-1">
-                        <p className="text-sm text-[var(--color-accent)]">{item.label}</p>
-                        <p className="text-xs text-[var(--color-muted)]/55">
+                        <p className="text-sm text-[var(--color-accent)] transition-colors duration-300 group-hover:text-[var(--hover-color)]">{item.label}</p>
+                        <p className="text-xs text-[var(--color-muted)]/55 transition-colors duration-300 group-hover:text-[var(--hover-color)]/75">
                           {item.href.replace(/^https?:\/\//, "")}
                         </p>
                       </div>
-                      <ArrowUUpRightIcon size={12} weight="bold" style={{ color: "var(--color-glow)" }} />
+                      <ArrowUUpRightIcon size={12} weight="bold" style={{ color: "var(--color-glow)" }} className="transition-colors duration-300 group-hover:!text-[var(--hover-color)]" />
                     </a>
                   );
                 })}
