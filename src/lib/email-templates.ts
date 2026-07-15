@@ -52,6 +52,13 @@ export const betaWelcomeEmail = (name: string) => `
       margin: 30px 0;
       text-align: center;
     }
+    .partner-box {
+      background: #eef9ff;
+      border-left: 4px solid #5DDBFF;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 0 4px 4px 0;
+    }
   </style>
 </head>
 <body>
@@ -64,12 +71,11 @@ export const betaWelcomeEmail = (name: string) => `
 
       <p>Thank you for joining the CogniCAD Beta Program! We're excited to have you as part of this journey to revolutionize AI-native engineering.</p>
 
-      <p><strong>We are still in development phase, We will reach out to you very soon, features coming soon!</strong></p>
-      <ul>
-        <li>Cutting-edge AI-powered CAD orchestration</li>
-        <li>Real-time collaboration features</li>
-        <li>Direct feedback channel with our team</li>
-      </ul>
+      <p>We are currently in active development and gearing up for our first release. We will reach out to you the moment we are ready to onboard you.</p>
+
+      <div class="partner-box">
+        <p style="margin: 0;"><strong>Shape the product:</strong> If you want to be design partners and collaborate closely with us, contact us at <a href="mailto:design-partners@cognicad.xyz" style="color: #00769d; text-decoration: none; font-weight: 600;">design-partners@cognicad.xyz</a>.</p>
+      </div>
 
       <div class="links-section">
         <p><strong>Join our community:</strong></p>
@@ -85,7 +91,7 @@ export const betaWelcomeEmail = (name: string) => `
 
       <div class="footer">
         <p>CogniCAD — Cognitive Engineering Systems<br>
-        This is an automated message. Please do not reply to this email.</p>
+        This is an automated message. Please do not reply directly to this email.</p>
       </div>
     </div>
   </div>

@@ -60,7 +60,7 @@ export default function BetaForm() {
     role: "",
     organization: "",
     operating_system: "",
-    features_requests: "",
+    feature_requests: "",
     whatYouBuild: "",
     frustration: "",
   });
@@ -255,16 +255,16 @@ export default function BetaForm() {
                       id="feature_requests"
                       className="cad-input"
                       placeholder="What features would you like to see?"
-                      value={fields.features_requests}
+                      value={fields.feature_requests}
                       onChange={(e) =>
-                        setFields((f) => ({ ...f, features_requests: e.target.value }))
+                        setFields((f) => ({ ...f, feature_requests: e.target.value }))
                       }
                     />
                   </Field>
                 </div>
                 <Field
                   id="whatYouBuild"
-                  label="What do you build?"
+                  label="What type of projects you work on?"
                   error={errors.whatYouBuild}
                 >
                   <textarea
@@ -286,7 +286,7 @@ export default function BetaForm() {
                   <textarea
                     id="frustration"
                     className="cad-input"
-                    placeholder="The gap between simulation intent and what the geometry actually does..."
+                    placeholder="What is the biggest pain point which you feel can be automated? High effort Low value"
                     value={fields.frustration}
                     onChange={(e) =>
                       setFields((f) => ({ ...f, frustration: e.target.value }))

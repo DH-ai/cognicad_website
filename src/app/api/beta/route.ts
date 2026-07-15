@@ -33,59 +33,80 @@ export async function POST(request: Request) {
 
     const resendKey = process.env.RESEND_API_KEY;
     const spreadsheetId = process.env.GOOGLE_SHEETS_SPREADSHEET_ID;
-
+    let sheetSuccess = false;
+    let emailSuccess = false;
     // Save to Google Sheets if credentials available
-    if (spreadsheetId) {
-      try {
-        await appendToSheet(spreadsheetId, "Beta Users", {
-          timestamp: getTimeStamp(),
-          name: body.name,
-          email: body.email,
-          // form_type: "Beta Signup", # no longer needed
-          role: body.role || "",
-          organization_message: body.organization || "",
-          operating_system: body.operating_system || "",
-          features_requests: body.feature_requests || "",
-          message: body.whatYouBuild || "",
-          frustration: `Frustration: ${body.frustration || "—"}`,
-        });
-      } catch (sheetError) {
-        console.error("Failed to save to Google Sheets:", sheetError);
-        // Continue with email even if sheet save fails
+    try {
+      if (spreadsheetId) {
+        try {
+          await appendToSheet(spreadsheetId, "Beta Users", {
+            timestamp: getTimeStamp(),
+            name: body.name,
+            email: body.email,
+            // form_type: "Beta Signup", # no longer needed
+            role: body.role || "",
+            organization: body.organization || "",
+            operating_system: body.operating_system || "",
+            feature_requests: body.feature_requests || "",
+            build_message: body.whatYouBuild || "",
+            frustration_message: `Frustration: ${body.frustration || "—"}`,
+          });
+        } catch (sheetError) {
+          console.error("Failed to save to Google Sheets:", sheetError);
+          // Continue with email even if sheet save fails
+        }
       }
+       sheetSuccess = true
+    }
+    catch  {
+      sheetSuccess = false
+      // console.error("Error saving to Google Sheets:", error);
+    }
+    try{
+      if (resendKey) {
+        const resend = new Resend(resendKey);
+  
+        // Notify team
+        await resend.emails.send({
+          from: "CogniCAD <noreply@cognicad.xyz>",
+          to: "dhruvchaturvedi@cognicad.xyz",
+          subject: `New Beta Signup — ${body.name}`,
+          html: teamNotificationTemplate("Beta Signup", {
+            Name: body.name,
+            Email: body.email,
+            Role: body.role || "—",
+            Organization: body.organization || "—",
+            "What they build": body.whatYouBuild || "—",
+            "Biggest frustration": body.frustration || "—",
+          }),
+        });
+  
+        // Welcome email to applicant
+        await resend.emails.send({
+          from: "CogniCAD <noreply@cognicad.xyz>",
+          to: body.email,
+          subject: "Welcome to CogniCAD Beta! 🚀",
+          html: betaWelcomeEmail(body.name),
+        });
+      }
+       emailSuccess = true
+    }catch(error){
+      console.error("Error sending emails:", error);
+
     }
 
-    if (resendKey) {
-      const resend = new Resend(resendKey);
-
-      // Notify team
-      await resend.emails.send({
-        from: "CogniCAD <noreply@cognicad.xyz>",
-        to: "dhruvchaturvedi@cognicad.xyz",
-        subject: `New Beta Signup — ${body.name}`,
-        html: teamNotificationTemplate("Beta Signup", {
-          Name: body.name,
-          Email: body.email,
-          Role: body.role || "—",
-          Organization: body.organization || "—",
-          "What they build": body.whatYouBuild || "—",
-          "Biggest frustration": body.frustration || "—",
-        }),
-      });
-
-      // Welcome email to applicant
-      await resend.emails.send({
-        from: "CogniCAD <noreply@cognicad.xyz>",
-        to: body.email,
-        subject: "Welcome to CogniCAD Beta! 🚀",
-        html: betaWelcomeEmail(body.name),
-      });
+    // Decide response based on what succeeded
+    if (!sheetSuccess && !emailSuccess) {
+      return NextResponse.json(
+        { error: 'All services failed' },
+        { status: 500 }
+      );
     }
-
-    return NextResponse.json(
-      { success: true, message: "Application received." },
-      { status: 200 }
-    );
+    return NextResponse.json({
+      success: true,
+      sheet: sheetSuccess,
+      email: emailSuccess,
+    });
   } catch (error) {
     console.error("Error in beta route:", error);
     return NextResponse.json(

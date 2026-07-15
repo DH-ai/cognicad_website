@@ -36,35 +36,33 @@ export async function appendToSheet(
       "Organization",
       "Operating System",
       "Feature Requests",
-      "frustration message",
-      // build message = message 
+      "Build Message",
+      "Frustration Message",
+      // Build Message = Message  
 
 
       // Contact inquries
       "inquiry",
-      //inqiuery message = message
+      "inquiry_message",
 
 
 
       //job applications
       "resume",
+      "message_job_application",
       "fav_problem",
-      // why cognicad = message
 
-      //common 
-      "message",
+
     ];
-
-    const rowValues = headers.reduce<Array<string | number | boolean>>((acc, header) => {
-      const key = header.toLowerCase().replace(/\s+/g, "_");
-      const value = values[key];
-
-      if (!(value === undefined || value === null || value === "")) {
-        acc.push(value as string | number | boolean);
+    console.log("Incoming Value", values)
+    const rowValues = headers.filter((header) =>
+      values[header.toLowerCase().replace(/\s+/g, "_")] !== undefined
+    ).map(
+      (header) =>{
+        return values[header.toLowerCase().replace(/\s+/g, "_")] || ""
       }
+    );
 
-      return acc;
-    }, []);
     console.log("Row values to append:", rowValues);
 
     // remove spaces 
@@ -76,11 +74,20 @@ export async function appendToSheet(
     //   return element;
     // });
 
+    if (sheetName === "Contact Inquiries"){
+      sheetName = `${sheetName}!A:E`
+      console.log(spreadsheetId);
+    }else{
+      // sheetName = 
+      sheetName = `${sheetName}!A:I`
+      console.log(spreadsheetId);
 
+
+    }
     const response = await sheets.spreadsheets.values.append({
       auth,
       spreadsheetId,
-      range: `${sheetName}!A:I`,
+      range: sheetName,
       valueInputOption: "USER_ENTERED",
       requestBody: {
         values: [rowValues],
