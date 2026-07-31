@@ -10,6 +10,7 @@ import {
   ArrowUUpRightIcon,
   DiscordLogoIcon,
   InstagramLogoIcon,
+  XLogoIcon as X,
 } from "@phosphor-icons/react";
 
 const CONTACT_INFO = [
@@ -38,7 +39,7 @@ const CONTACT_TYPES = [
   { label: "Investor Relations", value: "investor" },
   { label: "Partnership", value: "partnership" },
 ];
-
+X
 const SOCIAL_LINKS = [
   {
     icon: DiscordLogoIcon,
@@ -52,6 +53,12 @@ const SOCIAL_LINKS = [
     href: "https://instagram.com/cognicad",
     hoverColor: "#E1306C",
   },
+  {
+    icon: X,
+    label: "X (Twitter)",
+    href: "https://twitter.com/cognicad",
+    hoverColor: "#1DA1F2",
+  }
 ]
 
 type State = "idle" | "loading" | "success" | "error";
