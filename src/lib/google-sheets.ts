@@ -54,7 +54,6 @@ export async function appendToSheet(
 
 
     ];
-    console.log("Incoming Value", values)
     const rowValues = headers.filter((header) =>
       values[header.toLowerCase().replace(/\s+/g, "_")] !== undefined
     ).map(
@@ -62,8 +61,6 @@ export async function appendToSheet(
         return values[header.toLowerCase().replace(/\s+/g, "_")] || ""
       }
     );
-
-    console.log("Row values to append:", rowValues);
 
     // remove spaces 
 
@@ -76,11 +73,9 @@ export async function appendToSheet(
 
     if (sheetName === "Contact Inquiries"){
       sheetName = `${sheetName}!A:E`
-      console.log(spreadsheetId);
     }else{
       // sheetName = 
       sheetName = `${sheetName}!A:I`
-      console.log(spreadsheetId);
 
 
     }

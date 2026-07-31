@@ -65,7 +65,6 @@ export async function POST(request: Request) {
     try{
       if (resendKey) {
         const resend = new Resend(resendKey);
-  
         // Notify team
         await resend.emails.send({
           from: "CogniCAD <noreply@cognicad.xyz>",

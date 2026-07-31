@@ -34,7 +34,6 @@ export async function POST(request: Request) {
     let emailSuccess = false;
     const resendKey = process.env.RESEND_API_KEY;
     const spreadsheetId = process.env.GOOGLE_SHEETS_SPREADSHEET_ID;
-    if (!spreadsheetId) {console.log("Google Sheets Spreadsheet ID:", spreadsheetId);}
     // Save to Google Sheets if credentials available
 
     try {
@@ -65,7 +64,7 @@ export async function POST(request: Request) {
         const resend = new Resend(resendKey);
   
         // Notify team
-        await resend.emails.send({
+        const confirmation_team= await resend.emails.send({
           from: "CogniCAD <noreply@cognicad.xyz>",
           to: "dhruvchaturvedi@cognicad.xyz",
           replyTo: body.email,
@@ -79,20 +78,21 @@ export async function POST(request: Request) {
         });
   
         // Confirmation to sender
-        await resend.emails.send({
+        const confirmation_sender = await resend.emails.send({
           from: "CogniCAD <noreply@cognicad.xyz>",
           to: body.email,
           subject: "We received your message",
           html: contactConfirmationEmail(body.name),
         });
       }
+
        emailSuccess = true
 
     }catch  {
       emailSuccess = false
       // console.error("Error sending email:", error);
     }
-
+    
     if (!sheetSuccess && !emailSuccess) {
       return NextResponse.json(
         { error: 'All services failed' },
