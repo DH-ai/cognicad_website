@@ -1,21 +1,41 @@
 "use client";
 
+import { useMemo } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
+import SponsorTicker from "@/components/home/SponsorTicker";
 import { Button } from "@/components/ui/button";
 
+const PATH_COUNT = 36;
+
+// Build one fanned-out contour line. `position` (1 or -1) mirrors the set;
+// each index `i` offsets the line horizontally and vertically so the paths layer.
+function buildPath(i: number, position: number) {
+  const dx = i * 5 * position; // horizontal spread between successive lines
+  const dy = i * 6; // vertical spread between successive lines
+
+  return [
+    `M-${380 - dx} -${189 + dy}`,
+    `C-${380 - dx} -${189 + dy} -${312 - dx} ${216 - dy} ${152 - dx} ${343 - dy}`,
+    `C${616 - dx} ${470 - dy} ${684 - dx} ${875 - dy} ${684 - dx} ${875 - dy}`,
+  ].join(" ");
+}
+
 function FloatingPaths({ position }: { position: number }) {
-  const paths = Array.from({ length: 36 }, (_, i) => ({
-    id: i,
-    d: `M-${380 - i * 5 * position} -${189 + i * 6}C-${
-      380 - i * 5 * position
-    } -${189 + i * 6} -${312 - i * 5 * position} ${216 - i * 6} ${
-      152 - i * 5 * position
-    } ${343 - i * 6}C${616 - i * 5 * position} ${470 - i * 6} ${
-      684 - i * 5 * position
-    } ${875 - i * 6} ${684 - i * 5 * position} ${875 - i * 6}`,
-    width: 0.5 + i * 0.03,
-  }));
+  const prefersReducedMotion = useReducedMotion();
+
+  const paths = useMemo(
+    () =>
+      Array.from({ length: PATH_COUNT }, (_, i) => ({
+        id: i,
+        d: buildPath(i, position),
+        width: 0.5 + i * 0.03,
+        // Clamp to the valid 0–1 range; deterministic so SSR and client agree.
+        opacity: Math.min(0.1 + i * 0.03, 1),
+        duration: 20 + (i % 10), // deterministic — avoids hydration mismatch
+      })),
+    [position],
+  );
 
   return (
     <div className="absolute inset-0 pointer-events-none">
@@ -31,18 +51,26 @@ function FloatingPaths({ position }: { position: number }) {
             d={path.d}
             stroke="currentColor"
             strokeWidth={path.width}
-            strokeOpacity={0.1 + path.id * 0.03}
+            strokeOpacity={path.opacity}
             initial={{ pathLength: 0.3, opacity: 0.6 }}
-            animate={{
-              pathLength: 1,
-              opacity: [0.3, 0.6, 0.3],
-              pathOffset: [0, 1, 0],
-            }}
-            transition={{
-              duration: 20 + Math.random() * 10,
-              repeat: Number.POSITIVE_INFINITY,
-              ease: "linear",
-            }}
+            animate={
+              prefersReducedMotion
+                ? { pathLength: 1, opacity: 0.5 }
+                : {
+                    pathLength: 1,
+                    opacity: [0.3, 0.6, 0.3],
+                    pathOffset: [0, 1, 0],
+                  }
+            }
+            transition={
+              prefersReducedMotion
+                ? { duration: 0 }
+                : {
+                    duration: path.duration,
+                    repeat: Number.POSITIVE_INFINITY,
+                    ease: "linear",
+                  }
+            }
           />
         ))}
       </svg>
@@ -56,12 +84,14 @@ export function BackgroundPaths({
   ctaHref = "/beta",
   subtitle,
   subtitle2,
+  sponsors,
 }: {
   title?: string;
   ctaLabel?: string;
   ctaHref?: string;
   subtitle?: string;
   subtitle2?: string;
+  sponsors?: any[];
 }) {
   const words = title.split(" ");
 
@@ -134,6 +164,16 @@ export function BackgroundPaths({
               {subtitle2} 
             </motion.p>
             
+          )}
+
+          {sponsors && sponsors.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.9, duration: 0.9 }}
+            >
+              <SponsorTicker sponsors={sponsors} />
+            </motion.div>
           )}
 
           <motion.div
