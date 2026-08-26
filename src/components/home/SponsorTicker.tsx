@@ -3,7 +3,7 @@
 import Link from "next/link";
 import React from "react";
 
-type Sponsor = {
+export type Sponsor = {
   name: string;
   phrase?: string;
   href?: string;

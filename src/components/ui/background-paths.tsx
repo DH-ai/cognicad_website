@@ -1,11 +1,11 @@
 "use client";
 
-import { useMemo } from "react";
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
-import SponsorTicker from "@/components/home/SponsorTicker";
+import SponsorTicker, { type Sponsor } from "@/components/home/SponsorTicker";
 import { Button } from "@/components/ui/button";
 
+import { useMemo } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 const PATH_COUNT = 36;
 
 // Build one fanned-out contour line. `position` (1 or -1) mirrors the set;
@@ -91,16 +91,16 @@ export function BackgroundPaths({
   ctaHref?: string;
   subtitle?: string;
   subtitle2?: string;
-  sponsors?: any[];
+  sponsors?: Sponsor[];
 }) {
   const words = title.split(" ");
 
   return (
     <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-transparent">
-      <div className="absolute inset-0 text-[var(--color-accent)] opacity-60">
+      {/* <div className="absolute inset-0 text-[var(--color-accent)] opacity-60">
         <FloatingPaths position={1} />
         <FloatingPaths position={-1} />
-      </div>
+      </div> */}
 
       <div className="relative z-10 container mx-auto px-4 md:px-6 text-center">
         <motion.div
