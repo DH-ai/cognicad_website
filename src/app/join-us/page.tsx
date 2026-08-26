@@ -10,7 +10,7 @@ const OPEN_ROLES = [
   //   type: "Internship",
   //   duration: "3 months",
   //   description:
-  //     "Working on the CogniCAD interface layer — the surface through which engineers interact with the cognitive engine. You care deeply about how information is presented, how interactions feel, and how to make complex engineering state visible and navigable.",
+  //     "Working on the JusCAD interface layer — the surface through which engineers interact with the cognitive engine. You care deeply about how information is presented, how interactions feel, and how to make complex engineering state visible and navigable.",
   //   requirements: [
   //     "Strong command of React and TypeScript",
   //     "Experience with animation (Framer Motion, GSAP, or similar)",
@@ -25,7 +25,7 @@ const OPEN_ROLES = [
   //   type: "Internship",
   //   duration: "3 months",
   //   description:
-  //     "Owning the infrastructure that trains, evaluates, and deploys the models powering CogniCAD's reasoning layer. You will work on model serving pipelines, evaluation harnesses, and the feedback loops that connect production behavior to training data.",
+  //     "Owning the infrastructure that trains, evaluates, and deploys the models powering JusCAD's reasoning layer. You will work on model serving pipelines, evaluation harnesses, and the feedback loops that connect production behavior to training data.",
   //   requirements: [
   //     "Experience with model training pipelines (PyTorch, HuggingFace)",
   //     "Familiarity with infrastructure tooling (Docker, K8s, Ray, or similar)",
@@ -92,7 +92,7 @@ function ApplicationForm({ role }: { role: string }) {
           name: String(formData.get("name") ?? ""),
           email: String(formData.get("email") ?? ""),
           portfolio: String(formData.get("portfolio") ?? ""),
-          whyCognicad: String(formData.get("whyCognicad") ?? ""),
+          whyJuscad: String(formData.get("whyJuscad") ?? ""),
           favoriteProblem: String(formData.get("favoriteProblem") ?? ""),
           role,
         }),
@@ -171,14 +171,14 @@ function ApplicationForm({ role }: { role: string }) {
 
       <div className="flex flex-col gap-2">
         <label
-          htmlFor={`why-cognicad-${role}`}
+          htmlFor={`why-juscad-${role}`}
           className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/70"
         >
-          Why CogniCAD?
+          Why JusCAD?
         </label>
         <textarea
-          id={`why-cognicad-${role}`}
-          name="whyCognicad"
+          id={`why-juscad-${role}`}
+          name="whyJuscad"
           className="cad-input"
           placeholder="What about this problem draws you in specifically..."
         />
@@ -201,7 +201,7 @@ function ApplicationForm({ role }: { role: string }) {
 
       {state === "error" && (
         <p className="text-sm text-red-400/80">
-          Submission failed. Please try again or email us at hello@cognicad.io.
+          Submission failed. Please try again or email us at hello@juscad.io.
         </p>
       )}
 
@@ -324,7 +324,7 @@ export default function JoinUsPage() {
             Not a student? We occasionally hire exceptional full-time engineers
             directly on contracts basis. If you are deeply technical and want to work on a multi-decade
             problem, reach out at{" "}
-            <span className="text-[var(--color-glow)]">dhruvchaturvedi@cognicad.xyz</span>.
+            <span className="text-[var(--color-glow)]">dhruvchaturvedi@juscad.xyz</span>.
           </p>
         </div>
       </div>

@@ -40,7 +40,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     let stored: Theme | null = null;
     try {
       if (typeof window !== "undefined" && window.localStorage) {
-        stored = window.localStorage.getItem("cognicad-theme") as Theme | null;
+        stored = window.localStorage.getItem("juscad-theme") as Theme | null;
       }
     } catch {
       stored = null;
@@ -68,7 +68,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         }
         try {
           if (typeof window !== "undefined" && window.localStorage) {
-            window.localStorage.setItem("cognicad-theme", next);
+            window.localStorage.setItem("juscad-theme", next);
           }
         } catch {
           // storage may be unavailable (private mode, edge runtime preview)

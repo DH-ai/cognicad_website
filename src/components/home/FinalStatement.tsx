@@ -96,7 +96,7 @@ export default function FinalStatement() {
           </motion.p>
         </motion.div>
 
-        {/* CogniCAD — script font, the payoff */}
+        {/* JusCAD — script font, the payoff */}
         <motion.div
           initial={{ opacity: 0, scale: 0.92 }}
           animate={isInView ? { opacity: 1, scale: 1 } : {}}

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Why AI in CAD Is the Path to AGI — CogniCAD",
+  title: "Why AI in CAD Is the Path to AGI — JusCAD",
   description:
     "Language models excel at text and code, but lack spatial reasoning. Engineering is the missing modality on the road to general intelligence.",
 };

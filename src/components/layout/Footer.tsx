@@ -51,7 +51,7 @@ export default function Footer() {
 
         <div className="border-t border-[var(--color-border-subtle)] pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <span className="text-[11px] text-[var(--color-muted)]/40 tracking-widest uppercase">
-            &copy; {new Date().getFullYear()} CogniCAD. All rights reserved.
+            &copy; {new Date().getFullYear()} JusCAD. All rights reserved.
           </span>
           <span className="text-[11px] text-[var(--color-muted)]/30 tracking-widest uppercase">
             Cognitive Engineering Systems

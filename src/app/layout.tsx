@@ -28,11 +28,11 @@ const pinyonScript = Pinyon_Script({
 });
 
 export const metadata: Metadata = {
-  title: "CogniCAD — Cognitive Engineering Systems",
+  title: "JusCAD — Cognitive Engineering Systems",
   description:
     "An AI-native cognitive engineering system. Built for engineering thought, not just engineering commands.",
   openGraph: {
-    title: "CogniCAD — Cognitive Engineering Systems",
+    title: "JusCAD — Cognitive Engineering Systems",
     description:
       "The next generation of engineering software will not be defined by menus and commands. It will be defined by cognition.",
     type: "website",

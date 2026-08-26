@@ -10,7 +10,7 @@ interface JoinApplication {
   email: string;
   role: string;
   portfolio?: string;
-  whyCognicad?: string;
+  whyJuscad?: string;
   favoriteProblem?: string;
 }
 
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
           name: body.name,
           email: body.email,
           role: body.role,
-          message_job_application: body.whyCognicad || "",
+          message_job_application: body.whyJuscad || "",
           resume: body.portfolio || "—",
           fav_problem: body.favoriteProblem || "—",
         });
@@ -63,8 +63,8 @@ export async function POST(request: Request) {
         const resend = new Resend(resendKey);
         // Notify team
         await resend.emails.send({
-          from: "CogniCAD <noreply@cognicad.xyz>",
-          to: "dhruvchaturvedi@cognicad.xyz",
+          from: "JusCAD <noreply@juscad.xyz>",
+          to: "dhruvchaturvedi@juscad.xyz",
           replyTo: body.email,
           subject: `Job Application — ${body.role} — ${body.name}`,
           html: teamNotificationTemplate("Job Application", {
@@ -72,14 +72,14 @@ export async function POST(request: Request) {
             Email: body.email,
             Role: body.role,
             Portfolio: body.portfolio || "—",
-            "Why CogniCAD": body.whyCognicad || "—",
+            "Why JusCAD": body.whyJuscad || "—",
             "Favorite problem": body.favoriteProblem || "—",
           }),
         });
   
         // Confirmation to applicant
         await resend.emails.send({
-          from: "CogniCAD <noreply@cognicad.xyz>",
+          from: "JusCAD <noreply@juscad.xyz>",
           to: body.email,
           subject: "We received your application",
           html: jobApplicationConfirmationEmail(body.name, body.role),

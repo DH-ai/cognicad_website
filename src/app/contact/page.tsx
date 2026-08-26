@@ -27,7 +27,7 @@ const CONTACT_INFO = [
   {
     icon: EnvelopeSimpleIcon,
     label: "Email",
-    lines: ["enquire@cognicad.xyz", "dhruvchaturvedi@cognicad.xyz"],
+    lines: ["enquire@juscad.xyz", "dhruvchaturvedi@juscad.xyz"],
   },
 ];
 
@@ -50,13 +50,13 @@ const SOCIAL_LINKS = [
   {
     icon: InstagramLogoIcon,
     label: "Instagram",
-    href: "https://instagram.com/cognicad",
+    href: "https://instagram.com/juscad",
     hoverColor: "#E1306C",
   },
   {
     icon: X,
     label: "X (Twitter)",
-    href: "https://twitter.com/cognicad",
+    href: "https://twitter.com/juscad",
     hoverColor: "#1DA1F2",
   }
 ]
@@ -262,7 +262,7 @@ export default function ContactPage() {
 
                 {state === "error" && (
                   <p className="text-sm text-red-400/80">
-                    Submission failed. Please try again or email us at enquiry@cognicad.xyz.
+                    Submission failed. Please try again or email us at enquiry@juscad.xyz.
                   </p>
                 )}
 

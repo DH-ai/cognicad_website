@@ -67,8 +67,8 @@ export async function POST(request: Request) {
         const resend = new Resend(resendKey);
         // Notify team
         await resend.emails.send({
-          from: "CogniCAD <noreply@cognicad.xyz>",
-          to: "dhruvchaturvedi@cognicad.xyz",
+          from: "JusCAD <noreply@juscad.xyz>",
+          to: "dhruvchaturvedi@juscad.xyz",
           subject: `New Beta Signup — ${body.name}`,
           html: teamNotificationTemplate("Beta Signup", {
             Name: body.name,
@@ -82,9 +82,9 @@ export async function POST(request: Request) {
   
         // Welcome email to applicant
         await resend.emails.send({
-          from: "CogniCAD <noreply@cognicad.xyz>",
+          from: "JusCAD <noreply@juscad.xyz>",
           to: body.email,
-          subject: "Welcome to CogniCAD Beta! 🚀",
+          subject: "Welcome to JusCAD Beta! 🚀",
           html: betaWelcomeEmail(body.name),
         });
       }

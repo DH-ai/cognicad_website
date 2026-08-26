@@ -64,33 +64,33 @@ export const betaWelcomeEmail = (name: string) => `
 <body>
   <div class="container">
     <div class="header">
-      <h1 style="margin: 0; font-size: 28px;">Welcome to CogniCAD Beta 🚀</h1>
+      <h1 style="margin: 0; font-size: 28px;">Welcome to JusCAD Beta 🚀</h1>
     </div>
     <div class="content">
       <p>Hi ${name},</p>
 
-      <p>Thank you for joining the CogniCAD Beta Program! We're excited to have you as part of this journey to revolutionize AI-native engineering.</p>
+      <p>Thank you for joining the JusCAD Beta Program! We're excited to have you as part of this journey to revolutionize AI-native engineering.</p>
 
       <p>We are currently in active development and gearing up for our first release. We will reach out to you the moment we are ready to onboard you.</p>
 
       <div class="partner-box">
-        <p style="margin: 0;"><strong>Shape the product:</strong> If you want to be design partners and collaborate closely with us, contact us at <a href="mailto:design-partners@cognicad.xyz" style="color: #00769d; text-decoration: none; font-weight: 600;">design-partners@cognicad.xyz</a>.</p>
+        <p style="margin: 0;"><strong>Shape the product:</strong> If you want to be design partners and collaborate closely with us, contact us at <a href="mailto:design-partners@juscad.xyz" style="color: #00769d; text-decoration: none; font-weight: 600;">design-partners@juscad.xyz</a>.</p>
       </div>
 
       <div class="links-section">
         <p><strong>Join our community:</strong></p>
         <a href="https://discord.gg/Mt3JxYDpf" class="button">Join Discord</a>
-        <a href="https://instagram.com/cognicad/" class="button">Follow on Instagram</a>
+        <a href="https://instagram.com/juscad/" class="button">Follow on Instagram</a>
       </div>
 
-      <p>If you have any questions or feedback, please don't hesitate to reach out to us at <strong>hello@cognicad.xyz</strong>.</p>
+      <p>If you have any questions or feedback, please don't hesitate to reach out to us at <strong>hello@juscad.xyz</strong>.</p>
 
       <p>Looking forward to building the future of engineering with you!</p>
 
-      <p>Best regards,<br>The CogniCAD Team</p>
+      <p>Best regards,<br>The JusCAD Team</p>
 
       <div class="footer">
-        <p>CogniCAD — Cognitive Engineering Systems<br>
+        <p>JusCAD — Cognitive Engineering Systems<br>
         This is an automated message. Please do not reply directly to this email.</p>
       </div>
     </div>
@@ -172,20 +172,20 @@ export const contactConfirmationEmail = (name: string) => `
     <div class="content">
       <p>Hi ${name},</p>
 
-      <p>Thank you for reaching out to CogniCAD. We've received your message and our team is reviewing it.</p>
+      <p>Thank you for reaching out to JusCAD. We've received your message and our team is reviewing it.</p>
 
       <div class="info-box">
         <p style="margin: 0;"><strong>Response time:</strong> We typically respond within 24 hours on business days.</p>
       </div>
 
       <p style="text-align: center; margin: 25px 0;">
-        <a href="https://cognicad.xyz" class="button">Visit Our Website</a>
+        <a href="https://juscad.xyz" class="button">Visit Our Website</a>
       </p>
 
-      <p>Best regards,<br>The CogniCAD Team</p>
+      <p>Best regards,<br>The JusCAD Team</p>
 
       <div class="footer">
-        <p>CogniCAD — Cognitive Engineering Systems<br>
+        <p>JusCAD — Cognitive Engineering Systems<br>
         This is an automated message. Please do not reply directly to this email.</p>
       </div>
     </div>
@@ -275,7 +275,7 @@ export const jobApplicationConfirmationEmail = (name: string, role: string) => `
     <div class="content">
       <p>Hi ${name},</p>
 
-      <p>Thank you for applying for the <strong>${role}</strong> position at CogniCAD. We've received your application and will review it carefully.</p>
+      <p>Thank you for applying for the <strong>${role}</strong> position at JusCAD. We've received your application and will review it carefully.</p>
 
       <div class="info-box">
         <p style="margin: 0;"><strong>What's next:</strong> Our hiring team typically reviews applications within 5 business days. If there is a strong fit, we will reach out directly to schedule an introductory call.</p>
@@ -283,16 +283,16 @@ export const jobApplicationConfirmationEmail = (name: string, role: string) => `
 
       <p>In the meantime, feel free to learn more about what we're building:</p>
       <div style="margin: 20px 0;">
-        <a href="https://cognicad.xyz/blog" class="button">Read Our Blog</a>
-        <a href="https://cognicad.xyz/about" class="button">About the Team</a>
+        <a href="https://juscad.xyz/blog" class="button">Read Our Blog</a>
+        <a href="https://juscad.xyz/about" class="button">About the Team</a>
       </div>
 
-      <p>Thanks again for your interest in joining CogniCAD!</p>
+      <p>Thanks again for your interest in joining JusCAD!</p>
 
-      <p>Best regards,<br>The CogniCAD Team</p>
+      <p>Best regards,<br>The JusCAD Team</p>
 
       <div class="footer">
-        <p>CogniCAD — Cognitive Engineering Systems<br>
+        <p>JusCAD — Cognitive Engineering Systems<br>
         This is an automated message. Please do not reply directly to this email.</p>
       </div>
     </div>
@@ -390,7 +390,7 @@ export const teamNotificationTemplate = (
       </div>
 
       <div class="footer">
-        <p>Internal Notification — CogniCAD Backend Service</p>
+        <p>Internal Notification — JusCAD Backend Service</p>
       </div>
     </div>
   </div>

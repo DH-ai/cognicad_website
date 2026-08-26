@@ -16,7 +16,7 @@ export default async function HomePage() {
   return (
     <main className="relative z-10">
       <BackgroundPaths
-        title="CogniCAD"
+        title="JusCAD"
         subtitle="An AI-native cognitive layer for engineering. Today: an orchestrator across CAD, simulation, and analysis. Tomorrow: a foundation model that reasons over geometry, physics, and constraints."
         ctaLabel="Join the Beta"
         ctaHref="/beta"

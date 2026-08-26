@@ -65,8 +65,8 @@ export async function POST(request: Request) {
   
         // Notify team
         const confirmation_team= await resend.emails.send({
-          from: "CogniCAD <noreply@cognicad.xyz>",
-          to: "dhruvchaturvedi@cognicad.xyz",
+          from: "JusCAD <noreply@juscad.xyz>",
+          to: "dhruvchaturvedi@juscad.xyz",
           replyTo: body.email,
           subject: `Contact: ${body.type ?? "General Inquiry"} — ${body.name}`,
           html: teamNotificationTemplate("Contact Inquiry", {
@@ -79,7 +79,7 @@ export async function POST(request: Request) {
   
         // Confirmation to sender
         const confirmation_sender = await resend.emails.send({
-          from: "CogniCAD <noreply@cognicad.xyz>",
+          from: "JusCAD <noreply@juscad.xyz>",
           to: body.email,
           subject: "We received your message",
           html: contactConfirmationEmail(body.name),

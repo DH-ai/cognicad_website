@@ -1,4 +1,4 @@
-# Cognicad Website Checklist
+# Juscad Website Checklist
 
 ## Performance & Optimization
 - [ ] Optimize loading - website is slow because of all the heavy shaders

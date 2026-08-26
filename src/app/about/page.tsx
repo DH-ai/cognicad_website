@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 
 export const metadata: Metadata = {
-  title: "About — CogniCAD",
+  title: "About — JusCAD",
   description:
     "We’re building an AI-native engineering platform that transforms how complex physical systems are designed — and, over time, evolves toward a new class of foundation model for engineering itself.",
 };
@@ -12,10 +12,10 @@ const FOUNDERS = [
     name: "Dhruv Chaturvedi",
     role: "Co-founder",
     background:
-      "Researching on ai native cad archtectural black boxes like cad tokenizer, multimodal cad transformers and physics-aware latent space at the core of CogniCAD. Background in Aerospace Engineering and  applied ML for engineering systems.",
+      "Researching on ai native cad archtectural black boxes like cad tokenizer, multimodal cad transformers and physics-aware latent space at the core of JusCAD. Background in Aerospace Engineering and  applied ML for engineering systems.",
     initials: "DC",
     photo: "/founders/dhruv.jpeg", // Add photo path
-    email: "dhruvchaturvedi@cognicad.xyz",
+    email: "dhruvchaturvedi@juscad.xyz",
     socials: {
       twitter: "https://x.com/dhruvatafgc",
       linkedin: "https://www.linkedin.com/in/dhruv-chaturvedi-a01610283/",
@@ -26,10 +26,10 @@ const FOUNDERS = [
     name: "Shresth Keshari",
     role: "Co-founder",
     background:
-      "Co-founding CogniCAD with a focus on developing the physics-aware latent space, manufacturing and synthesis capabilities. Background in Computational Mechanics, Neural Networks and Machine Learning for engineering applications.",
+      "Co-founding JusCAD with a focus on developing the physics-aware latent space, manufacturing and synthesis capabilities. Background in Computational Mechanics, Neural Networks and Machine Learning for engineering applications.",
     initials: "SK",
     photo: "/founders/shresht.jpeg", // Add photo path
-    email: "shreshtkesari@cognicad.xyz",
+    email: "shreshtkesari@juscad.xyz",
     socials: {
       twitter: "https://twitter.com/SaffronShresht",
       linkedin: "https://www.linkedin.com/in/shresth-keshari-626b2a267/",
@@ -43,7 +43,7 @@ const PILLARS = [
     index: "01",
     title: "From passive tools to active collaborators",
     description:
-      "Traditional engineering tools execute commands but do not understand intent. CogniCAD acts as a domain-aware orchestration layer that converts natural-language objectives into structured engineering workflows across CAD, simulation, optimization, and validation systems.",
+      "Traditional engineering tools execute commands but do not understand intent. JusCAD acts as a domain-aware orchestration layer that converts natural-language objectives into structured engineering workflows across CAD, simulation, optimization, and validation systems.",
   },
   {
     index: "02",
@@ -61,7 +61,7 @@ const PILLARS = [
     index: "04",
     title: "A horizontal intelligence layer",
     description:
-      "MMechanical, aerospace, electronics, robotics, thermal systems, and beyond — our goal is to build a shared intelligence layer across engineering disciplines. If frontier AI models are becoming the productivity layer for knowledge work, CogniCAD aims to become the intelligence layer for engineering workflows — accelerating design cycles from weeks to hours.",
+      "MMechanical, aerospace, electronics, robotics, thermal systems, and beyond — our goal is to build a shared intelligence layer across engineering disciplines. If frontier AI models are becoming the productivity layer for knowledge work, JusCAD aims to become the intelligence layer for engineering workflows — accelerating design cycles from weeks to hours.",
   },
 ];
 
@@ -103,7 +103,7 @@ export default function AboutPage() {
 
             </p>
             <p className="text-[var(--color-accent)]/70 leading-relaxed text-base">
-              Rather than replacing existing engineering software, CogniCAD integrates with CAD, simulation, and analysis workflows as an intelligence layer that understands both engineering language and physical behavior.
+              Rather than replacing existing engineering software, JusCAD integrates with CAD, simulation, and analysis workflows as an intelligence layer that understands both engineering language and physical behavior.
 
             </p>
             

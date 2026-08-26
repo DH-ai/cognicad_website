@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 
 const NODES = [
-  { id: "center", label: "CogniCAD", x: 50, y: 48, r: 8, isCenter: true },
+  { id: "center", label: "JusCAD", x: 50, y: 48, r: 8, isCenter: true },
   { id: "cad", label: "CAD Kernel", x: 18, y: 28, r: 5 },
   { id: "reasoning", label: "Reasoning", x: 52, y: 14, r: 5 },
   { id: "sim", label: "Simulation", x: 82, y: 30, r: 5 },
@@ -108,7 +108,7 @@ function CognitionGraph({ visible }: { visible: boolean }) {
         </g>
       ))}
 
-      {/* Center node — CogniCAD */}
+      {/* Center node — JusCAD */}
       <motion.circle
         cx={50}
         cy={48}
@@ -152,7 +152,7 @@ function CognitionGraph({ visible }: { visible: boolean }) {
         animate={visible ? { opacity: 0.9 } : {}}
         transition={{ delay: 0.9, duration: 0.6 }}
       >
-        CogniCAD
+        JusCAD
       </motion.text>
 
       {/* Pulse ring */}

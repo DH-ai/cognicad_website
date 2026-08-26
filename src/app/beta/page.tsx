@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import BetaForm from "@/components/home/BetaForm";
 
 export const metadata: Metadata = {
-  title: "Beta Program — CogniCAD",
+  title: "Beta Program — JusCAD",
   description:
-    "Apply for early access to CogniCAD. Help shape the future of cognitive engineering systems.",
+    "Apply for early access to JusCAD. Help shape the future of cognitive engineering systems.",
 };
 
 export default function BetaPage() {
