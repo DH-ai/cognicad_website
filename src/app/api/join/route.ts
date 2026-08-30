@@ -63,8 +63,8 @@ export async function POST(request: Request) {
         const resend = new Resend(resendKey);
         // Notify team
         await resend.emails.send({
-          from: "JusCAD <noreply@juscad.xyz>",
-          to: "dhruvchaturvedi@juscad.xyz",
+          from: "JusCAD <noreply@juscad.com>",
+          to: "dhruvchaturvedi@juscad.com",
           replyTo: body.email,
           subject: `Job Application — ${body.role} — ${body.name}`,
           html: teamNotificationTemplate("Job Application", {
@@ -79,7 +79,7 @@ export async function POST(request: Request) {
   
         // Confirmation to applicant
         await resend.emails.send({
-          from: "JusCAD <noreply@juscad.xyz>",
+          from: "JusCAD <noreply@juscad.com >",
           to: body.email,
           subject: "We received your application",
           html: jobApplicationConfirmationEmail(body.name, body.role),

@@ -27,7 +27,7 @@ const CONTACT_INFO = [
   {
     icon: EnvelopeSimpleIcon,
     label: "Email",
-    lines: ["enquire@juscad.xyz", "dhruvchaturvedi@juscad.xyz"],
+    lines: ["enquire@juscad.com", "dhruvchaturvedi@juscad.com"],
   },
 ];
 
@@ -262,7 +262,7 @@ export default function ContactPage() {
 
                 {state === "error" && (
                   <p className="text-sm text-red-400/80">
-                    Submission failed. Please try again or email us at enquiry@juscad.xyz.
+                    Submission failed. Please try again or email us at enquiry@juscad.com.
                   </p>
                 )}
 

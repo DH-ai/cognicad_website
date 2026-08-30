@@ -324,7 +324,7 @@ export default function JoinUsPage() {
             Not a student? We occasionally hire exceptional full-time engineers
             directly on contracts basis. If you are deeply technical and want to work on a multi-decade
             problem, reach out at{" "}
-            <span className="text-[var(--color-glow)]">dhruvchaturvedi@juscad.xyz</span>.
+            <span className="text-[var(--color-glow)]">dhruvchaturvedi@juscad.com</span>.
           </p>
         </div>
       </div>
