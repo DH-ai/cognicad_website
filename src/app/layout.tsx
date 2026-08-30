@@ -53,7 +53,7 @@ export default function RootLayout({
       <body>
         <ThemeProvider>
           <SmoothScrollProvider>
-            <AccentBackground />
+            {/* <AccentBackground /> */}
             <Navbar />
             {children}
             <Footer />

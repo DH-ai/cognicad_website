@@ -21,7 +21,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="flex flex-col gap-6">
             <span className="font-display text-3xl md:text-4xl text-[var(--color-accent)] leading-none">
-              Cogni<span className="text-[var(--color-glow)]">C</span>AD
+              Jus<span className="text-[var(--color-glow)]">C</span>AD
             </span>
             <p className="text-sm text-[var(--color-muted)] leading-relaxed max-w-[38ch]">
               Building cognitive tools for engineering.

@@ -103,7 +103,7 @@ export default function FinalStatement() {
           transition={{ duration: 1.4, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
         >
           <h2 className="font-display text-[3.5rem] md:text-[6rem] lg:text-[8.5rem] text-[var(--color-accent)] leading-none select-none">
-            Cogni<span className="text-[var(--color-glow)]">C</span>AD
+            Jus<span className="text-[var(--color-glow)]">C</span>AD
           </h2>
         </motion.div>
 

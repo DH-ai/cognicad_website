@@ -85,7 +85,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <span className="font-display text-xl text-[var(--color-accent)] leading-none select-none">
-              Cogni<span className="text-[var(--color-glow)]">C</span>AD
+              Jus<span className="text-[var(--color-glow)]">C</span>AD
             </span>
           </Link>
 
