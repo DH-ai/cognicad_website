@@ -1,83 +1,85 @@
 "use client";
 
-import Link from "next/link";
-import React from "react";
-
 export type Sponsor = {
   name: string;
   phrase?: string;
   href?: string;
-//   eyebrow?: string;
   badge?: string;
 };
+
+const NAMES: Record<string, string> = {
+  dsse: "Desai Sethi School of Entrepreneurship",
+  groww: "Groww",
+  "iit-bombay": "IIT Bombay",
+};
+
+function Badge({ sponsor }: { sponsor: Sponsor }) {
+  const label = NAMES[sponsor.name] ?? sponsor.name;
+  const content = sponsor.badge ? (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={`/sponsors/${sponsor.badge}`}
+      alt={label}
+      className="sponsor-badge h-12 sm:h-14 md:h-16 w-auto max-w-[160px] object-contain"
+    />
+  ) : (
+    <span className="text-base text-muted">{label}</span>
+  );
+
+  if (sponsor.href) {
+    return (
+      <a
+        href={sponsor.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={label}
+        className="flex items-center justify-center px-2 py-2 rounded-[4px] opacity-80 hover:opacity-100 transition-opacity duration-[180ms]"
+      >
+        {content}
+      </a>
+    );
+  }
+  return <div className="flex items-center justify-center px-2 py-2 opacity-80">{content}</div>;
+}
 
 export default function SponsorTicker({ sponsors }: { sponsors: Sponsor[] }) {
   if (!sponsors || sponsors.length === 0) return null;
 
   const phrase = sponsors[0].phrase || "Trusted by";
 
-  // Build repeated list for smooth infinite marquee
-  const nodes = sponsors.map((s, i) => (
-    <div key={`s-${i}`} className="flex items-center mx-6">
-      {s.href ? (
-        <a href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.name} className="flex items-center justify-center px-2 py-1">
-          {s.badge ? (
-            <img
-              src={`/sponsors/${s.badge}`}
-              alt={s.name}
-              className="h-20 sm:h-24 md:h-28 lg:h-32 w-auto max-w-[180px] object-contain opacity-90"
-            />
-          ) : (
-            <span className="text-[var(--color-muted)]">{s.name}</span>
-          )}
-        </a>
-      ) : (
-        s.badge ? (
-          <img
-            src={`/sponsors/${s.badge}`}
-            alt={s.name}
-            className="h-20 sm:h-24 md:h-28 lg:h-32 w-auto max-w-[180px] object-contain opacity-90"
-          />
-        ) : (
-          <span className="text-[var(--color-muted)]">{s.name}</span>
-        )
-      )}
-    </div>
-  ));
+  const nodes = (suffix: string, hidden = false) =>
+    sponsors.map((s, i) => (
+      <div
+        key={`${suffix}-${i}`}
+        className="flex items-center mx-8"
+        aria-hidden={hidden || undefined}
+      >
+        <Badge sponsor={s} />
+      </div>
+    ));
 
   return (
-    <div className="mt-8 max-w-4xl mx-auto">
-      <div className="text-sm uppercase tracking-widest text-[var(--color-muted)] mb-3 text-center">
-        {phrase}
-      </div>
+    <div className="border-t border-line pt-8">
+      <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-12">
+        <p className="type-tech text-muted shrink-0">{phrase}</p>
 
-      <div className="overflow-hidden relative">
-        <div
-          className="whitespace-nowrap flex items-center text-base sm:text-lg md:text-xl font-medium"
-          style={{
-            WebkitMaskImage: 'linear-gradient(90deg, transparent, black 6%, black 94%, transparent)',
-          }}
-        >
+        <div className="marquee relative overflow-hidden flex-1">
           <div
-            className="marquee flex items-center"
+            className="whitespace-nowrap"
             style={{
-              display: 'inline-flex',
-              animation: `marquee 18s linear infinite`,
-              gap: '1.5rem',
+              WebkitMaskImage:
+                "linear-gradient(90deg, transparent, black 8%, black 92%, transparent)",
+              maskImage:
+                "linear-gradient(90deg, transparent, black 8%, black 92%, transparent)",
             }}
           >
-            {nodes}
-            {nodes}
+            <div className="marquee-track">
+              {nodes("a")}
+              {nodes("b", true)}
+            </div>
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes marquee {
-          0% { transform: translateX(0%); }
-          100% { transform: translateX(-50%); }
-        }
-      `}</style>
     </div>
   );
 }

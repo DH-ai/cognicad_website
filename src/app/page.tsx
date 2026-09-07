@@ -18,7 +18,7 @@ export default async function HomePage() {
       <BackgroundPaths
         title="JusCAD"
         subtitle="An AI-native cognitive layer for engineering. Today: an orchestrator across CAD, simulation, and analysis. Tomorrow: a foundation model that reasons over geometry, physics, and constraints."
-        ctaLabel="Join the Beta"
+        ctaLabel="Join the beta"
         ctaHref="/beta"
         sponsors={sponsors}
       />

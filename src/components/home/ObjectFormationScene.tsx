@@ -3,84 +3,111 @@
 import dynamic from "next/dynamic";
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import { useTheme } from "@/components/providers/ThemeProvider";
+import type { GeometryPalette } from "@/components/three/AerospaceGeometry";
 
 const AerospaceGeometry = dynamic(
   () => import("@/components/three/AerospaceGeometry"),
-  { ssr: false, loading: () => <div className="w-full h-full bg-[var(--color-void)]" /> }
+  { ssr: false, loading: () => <div className="w-full h-full" /> }
 );
+
+const EASE = [0.25, 1, 0.5, 1] as [number, number, number, number];
+
+const DAY_PALETTE: GeometryPalette = {
+  core: "#101619",
+  ringPrimary: "#6590B6",
+  ringSecondary: "#34473F",
+  ringTertiary: "#AFC4BA",
+  node: "#245CF5",
+  grid: "#CCD4CD",
+};
+
+const NIGHT_PALETTE: GeometryPalette = {
+  core: "#E9EFEC",
+  ringPrimary: "#7FA9D1",
+  ringSecondary: "#839A91",
+  ringTertiary: "#3A4A47",
+  node: "#6E9DFF",
+  grid: "#2A3735",
+};
 
 export default function ObjectFormationScene() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { amount: 0.15, once: true });
+  const { theme } = useTheme();
 
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[100dvh] flex items-center overflow-hidden"
-      style={{ background: "#080C12" }}
+      className="relative flex items-center overflow-hidden bg-canvas border-t border-line"
     >
-      {/* 3D canvas — full section background */}
-      <div className="absolute inset-0">
-        <AerospaceGeometry />
-      </div>
+      <div className="container-jc py-24 md:py-32">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-16 lg:gap-24 items-center">
+          <div className="max-w-[34rem]">
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, ease: EASE }}
+              className="eyebrow mb-8"
+            >
+              <span>03</span>
+              <span>Object formation</span>
+            </motion.p>
 
-      {/* Overlay gradients — always dark, keeps text readable */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#080C12]/92 via-[#080C12]/45 to-transparent pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#080C12]/75 via-transparent to-[#080C12]/35 pointer-events-none" />
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, delay: 0.08, ease: EASE }}
+              className="type-section text-fg mb-8"
+            >
+              A physics-aware
+              <br />
+              latent space.
+            </motion.h2>
 
-      {/* Text content */}
-      <div className="relative z-10 max-w-[1400px] mx-auto w-full px-6 md:px-16 lg:px-24">
-        <div className="max-w-xl">
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, delay: 0.18, ease: EASE }}
+              className="type-body text-muted measure"
+            >
+              Most generative design produces plausible shapes without physical
+              grounding. We want to represent geometry, constraints, materials,
+              and governing equations as one interconnected entity — designs
+              that can be sampled, optimized, and reasoned about with equal
+              fidelity.
+            </motion.p>
+          </div>
+
+          <motion.figure
+            initial={{ opacity: 0, y: 16 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[11px] tracking-[0.25em] uppercase text-[#58A6FF]/60 mb-8"
+            transition={{ duration: 0.8, delay: 0.15, ease: EASE }}
+            className="panel relative w-full overflow-hidden"
           >
-            Object Formation
-          </motion.p>
-
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{
-              duration: 1,
-              delay: 0.12,
-              ease: [0.16, 1, 0.3, 1],
-            }}
-            className="text-5xl md:text-7xl tracking-tighter leading-[0.93] text-[#E6EDF3] font-light mb-10"
-          >
-            A physics-aware
-            <br />
-            latent space.
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{
-              duration: 0.9,
-              delay: 0.28,
-              ease: [0.16, 1, 0.3, 1],
-            }}
-            className="text-[#8B949E] leading-relaxed text-base max-w-[42ch]"
-          >
-            Most generative design produces plausible shapes without physical
-            grounding. We want to represent geometry, constraints, materials, and
-            governing equations as one interconnected entity — designs that can be sampled, optimized, and reasoned about with equal fidelity.
-            system can reason about, not just sample from.
-          </motion.p>
+            <figcaption className="type-tech text-muted flex items-center justify-between px-5 md:px-6 pt-5">
+              <span>Fig. 03</span>
+              <span>Latent geometry</span>
+            </figcaption>
+            <div className="relative aspect-[4/3] w-full">
+              {isInView && (
+                <div className="absolute inset-0">
+                  <AerospaceGeometry
+                    palette={theme === "night" ? NIGHT_PALETTE : DAY_PALETTE}
+                  />
+                </div>
+              )}
+            </div>
+            <div
+              className="type-tech-sm text-muted flex items-center gap-6 px-5 md:px-6 pb-5 border-t border-line pt-4"
+              aria-hidden="true"
+            >
+              <span>X 1.4032</span>
+              <span>Y 0.8017</span>
+              <span>Z 2.3841</span>
+            </div>
+          </motion.figure>
         </div>
-      </div>
-
-      {/* Corner coordinate labels — engineering aesthetic */}
-      <div
-        className="absolute bottom-10 right-8 font-[family-name:var(--font-geist-mono)] text-[9px] text-[var(--color-muted)]/25 tracking-widest hidden md:block"
-        aria-hidden="true"
-      >
-        <div>X: 1.4032</div>
-        <div>Y: 0.8017</div>
-        <div>Z: 2.3841</div>
       </div>
     </section>
   );
