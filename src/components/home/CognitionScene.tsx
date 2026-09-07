@@ -5,13 +5,12 @@ import { motion, useInView } from "framer-motion";
 
 const NODES = [
   { id: "center", label: "JusCAD", x: 50, y: 48, r: 8, isCenter: true },
-  { id: "cad", label: "CAD Kernel", x: 18, y: 28, r: 5 },
-  { id: "reasoning", label: "Reasoning", x: 52, y: 14, r: 5 },
-  { id: "sim", label: "Simulation", x: 82, y: 30, r: 5 },
-  // { id: "knowledge", label: "Knowledge", x: 14, y: 68, r: 5 },
-  { id: "optim", label: "Optimization", x: 25, y: 67, r: 5 },
-  { id: "analysis", label: "Analysis", x: 84, y: 66, r: 5 },
-  { id: "dfm", label: "DFM", x: 55, y: 78, r: 5 },
+  { id: "cad", label: "CAD kernel", x: 24, y: 28, r: 5 },
+  { id: "reasoning", label: "Reasoning", x: 52, y: 16, r: 5 },
+  { id: "sim", label: "Simulation", x: 76, y: 30, r: 5 },
+  { id: "optim", label: "Optimization", x: 28, y: 68, r: 5 },
+  { id: "analysis", label: "Analysis", x: 78, y: 67, r: 5 },
+  { id: "dfm", label: "DFM", x: 55, y: 80, r: 5 },
 ];
 
 const EDGES = [
@@ -23,14 +22,14 @@ const EDGES = [
   ["cad", "optim"],
   ["analysis", "dfm"],
   ["dfm", "optim"],
-
   ["center", "analysis"],
   ["reasoning", "cad"],
   ["reasoning", "sim"],
   ["sim", "analysis"],
-  // ["knowledge", "optim"],
-  // ["cad", "knowledge"],
 ];
+
+const EASE = [0.25, 1, 0.5, 1] as [number, number, number, number];
+const EASE_CSS = "cubic-bezier(0.25, 1, 0.5, 1)";
 
 function getNode(id: string) {
   return NODES.find((n) => n.id === id)!;
@@ -42,130 +41,122 @@ function CognitionGraph({ visible }: { visible: boolean }) {
       viewBox="0 0 100 100"
       className="w-full h-full"
       style={{ overflow: "visible" }}
+      role="img"
+      aria-label="Diagram: JusCAD at the centre, connected to CAD kernel, reasoning, simulation, optimization, analysis and DFM agents."
     >
-      {/* Edges */}
       {EDGES.map(([a, b], i) => {
         const na = getNode(a);
         const nb = getNode(b);
         const len = Math.sqrt((nb.x - na.x) ** 2 + (nb.y - na.y) ** 2);
+        const primary = a === "center" || b === "center";
         return (
-          <motion.line
+          <line
             key={`${a}-${b}`}
             x1={na.x}
             y1={na.y}
             x2={nb.x}
             y2={nb.y}
-            stroke={a === "center" || b === "center" ? "var(--color-glow)" : "var(--color-muted)"}
-            strokeWidth={a === "center" || b === "center" ? 0.25 : 0.15}
-            strokeDasharray={len}
-            strokeDashoffset={visible ? 0 : len}
-            opacity={a === "center" || b === "center" ? 0.7 : 0.35}
-            style={{ transition: `stroke-dashoffset 1s ease ${0.4 + i * 0.08}s` }}
+            stroke={primary ? "var(--accent)" : "var(--draft-strong)"}
+            strokeWidth={primary ? 0.3 : 0.2}
+            strokeDasharray={primary ? undefined : "0.8 0.8"}
+            style={{
+              strokeDasharray: primary ? len : undefined,
+              strokeDashoffset: primary ? (visible ? 0 : len) : undefined,
+              opacity: visible ? 1 : 0,
+              transition: `stroke-dashoffset 0.8s ${EASE_CSS} ${0.3 + i * 0.06}s, opacity 0.4s ease ${0.3 + i * 0.06}s`,
+            }}
           />
         );
       })}
 
-      {/* Nodes */}
       {NODES.filter((n) => n.id !== "center").map((node, i) => (
         <g key={node.id}>
           <motion.circle
             cx={node.x}
             cy={node.y}
             r={node.r}
-            fill="none"
-            stroke="var(--color-glow)"
+            fill="var(--surface)"
+            stroke="var(--accent)"
             strokeWidth="0.4"
-            initial={{ opacity: 0, scale: 0 }}
-            animate={visible ? { opacity: 0.85, scale: 1 } : {}}
-            transition={{
-              delay: 0.3 + i * 0.12,
-              duration: 0.6,
-              ease: [0.16, 1, 0.3, 1],
-            }}
+            initial={{ opacity: 0, scale: 0.6 }}
+            animate={visible ? { opacity: 1, scale: 1 } : {}}
+            transition={{ delay: 0.3 + i * 0.1, duration: 0.5, ease: EASE }}
+            style={{ transformOrigin: `${node.x}px ${node.y}px` }}
           />
           <motion.circle
             cx={node.x}
             cy={node.y}
-            r={node.r * 0.4}
-            fill="var(--color-glow)"
+            r={1.4}
+            fill="var(--fg)"
             initial={{ opacity: 0 }}
-            animate={visible ? { opacity: 0.8 } : {}}
-            transition={{ delay: 0.5 + i * 0.12, duration: 0.4 }}
+            animate={visible ? { opacity: 1 } : {}}
+            transition={{ delay: 0.5 + i * 0.1, duration: 0.3 }}
           />
           <motion.text
-            x={node.x + (node.x > 50 ? 7 : -7)}
-            y={node.y + 1}
-            fontSize="3.5"
-            fill="var(--color-muted)"
+            x={node.x + (node.x > 50 ? 6.5 : -6.5)}
+            y={node.y + 1.1}
+            fontSize="3.2"
+            fill="var(--fg-muted)"
             textAnchor={node.x > 50 ? "start" : "end"}
-            fontFamily="var(--font-geist-sans)"
+            fontFamily="var(--font-mono)"
             initial={{ opacity: 0 }}
-            animate={visible ? { opacity: 0.7 } : {}}
-            transition={{ delay: 0.7 + i * 0.1, duration: 0.5 }}
+            animate={visible ? { opacity: 1 } : {}}
+            transition={{ delay: 0.6 + i * 0.1, duration: 0.4 }}
           >
             {node.label}
           </motion.text>
         </g>
       ))}
 
-      {/* Center node — JusCAD */}
+      {/* Centre node */}
       <motion.circle
         cx={50}
         cy={48}
         r={9}
-        fill="none"
-        stroke="#5DA9FF"
+        fill="var(--accent-soft)"
+        stroke="var(--accent)"
         strokeWidth="0.5"
-        opacity="0.3"
-        initial={{ scale: 0 }}
-        animate={visible ? { scale: [0, 1.2, 1] } : {}}
-        transition={{ delay: 0.1, duration: 0.8, ease: "backOut" }}
+        initial={{ scale: 0.6, opacity: 0 }}
+        animate={visible ? { scale: 1, opacity: 1 } : {}}
+        transition={{ delay: 0.1, duration: 0.6, ease: EASE }}
+        style={{ transformOrigin: "50px 48px" }}
       />
       <motion.circle
         cx={50}
         cy={48}
-        r={5}
-        fill="#5DA9FF"
-        opacity="0.12"
-        initial={{ scale: 0 }}
-        animate={visible ? { scale: 1 } : {}}
-        transition={{ delay: 0.2, duration: 0.5 }}
-      />
-      <motion.circle
-        cx={50}
-        cy={48}
-        r={2.5}
-        fill="#5DA9FF"
+        r={2.6}
+        fill="var(--fg)"
         initial={{ opacity: 0 }}
-        animate={visible ? { opacity: [0, 1, 0.7] } : {}}
-        transition={{ delay: 0.3, duration: 0.6 }}
+        animate={visible ? { opacity: 1 } : {}}
+        transition={{ delay: 0.3, duration: 0.4 }}
       />
       <motion.text
         x={50}
-        y={60}
-        fontSize="3.5"
-        fill="var(--color-accent)"
+        y={61.5}
+        fontSize="3.4"
+        fill="var(--fg)"
         textAnchor="middle"
-        fontFamily="var(--font-geist-sans)"
-        letterSpacing="0.5"
+        fontFamily="var(--font-sans)"
+        fontWeight="550"
         initial={{ opacity: 0 }}
-        animate={visible ? { opacity: 0.9 } : {}}
-        transition={{ delay: 0.9, duration: 0.6 }}
+        animate={visible ? { opacity: 1 } : {}}
+        transition={{ delay: 0.8, duration: 0.5 }}
       >
         JusCAD
       </motion.text>
 
-      {/* Pulse ring */}
+      {/* Single settle ring on reveal — a meaningful moment, not a perpetual pulse */}
       {visible && (
         <motion.circle
           cx={50}
           cy={48}
           r={9}
           fill="none"
-          stroke="#5DA9FF"
+          stroke="var(--accent)"
           strokeWidth="0.3"
-          animate={{ r: [9, 16], opacity: [0.4, 0] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: "easeOut", delay: 1.5 }}
+          initial={{ r: 9, opacity: 0.6 }}
+          animate={{ r: 15, opacity: 0 }}
+          transition={{ duration: 1.2, ease: "easeOut", delay: 0.9 }}
         />
       )}
     </svg>
@@ -179,69 +170,64 @@ export default function CognitionScene() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[100dvh] flex items-center bg-transparent overflow-hidden"
+      className="relative flex items-center bg-canvas overflow-hidden border-t border-line"
     >
-      <div className="max-w-[1400px] mx-auto w-full px-6 md:px-16 lg:px-24">
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_1.1fr] gap-16 md:gap-24 items-center">
-          {/* Text — left */}
-          <div>
+      <div className="container-jc py-24 md:py-32">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-16 lg:gap-24 items-center">
+          <div className="max-w-[36rem]">
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="text-[11px] tracking-[0.25em] uppercase text-[var(--color-glow)]/60 mb-8"
+              transition={{ duration: 0.6, ease: EASE }}
+              className="eyebrow mb-8"
             >
-              Towards Cognition
+              <span>02</span>
+              <span>Towards cognition</span>
             </motion.p>
 
             <motion.h2
-              initial={{ opacity: 0, y: 28 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{
-                duration: 1,
-                delay: 0.1,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-              className="text-4xl md:text-5xl lg:text-6xl tracking-tighter leading-[0.94] text-[var(--color-accent)] font-light mb-10"
+              transition={{ duration: 0.7, delay: 0.08, ease: EASE }}
+              className="type-section text-fg mb-8"
             >
-              A system that will reason across
-              <span className="text-[var(--color-glow)]"> geometry and physics.</span>
+              A system that will reason across{" "}
+              <span className="text-blue">geometry and physics.</span>
             </motion.h2>
 
             <motion.div
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{
-                duration: 0.9,
-                delay: 0.25,
-                ease: [0.16, 1, 0.3, 1],
-              }}
+              transition={{ duration: 0.7, delay: 0.18, ease: EASE }}
+              className="flex flex-col gap-4"
             >
-              <p className="text-lg text-[var(--color-muted)] font-light leading-relaxed max-w-[44ch]">
+              <p className="type-lead text-muted measure-narrow">
                 Not autocomplete for commands.
                 <br />
                 Not a chatbot bolted onto a toolbar.
               </p>
-              <p className="text-lg text-[var(--color-accent)]/70 font-light leading-relaxed mt-4 max-w-[44ch]">
-                Domain-specific agents for geometry, simulation, optimization, and validation coordinated by a context-aware orchestrator across iterative design cycles.
-
+              <p className="type-body text-fg/85 measure">
+                Domain-specific agents for geometry, simulation, optimization,
+                and validation coordinated by a context-aware orchestrator
+                across iterative design cycles.
               </p>
             </motion.div>
           </div>
 
-          {/* Graph — right */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.92 }}
-            animate={isInView ? { opacity: 1, scale: 1 } : {}}
-            transition={{
-              duration: 1.2,
-              delay: 0.2,
-              ease: [0.16, 1, 0.3, 1],
-            }}
-            className="aspect-square max-w-[480px] md:max-w-none w-full"
+          <motion.figure
+            initial={{ opacity: 0, y: 16 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.15, ease: EASE }}
+            className="panel drawing-grid relative w-full max-w-[560px] lg:max-w-none mx-auto p-6 md:p-10"
           >
-            <CognitionGraph visible={isInView} />
-          </motion.div>
+            <figcaption className="type-tech text-muted flex items-center justify-between mb-4">
+              <span>Fig. 02</span>
+              <span>Orchestration graph</span>
+            </figcaption>
+            <div className="aspect-square w-full">
+              <CognitionGraph visible={isInView} />
+            </div>
+          </motion.figure>
         </div>
       </div>
     </section>

@@ -2,21 +2,40 @@
 
 import { useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Stars } from "@react-three/drei";
 import * as THREE from "three";
+
+export type GeometryPalette = {
+  core: string;
+  ringPrimary: string;
+  ringSecondary: string;
+  ringTertiary: string;
+  node: string;
+  grid: string;
+};
+
+const DEFAULT_PALETTE: GeometryPalette = {
+  core: "#101619",
+  ringPrimary: "#6590B6",
+  ringSecondary: "#34473F",
+  ringTertiary: "#AFC4BA",
+  node: "#6590B6",
+  grid: "#CCD4CD",
+};
 
 function TurbineRing({
   radius,
   tubeRadius,
   rotationSpeed,
   phase,
-  color = "#D9D9D9",
+  color,
+  opacity = 0.9,
 }: {
   radius: number;
   tubeRadius: number;
   rotationSpeed: number;
   phase: number;
-  color?: string;
+  color: string;
+  opacity?: number;
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
 
@@ -34,12 +53,12 @@ function TurbineRing({
   return (
     <mesh ref={meshRef}>
       <torusGeometry args={[radius, tubeRadius, 4, 64]} />
-      <meshBasicMaterial color={color} wireframe />
+      <meshBasicMaterial color={color} wireframe transparent opacity={opacity} />
     </mesh>
   );
 }
 
-function CoreGeometry() {
+function CoreGeometry({ color }: { color: string }) {
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame((state) => {
@@ -53,12 +72,12 @@ function CoreGeometry() {
   return (
     <mesh ref={meshRef}>
       <torusKnotGeometry args={[1.4, 0.38, 180, 24, 2, 3]} />
-      <meshBasicMaterial color="#D9D9D9" wireframe opacity={0.85} transparent />
+      <meshBasicMaterial color={color} wireframe opacity={0.42} transparent />
     </mesh>
   );
 }
 
-function GlowPoint({
+function NodePoint({
   position,
   color,
   size,
@@ -67,25 +86,15 @@ function GlowPoint({
   color: string;
   size: number;
 }) {
-  const meshRef = useRef<THREE.Mesh>(null);
-
-  useFrame((state) => {
-    if (meshRef.current) {
-      const pulse =
-        0.8 + Math.sin(state.clock.elapsedTime * 2 + position[0]) * 0.2;
-      meshRef.current.scale.setScalar(pulse);
-    }
-  });
-
   return (
-    <mesh ref={meshRef} position={position}>
+    <mesh position={position}>
       <sphereGeometry args={[size, 8, 8]} />
       <meshBasicMaterial color={color} />
     </mesh>
   );
 }
 
-function GridPlane() {
+function GridPlane({ color }: { color: string }) {
   const geometry = useMemo(() => {
     const geo = new THREE.BufferGeometry();
     const vertices: number[] = [];
@@ -111,61 +120,59 @@ function GridPlane() {
 
   return (
     <lineSegments geometry={geometry}>
-      <lineBasicMaterial color="#5DA9FF" opacity={0.07} transparent />
+      <lineBasicMaterial color={color} opacity={0.6} transparent />
     </lineSegments>
   );
 }
 
-function Scene() {
+function Scene({ palette }: { palette: GeometryPalette }) {
   return (
     <>
-      <CoreGeometry />
+      <CoreGeometry color={palette.core} />
       <TurbineRing
         radius={2.8}
         tubeRadius={0.015}
         rotationSpeed={0.06}
         phase={0}
-        color="#5DA9FF"
+        color={palette.ringPrimary}
       />
       <TurbineRing
         radius={3.5}
         tubeRadius={0.01}
         rotationSpeed={0.04}
         phase={1.2}
-        color="#D9D9D9"
+        color={palette.ringSecondary}
+        opacity={0.7}
       />
       <TurbineRing
         radius={4.2}
         tubeRadius={0.008}
         rotationSpeed={0.03}
         phase={2.4}
-        color="#8B949E"
+        color={palette.ringTertiary}
+        opacity={0.7}
       />
-      <GlowPoint position={[2.1, 0.8, 0.5]} color="#5DA9FF" size={0.06} />
-      <GlowPoint position={[-1.8, -0.6, 1.2]} color="#5DA9FF" size={0.04} />
-      <GlowPoint position={[0.5, 2.2, -0.8]} color="#D9D9D9" size={0.05} />
-      <GridPlane />
-      <Stars
-        radius={25}
-        depth={30}
-        count={600}
-        factor={1.5}
-        saturation={0}
-        fade
-        speed={0.3}
-      />
+      <NodePoint position={[2.1, 0.8, 0.5]} color={palette.node} size={0.06} />
+      <NodePoint position={[-1.8, -0.6, 1.2]} color={palette.node} size={0.04} />
+      <NodePoint position={[0.5, 2.2, -0.8]} color={palette.node} size={0.05} />
+      <GridPlane color={palette.grid} />
     </>
   );
 }
 
-export default function AerospaceGeometry() {
+export default function AerospaceGeometry({
+  palette = DEFAULT_PALETTE,
+}: {
+  palette?: GeometryPalette;
+}) {
   return (
     <Canvas
-      camera={{ position: [0, 1.5, 7], fov: 42 }}
+      camera={{ position: [0, 1.4, 8.4], fov: 42 }}
       style={{ background: "transparent" }}
       gl={{ antialias: true, alpha: true }}
+      dpr={[1, 1.5]}
     >
-      <Scene />
+      <Scene palette={palette} />
     </Canvas>
   );
 }

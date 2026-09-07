@@ -45,7 +45,7 @@ export default function AccentBackground() {
   const tintPercent = isHome ? scrollTint : constantTint;
 
   const backdropFilter = useMotionTemplate`blur(${blurPx}px) saturate(150%)`;
-  const tintBg = useMotionTemplate`color-mix(in srgb, var(--color-void) ${tintPercent}%, transparent)`;
+  const tintBg = useMotionTemplate`color-mix(in srgb, var(--canvas) ${tintPercent}%, transparent)`;
 
   return (
     <div

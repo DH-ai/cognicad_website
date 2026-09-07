@@ -18,32 +18,41 @@ const ROLE_OPTIONS = [
   "Other",
 ];
 
+const EASE = [0.25, 1, 0.5, 1] as [number, number, number, number];
+
 function Field({
   id,
   label,
   helper,
   error,
+  optional,
   children,
 }: {
   id: string;
   label: string;
   helper?: string;
   error?: string;
+  optional?: boolean;
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-2">
-      <label
-        htmlFor={id}
-        className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/70"
-      >
+    <div className="field">
+      <label htmlFor={id} className="field-label">
         {label}
+        {optional && <span className="field-label-optional">Optional</span>}
       </label>
       {children}
       {helper && !error && (
-        <span className="text-[11px] text-[var(--color-muted)]/40">{helper}</span>
+        <span id={`${id}-help`} className="field-help">
+          {helper}
+        </span>
       )}
-      {error && <span className="text-[11px] text-red-400/80">{error}</span>}
+      {error && (
+        <span id={`${id}-error`} className="field-error" role="alert">
+          <span aria-hidden="true">✕</span>
+          {error}
+        </span>
+      )}
     </div>
   );
 }
@@ -72,6 +81,7 @@ export default function BetaForm() {
       errs.email = "Valid email is required.";
     return errs;
   }
+
   async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     const errs = validate();
@@ -98,47 +108,34 @@ export default function BetaForm() {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[100dvh] flex items-center bg-transparent overflow-hidden"
+      className="relative flex items-center bg-canvas overflow-hidden border-t border-line"
       id="beta"
     >
-      {/* Subtle grid */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.025]" aria-hidden="true">
-        <svg className="w-full h-full">
-          <defs>
-            <pattern id="beta-grid" width="60" height="60" patternUnits="userSpaceOnUse">
-              <path d="M 60 0 L 0 0 0 60" fill="none" stroke="var(--color-accent)" strokeWidth="0.4" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#beta-grid)" />
-        </svg>
-      </div>
-
-      <div className="relative z-10 max-w-[1400px] mx-auto w-full px-6 md:px-16 lg:px-24 py-28">
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_1.4fr] gap-20 items-start">
-          {/* Left — copy */}
-          <div>
+      <div className="container-jc py-24 md:py-32">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-16 lg:gap-24 items-start">
+          <div className="lg:sticky lg:top-32 max-w-[32rem]">
             <motion.p
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7 }}
-              className="text-[11px] tracking-[0.25em] uppercase text-[var(--color-glow)]/60 mb-8"
+              transition={{ duration: 0.6, ease: EASE }}
+              className="eyebrow mb-8"
             >
-              Beta Program
+              <span>04</span>
+              <span>Beta program</span>
             </motion.p>
             <motion.h2
-              initial={{ opacity: 0, y: 24 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="text-4xl md:text-5xl tracking-tighter leading-[0.95] text-[var(--color-accent)] font-light mb-8"
+              transition={{ duration: 0.7, delay: 0.08, ease: EASE }}
+              className="type-section text-fg mb-8"
             >
-              Compress design cycles
-              from weeks to hours.
+              Compress design cycles from weeks to hours.
             </motion.h2>
             <motion.p
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.9, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
-              className="text-[var(--color-muted)] leading-relaxed max-w-[38ch] text-base"
+              transition={{ duration: 0.7, delay: 0.18, ease: EASE }}
+              className="type-body text-muted measure-narrow"
             >
               We integrate into the CAD, simulation, and analysis tools you
               already use. Early access is limited and curated — for engineers
@@ -146,34 +143,40 @@ export default function BetaForm() {
             </motion.p>
           </div>
 
-          {/* Right — form */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 1, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.7, delay: 0.15, ease: EASE }}
           >
             {formState === "success" ? (
-              <div className="py-16 border border-[var(--color-glow)]/20 px-10">
-                <p className="text-[11px] tracking-[0.2em] uppercase text-[var(--color-glow)]/70 mb-4">
+              <div className="panel p-8 md:p-12" role="status">
+                <p className="status status-ok mb-6">
+                  <span aria-hidden="true">✓</span>
                   Application received
                 </p>
-                <p className="text-2xl tracking-tight text-[var(--color-accent)] font-light mb-4">
-                  We will be in touch.
-                </p>
-                <p className="text-sm text-[var(--color-muted)] leading-relaxed max-w-[40ch]">
+                <p className="type-small text-fg mb-4">We will be in touch.</p>
+                <p className="type-body text-muted measure-narrow">
                   Your application is under review. We are building a small,
                   focused cohort of engineers for the first release.
                 </p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <form
+                onSubmit={handleSubmit}
+                noValidate
+                className="panel p-6 md:p-10 flex flex-col gap-8"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Field id="name" label="Name" error={errors.name}>
                     <input
                       id="name"
-                      className="cad-input"
+                      name="name"
+                      autoComplete="name"
+                      className="field-input"
                       placeholder="Elara Vasquez"
                       value={fields.name}
+                      aria-invalid={errors.name ? true : undefined}
+                      aria-describedby={errors.name ? "name-error" : undefined}
                       onChange={(e) =>
                         setFields((f) => ({ ...f, name: e.target.value }))
                       }
@@ -182,10 +185,14 @@ export default function BetaForm() {
                   <Field id="email" label="Email" error={errors.email}>
                     <input
                       id="email"
+                      name="email"
                       type="email"
-                      className="cad-input"
+                      autoComplete="email"
+                      className="field-input"
                       placeholder="elara@structures.io"
                       value={fields.email}
+                      aria-invalid={errors.email ? true : undefined}
+                      aria-describedby={errors.email ? "email-error" : undefined}
                       onChange={(e) =>
                         setFields((f) => ({ ...f, email: e.target.value }))
                       }
@@ -193,11 +200,12 @@ export default function BetaForm() {
                   </Field>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <Field id="role" label="Role" error={errors.role}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Field id="role" label="Role" error={errors.role} optional>
                     <select
                       id="role"
-                      className="cad-input"
+                      name="role"
+                      className="field-input"
                       value={fields.role}
                       onChange={(e) =>
                         setFields((f) => ({ ...f, role: e.target.value }))
@@ -218,28 +226,35 @@ export default function BetaForm() {
                     label="Organization"
                     helper="Company, lab, or institution"
                     error={errors.organization}
+                    optional
                   >
                     <input
                       id="organization"
-                      className="cad-input"
+                      name="organization"
+                      autoComplete="organization"
+                      className="field-input"
                       placeholder="Orbital Systems Ltd."
                       value={fields.organization}
+                      aria-describedby="organization-help"
                       onChange={(e) =>
                         setFields((f) => ({ ...f, organization: e.target.value }))
                       }
                     />
                   </Field>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Field
                     id="operating_system"
-                    label="Operating System"
+                    label="Operating system"
                     error={errors.operating_system}
+                    optional
                   >
                     <input
                       id="operating_system"
-                      className="cad-input"
-                      placeholder="Windows, macOS, Linux..."
+                      name="operating_system"
+                      className="field-input"
+                      placeholder="Windows, macOS, Linux…"
                       value={fields.operating_system}
                       onChange={(e) =>
                         setFields((f) => ({ ...f, operating_system: e.target.value }))
@@ -248,13 +263,15 @@ export default function BetaForm() {
                   </Field>
                   <Field
                     id="feature_requests"
-                    label="Feature Requests"
-                    error={errors.features_requests}
+                    label="Feature requests"
+                    error={errors.feature_requests}
+                    optional
                   >
                     <input
                       id="feature_requests"
-                      className="cad-input"
-                      placeholder="What features would you like to see?"
+                      name="feature_requests"
+                      className="field-input"
+                      placeholder="What would you like to see?"
                       value={fields.feature_requests}
                       onChange={(e) =>
                         setFields((f) => ({ ...f, feature_requests: e.target.value }))
@@ -262,15 +279,18 @@ export default function BetaForm() {
                     />
                   </Field>
                 </div>
+
                 <Field
                   id="whatYouBuild"
-                  label="What type of projects you work on?"
+                  label="What type of projects do you work on?"
                   error={errors.whatYouBuild}
+                  optional
                 >
                   <textarea
                     id="whatYouBuild"
-                    className="cad-input"
-                    placeholder="Aerospace structures, turbomachinery, satellite components..."
+                    name="whatYouBuild"
+                    className="field-input"
+                    placeholder="Aerospace structures, turbomachinery, satellite components…"
                     value={fields.whatYouBuild}
                     onChange={(e) =>
                       setFields((f) => ({ ...f, whatYouBuild: e.target.value }))
@@ -281,12 +301,15 @@ export default function BetaForm() {
                 <Field
                   id="frustration"
                   label="Biggest workflow frustration?"
+                  helper="What is the biggest pain point you feel could be automated? High effort, low value."
                   error={errors.frustration}
+                  optional
                 >
                   <textarea
                     id="frustration"
-                    className="cad-input"
-                    placeholder="What is the biggest pain point which you feel can be automated? High effort Low value"
+                    name="frustration"
+                    className="field-input"
+                    aria-describedby="frustration-help"
                     value={fields.frustration}
                     onChange={(e) =>
                       setFields((f) => ({ ...f, frustration: e.target.value }))
@@ -295,18 +318,21 @@ export default function BetaForm() {
                 </Field>
 
                 {formState === "error" && (
-                  <p className="text-sm text-red-400/80">
+                  <p className="status status-error" role="alert">
+                    <span aria-hidden="true">✕</span>
                     Submission failed. Please try again or reach out directly.
                   </p>
                 )}
 
-                <button
-                  type="submit"
-                  disabled={formState === "loading"}
-                  className="mt-2 px-10 py-4 bg-[var(--color-accent)] text-[var(--color-void)] text-[11px] tracking-[0.18em] uppercase font-medium self-start hover:opacity-90 active:scale-[0.98] disabled:opacity-50 transition-all duration-200 cursor-pointer"
-                >
-                  {formState === "loading" ? "Submitting..." : "Request Access"}
-                </button>
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    disabled={formState === "loading"}
+                    className="btn btn-primary"
+                  >
+                    {formState === "loading" ? "Submitting…" : "Request access"}
+                  </button>
+                </div>
               </form>
             )}
           </motion.div>
