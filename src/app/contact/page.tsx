@@ -60,7 +60,7 @@ const SOCIAL_LINKS = [
   },
   {
     icon: XLogoIcon,
-    label: "X (Twitter)",
+    label: "X(Twitter)",
     href: "https://twitter.com/juscadpvtltd",
   },
   {
