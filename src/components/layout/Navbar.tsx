@@ -2,39 +2,46 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { List, X, Sun, Moon } from "@phosphor-icons/react";
 import { useTheme } from "@/components/providers/ThemeProvider";
+import { LogoHorizontal } from "@/components/brand/Logo";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Blog", href: "/blog" },
-  { label: "Join Us", href: "/join-us" },
+  { label: "Join us", href: "/join-us" },
   { label: "Contact", href: "/contact" },
 ];
 
+const EASE = [0.25, 1, 0.5, 1] as [number, number, number, number];
+
 function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
+  const isNight = theme === "night";
   return (
-    <motion.button
+    <button
+      type="button"
       onClick={(e) =>
         toggleTheme({ clientX: e.clientX, clientY: e.clientY })
       }
-      className="w-8 h-8 flex items-center justify-center text-[var(--color-muted)] hover:text-[var(--color-accent)] transition-colors duration-200 cursor-pointer"
-      whileTap={{ scale: 0.88 }}
-      aria-label="Toggle theme"
+      className="btn btn-ghost btn-icon"
+      aria-label={isNight ? "Switch to day theme" : "Switch to night theme"}
+      aria-pressed={isNight}
     >
       <AnimatePresence mode="wait" initial={false}>
-        {theme === "dark" ? (
+        {isNight ? (
           <motion.span
             key="sun"
             initial={{ opacity: 0, rotate: -30 }}
             animate={{ opacity: 1, rotate: 0 }}
             exit={{ opacity: 0, rotate: 30 }}
-            transition={{ duration: 0.22 }}
+            transition={{ duration: 0.18 }}
+            className="flex"
           >
-            <Sun size={16} weight="light" />
+            <Sun size={20} weight="regular" />
           </motion.span>
         ) : (
           <motion.span
@@ -42,17 +49,19 @@ function ThemeToggle() {
             initial={{ opacity: 0, rotate: 30 }}
             animate={{ opacity: 1, rotate: 0 }}
             exit={{ opacity: 0, rotate: -30 }}
-            transition={{ duration: 0.22 }}
+            transition={{ duration: 0.18 }}
+            className="flex"
           >
-            <Moon size={16} weight="light" />
+            <Moon size={20} weight="regular" />
           </motion.span>
         )}
       </AnimatePresence>
-    </motion.button>
+    </button>
   );
 }
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const lastScroll = useRef(0);
@@ -69,96 +78,135 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Close the drawer on navigation
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
   return (
     <>
       <motion.header
-        animate={{ y: hidden ? -100 : 0 }}
-        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled
-            ? "border-b border-[var(--color-border-subtle)] backdrop-blur-md"
-            : "bg-transparent"
+        animate={{ y: hidden && !mobileOpen ? -100 : 0 }}
+        transition={{ duration: 0.24, ease: EASE }}
+        className={`fixed top-0 left-0 right-0 z-50 border-b transition-[background-color,border-color,backdrop-filter] duration-[180ms] ${
+          scrolled || mobileOpen
+            ? "border-line backdrop-blur-md"
+            : "border-transparent"
         }`}
-        style={scrolled ? { background: "var(--nav-scrolled-bg)" } : {}}
+        style={
+          mobileOpen
+            ? { background: "var(--canvas)" }
+            : scrolled
+              ? { background: "var(--nav-bg)" }
+              : {}
+        }
       >
-        <div className="max-w-[1400px] mx-auto px-6 md:px-12 h-16 flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <span className="font-display text-xl text-[var(--color-accent)] leading-none select-none">
-              Jus<span className="text-[var(--color-glow)]">C</span>AD
-            </span>
+        <div className="container-jc h-16 md:h-[72px] flex items-center justify-between gap-6">
+          <Link
+            href="/"
+            className="flex items-center text-fg rounded-[2px] -ml-1 pl-1 pr-1"
+            aria-label="JusCAD — home"
+          >
+            <LogoHorizontal height={26} />
           </Link>
 
-          {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-7">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-[10px] tracking-[0.15em] uppercase text-[var(--color-muted)] hover:text-[var(--color-accent)] transition-colors duration-200"
-              >
-                {link.label}
-              </Link>
-            ))}
+          <nav aria-label="Primary" className="hidden md:flex items-center gap-1">
+            {NAV_LINKS.map((link) => {
+              const active =
+                link.href === "/"
+                  ? pathname === "/"
+                  : pathname?.startsWith(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  aria-current={active ? "page" : undefined}
+                  className={`relative px-3 py-2 text-sm font-[550] rounded-[4px] transition-colors duration-[180ms] ${
+                    active
+                      ? "text-fg"
+                      : "text-muted hover:text-fg hover:bg-surface"
+                  }`}
+                >
+                  {link.label}
+                  {active && (
+                    <span
+                      aria-hidden="true"
+                      className="absolute left-3 right-3 -bottom-px h-px bg-blue"
+                    />
+                  )}
+                </Link>
+              );
+            })}
           </nav>
 
-          {/* Right controls */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2">
             <ThemeToggle />
-            <Link
-              href="/beta"
-              className="px-5 py-2 text-[10px] tracking-[0.15em] uppercase border border-[var(--color-accent)]/22 text-[var(--color-accent)]/75 hover:border-[var(--color-accent)]/55 hover:text-[var(--color-accent)] active:scale-[0.97] transition-all duration-200"
-            >
-              Join Beta
+            <Link href="/beta" className="btn btn-primary btn-sm">
+              Join the beta
             </Link>
           </div>
 
-          {/* Mobile controls */}
-          <div className="flex md:hidden items-center gap-3">
+          <div className="flex md:hidden items-center gap-1">
             <ThemeToggle />
             <button
-              className="text-[var(--color-muted)] hover:text-[var(--color-accent)] transition-colors"
+              type="button"
+              className="btn btn-ghost btn-icon"
               onClick={() => setMobileOpen((v) => !v)}
-              aria-label="Toggle menu"
+              aria-label={mobileOpen ? "Close menu" : "Open menu"}
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-menu"
             >
               {mobileOpen ? (
-                <X size={20} weight="light" />
+                <X size={22} weight="regular" />
               ) : (
-                <List size={20} weight="light" />
+                <List size={22} weight="regular" />
               )}
             </button>
           </div>
         </div>
       </motion.header>
 
-      {/* Mobile drawer */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -16 }}
+            id="mobile-menu"
+            initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -16 }}
-            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
-            className="fixed inset-x-0 top-16 z-40 border-b border-[var(--color-border-subtle)] px-6 py-8 flex flex-col gap-5 md:hidden"
-            style={{ background: "var(--nav-scrolled-bg)", backdropFilter: "blur(18px)" }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.18, ease: EASE }}
+            className="fixed inset-x-0 top-16 z-40 border-b border-line bg-canvas md:hidden"
           >
-            {NAV_LINKS.map((link) => (
+            <nav aria-label="Primary" className="container-jc py-4 flex flex-col">
+              {NAV_LINKS.map((link) => {
+                const active =
+                  link.href === "/"
+                    ? pathname === "/"
+                    : pathname?.startsWith(link.href);
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    aria-current={active ? "page" : undefined}
+                    className={`flex items-center justify-between min-h-12 py-3 text-lg font-[550] border-b border-line last:border-b-0 ${
+                      active ? "text-fg" : "text-muted"
+                    }`}
+                  >
+                    {link.label}
+                    {active && (
+                      <span aria-hidden="true" className="w-6 h-px bg-blue" />
+                    )}
+                  </Link>
+                );
+              })}
               <Link
-                key={link.href}
-                href={link.href}
+                href="/beta"
                 onClick={() => setMobileOpen(false)}
-                className="text-sm tracking-widest uppercase text-[var(--color-muted)] hover:text-[var(--color-accent)] transition-colors"
+                className="btn btn-primary mt-6 w-full"
               >
-                {link.label}
+                Join the beta
               </Link>
-            ))}
-            <Link
-              href="/beta"
-              onClick={() => setMobileOpen(false)}
-              className="mt-2 px-5 py-3 text-xs tracking-[0.15em] uppercase border border-[var(--color-accent)]/22 text-[var(--color-accent)]/75 text-center"
-            >
-              Join Beta
-            </Link>
+            </nav>
           </motion.div>
         )}
       </AnimatePresence>
