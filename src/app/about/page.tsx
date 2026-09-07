@@ -10,11 +10,11 @@ export const metadata: Metadata = {
 const FOUNDERS = [
   {
     name: "Dhruv Chaturvedi",
-    role: "Co-founder",
+    role: "CEO, Co-founder",
     background:
       "Researching on ai native cad archtectural black boxes like cad tokenizer, multimodal cad transformers and physics-aware latent space at the core of JusCAD. Background in Aerospace Engineering and  applied ML for engineering systems.",
     initials: "DC",
-    photo: "/founders/dhruv.jpeg",
+    photo: "/founders/dhruv.png",
     email: "dhruvchaturvedi@juscad.com",
     socials: {
       twitter: "https://x.com/dhruvatafgc",
@@ -24,7 +24,7 @@ const FOUNDERS = [
   },
   {
     name: "Shresth Keshari",
-    role: "Co-founder",
+    role: "CTO, Co-founder",
     background:
       "Co-founding JusCAD with a focus on developing the physics-aware latent space, manufacturing and synthesis capabilities. Background in Computational Mechanics, Neural Networks and Machine Learning for engineering applications.",
     initials: "SK",
