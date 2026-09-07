@@ -8,7 +8,8 @@ import {
   useCallback,
 } from "react";
 
-type Theme = "dark" | "light";
+/** Day = Paper canvas with Ink text. Night = Night Ink canvas with Night Paper text. */
+export type Theme = "day" | "night";
 
 interface ThemeContextValue {
   theme: Theme;
@@ -16,7 +17,7 @@ interface ThemeContextValue {
 }
 
 const ThemeContext = createContext<ThemeContextValue>({
-  theme: "dark",
+  theme: "day",
   toggleTheme: () => {},
 });
 
@@ -32,35 +33,44 @@ type DocumentWithViewTransition = Document & {
   };
 };
 
+const STORAGE_KEY = "juscad-theme";
+
+function normalize(value: string | null | undefined): Theme | null {
+  // Older builds stored "dark" / "light"; map them onto the current names.
+  if (value === "night" || value === "dark") return "night";
+  if (value === "day" || value === "light") return "day";
+  return null;
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("dark");
-  const [mounted, setMounted] = useState(false);
+  const [theme, setTheme] = useState<Theme>("day");
 
   useEffect(() => {
+    // The inline script in layout.tsx has already set data-theme before paint;
+    // read it back so React state matches the DOM.
+    const fromDom = normalize(document.documentElement.dataset.theme);
+    if (fromDom) {
+      setTheme(fromDom);
+      return;
+    }
     let stored: Theme | null = null;
     try {
-      if (typeof window !== "undefined" && window.localStorage) {
-        stored = window.localStorage.getItem("juscad-theme") as Theme | null;
-      }
+      stored = normalize(window.localStorage.getItem(STORAGE_KEY));
     } catch {
       stored = null;
     }
     const preferred =
       stored ??
-      (typeof window !== "undefined" &&
-      window.matchMedia?.("(prefers-color-scheme: light)").matches
-        ? "light"
-        : "dark");
+      (window.matchMedia?.("(prefers-color-scheme: dark)").matches
+        ? "night"
+        : "day");
+    document.documentElement.dataset.theme = preferred;
     setTheme(preferred);
-    if (typeof document !== "undefined") {
-      document.documentElement.dataset.theme = preferred;
-    }
-    setMounted(true);
   }, []);
 
   const toggleTheme = useCallback(
     (event?: { clientX: number; clientY: number }) => {
-      const next: Theme = theme === "dark" ? "light" : "dark";
+      const next: Theme = theme === "day" ? "night" : "day";
 
       const apply = () => {
         if (typeof document !== "undefined") {
@@ -68,7 +78,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         }
         try {
           if (typeof window !== "undefined" && window.localStorage) {
-            window.localStorage.setItem("juscad-theme", next);
+            window.localStorage.setItem(STORAGE_KEY, next);
           }
         } catch {
           // storage may be unavailable (private mode, edge runtime preview)
@@ -110,17 +120,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     },
     [theme],
   );
-
-  // Prevent flash before mount
-  if (!mounted) {
-    return (
-      <div style={{ visibility: "hidden" }}>
-        <ThemeContext.Provider value={{ theme, toggleTheme }}>
-          {children}
-        </ThemeContext.Provider>
-      </div>
-    );
-  }
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
