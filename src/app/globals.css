@@ -1,119 +1,663 @@
 @import "tailwindcss";
 
 /* ──────────────────────────────────────
-   THEME TOKENS
+   JUSCAD DESIGN TOKENS
+   "Drawn with intent."
+
+   Raw palette tokens are declared per theme; components consume the
+   semantic tokens below them so Night mode is a pure token swap.
 ────────────────────────────────────── */
+:root,
+[data-theme="day"] {
+  color-scheme: light;
+
+  /* Day palette */
+  --ink: #101619;
+  --paper: #F4F3EE;
+  --white: #FFFFFF;
+  --blue: #6590B6;
+  --blue-light: #D3E1F0;
+  --muted: #53615B;
+  --line: #CCD4CD;
+  --datum: #245CF5;
+  --dark-muted: #AFC4BA;
+  --dark-line: #34473F;
+  --danger: #AA3029;
+
+  /* Semantic */
+  --canvas: var(--paper);
+  --surface: var(--white);
+  --fg: var(--ink);
+  --fg-muted: var(--muted);
+  --fg-faint: var(--dark-muted);
+  --border: var(--line);
+  --border-strong: var(--dark-line);
+  --accent: var(--blue);
+  --accent-soft: var(--blue-light);
+  --focus: var(--datum);
+
+  /* Construction lines: Line at ~16% Ink on Paper/White */
+  --draft: rgba(16, 22, 25, 0.16);
+  --draft-strong: rgba(16, 22, 25, 0.32);
+  --draft-on-blue: rgba(255, 255, 255, 0.35);
+  --grid-line: rgba(16, 22, 25, 0.07);
+
+  /* Primary button: Ink with Paper text */
+  --btn-primary-bg: var(--ink);
+  --btn-primary-bg-hover: #1C262B;
+  --btn-primary-fg: var(--paper);
+
+  /* Selection */
+  --selection-bg: var(--blue-light);
+  --selection-fg: var(--ink);
+
+  /* Nav */
+  --nav-bg: rgba(244, 243, 238, 0.86);
+}
+
+[data-theme="night"] {
+  color-scheme: dark;
+
+  /* Night palette — not an inversion of Day */
+  --ink: #0B1013;
+  --paper: #E9EFEC;
+  --white: #FFFFFF;
+  --blue: #7FA9D1;
+  --blue-light: #243746;
+  --muted: #AAB9B4;
+  --line: #2A3735;
+  --datum: #6E9DFF;
+  --dark-muted: #839A91;
+  --dark-line: #2A3735;
+  --danger: #E05A51;
+
+  --canvas: var(--ink);
+  --surface: #11191D;
+  --fg: var(--paper);
+  --fg-muted: var(--muted);
+  --fg-faint: var(--dark-muted);
+  --border: var(--line);
+  --border-strong: #3A4A47;
+  --accent: var(--blue);
+  --accent-soft: var(--blue-light);
+  --focus: var(--datum);
+
+  --draft: var(--line);
+  --draft-strong: #3A4A47;
+  --draft-on-blue: rgba(255, 255, 255, 0.35);
+  --grid-line: rgba(233, 239, 236, 0.06);
+
+  --btn-primary-bg: var(--paper);
+  --btn-primary-bg-hover: var(--white);
+  --btn-primary-fg: var(--ink);
+
+  --selection-bg: var(--blue-light);
+  --selection-fg: var(--paper);
+
+  --nav-bg: rgba(11, 16, 19, 0.86);
+}
+
+/* ──────────────────────────────────────
+   TAILWIND THEME
+   Inline so utilities reference the live semantic variables.
+────────────────────────────────────── */
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-fg: var(--fg);
+  --color-muted: var(--fg-muted);
+  --color-faint: var(--fg-faint);
+  --color-line: var(--border);
+  --color-line-strong: var(--border-strong);
+  --color-blue: var(--accent);
+  --color-blue-soft: var(--accent-soft);
+  --color-datum: var(--focus);
+  --color-danger: var(--danger);
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-white: var(--white);
+
+  --font-sans: var(--font-adwaita-sans), "Adwaita Sans", "Inter", system-ui, sans-serif;
+  --font-mono: var(--font-adwaita-mono), "Adwaita Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --default-transition-duration: 180ms;
+}
+
 :root {
-  /* Dark theme (default) — deep futuristic black + electric cyan accent */
-  --color-void: #06080C;
-  --color-graphite: #0E1218;
-  --color-surface: #161B22;
-  --color-accent: #E6EDF3;
-  --color-muted: #8B949E;
-  --color-glow: #5DDBFF;
-  --color-glow-dim: rgba(93, 219, 255, 0.6);
-  --color-border-subtle: rgba(255, 255, 255, 0.07);
-  --color-border-light: rgba(255, 255, 255, 0.12);
-
-  /* Glass — dark */
-  --glass-bg: rgba(14, 18, 24, 0.65);
-  --glass-border: rgba(255, 255, 255, 0.09);
-  --glass-inset: rgba(255, 255, 255, 0.06);
-  --glass-blur: 14px;
-  --glass-saturate: 140%;
-
-  /* Nav */
-  --nav-scrolled-bg: rgba(6, 8, 12, 0.85);
-  --nav-border: rgba(255, 255, 255, 0.06);
-
-  /* Transitions */
-  --theme-transition: background 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-    color 0.35s ease,
-    border-color 0.35s ease;
+  --dur: 180ms;
+  --dur-solid: 500ms;
+  --ease: cubic-bezier(0.25, 1, 0.5, 1);
+  --radius-control: 4px;
+  --radius-panel: 8px;
+  --content-max: 1280px;
+  --gutter: 20px;
+  --theme-transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease);
 }
 
-[data-theme="light"] {
-  /* Light theme — cool blueprint white, no cream/brown, electric blue accent */
-  --color-void: #EEF1F5;
-  --color-graphite: #DDE3EB;
-  --color-surface: #FFFFFF;
-  --color-accent: #0A0E14;
-  --color-muted: #4E5764;
-  --color-glow: #0057FF;
-  --color-glow-dim: rgba(0, 87, 255, 0.7);
-  --color-border-subtle: rgba(10, 14, 20, 0.08);
-  --color-border-light: rgba(10, 14, 20, 0.14);
-
-  /* Glass — light */
-  --glass-bg: rgba(255, 255, 255, 0.72);
-  --glass-border: rgba(10, 14, 20, 0.09);
-  --glass-inset: rgba(255, 255, 255, 0.95);
-  --glass-blur: 18px;
-  --glass-saturate: 160%;
-
-  /* Nav */
-  --nav-scrolled-bg: rgba(238, 241, 245, 0.85);
-  --nav-border: rgba(10, 14, 20, 0.08);
+@media (min-width: 768px) {
+  :root {
+    --gutter: 40px;
+  }
 }
 
 /* ──────────────────────────────────────
-   TAILWIND CONFIG
-────────────────────────────────────── */
-@theme {
-  --color-bg-primary: var(--color-void);
-  --color-bg-secondary: var(--color-graphite);
-  --color-bg-surface: var(--color-surface);
-  --color-text-primary: var(--color-accent);
-  --color-text-muted: var(--color-muted);
-  --color-accent-blue: var(--color-glow);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-/* ──────────────────────────────────────
-   BASE STYLES
+   BASE
 ────────────────────────────────────── */
 html {
-  background: var(--color-void);
+  background: var(--canvas);
   transition: var(--theme-transition);
 }
 
 body {
-  background: var(--color-void);
-  color: var(--color-accent);
-  font-family: var(--font-geist-sans, system-ui, sans-serif);
+  background: var(--canvas);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "cv05", "cv11", "ss01";
   transition: var(--theme-transition);
 }
 
-/* ──────────────────────────────────────
-   GLASSMORPHISM UTILITY
-────────────────────────────────────── */
-.glass {
-  background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-  border: 1px solid var(--glass-border);
-  box-shadow: inset 0 1px 0 var(--glass-inset), 0 8px 32px rgba(0, 0, 0, 0.08);
+::selection {
+  background: var(--selection-bg);
+  color: var(--selection-fg);
 }
 
-.glass-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
-  border: 1px solid var(--glass-border);
-  box-shadow:
-    inset 0 1px 0 var(--glass-inset),
-    0 20px 40px rgba(0, 0, 0, 0.06),
-    0 2px 8px rgba(0, 0, 0, 0.04);
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ──────────────────────────────────────
+   LAYOUT
+────────────────────────────────────── */
+.container-jc {
+  width: 100%;
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* ──────────────────────────────────────
+   TYPOGRAPHY
+   Adwaita Sans 550 for headings, 400 for body.
+   Adwaita Mono strictly for technical annotations.
+────────────────────────────────────── */
+.type-hero {
+  font-weight: 550;
+  font-size: clamp(3.25rem, 2rem + 5.2vw, 6.75rem);
+  line-height: 0.98;
+  letter-spacing: -0.028em;
+  text-wrap: balance;
+}
+
+.type-section {
+  font-weight: 550;
+  font-size: clamp(2.25rem, 1.5rem + 2.6vw, 4.125rem);
+  line-height: 1.02;
+  letter-spacing: -0.024em;
+  text-wrap: balance;
+}
+
+.type-small {
+  font-weight: 550;
+  font-size: clamp(1.5rem, 1.3rem + 0.5vw, 1.75rem);
+  line-height: 1.2;
+  letter-spacing: -0.014em;
+}
+
+.type-title {
+  font-weight: 550;
+  font-size: 1.125rem;
+  line-height: 1.35;
+  letter-spacing: -0.008em;
+}
+
+.type-body {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.type-lead {
+  font-size: 1.125rem;
+  line-height: 1.55;
+}
+
+@media (min-width: 768px) {
+  .type-lead {
+    font-size: 1.25rem;
+  }
+}
+
+/* Technical annotation: dimensions, identifiers, status, shortcuts */
+.type-tech {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.type-tech-sm {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Section eyebrow — a figure identifier, not a marketing kicker */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.eyebrow::before {
+  content: "";
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  background: var(--accent);
+}
+
+/* Measure control for running copy */
+.measure {
+  max-width: 62ch;
+}
+
+.measure-narrow {
+  max-width: 48ch;
+}
+
+/* ──────────────────────────────────────
+   CAD HEADING MOTIF — .draft-line
+   Construction graphics sit behind real, selectable text.
+   The <i aria-hidden> carries the baseline; its pseudo-elements carry the
+   cap-height guide and the datum node. Nothing here is interactive.
+────────────────────────────────────── */
+.draft-line {
+  position: relative;
+  display: inline-block;
+  line-height: 1;
+  isolation: isolate;
+}
+
+.draft-line > i {
+  position: absolute;
+  left: -0.5em;
+  right: -0.5em;
+  bottom: 0.13em;
+  height: 1px;
+  background: var(--draft);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* cap-height guide */
+.draft-line > i::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.73em;
+  height: 1px;
+  background: var(--draft);
+}
+
+/* datum node on the baseline */
+.draft-line > i::after {
+  content: "";
+  position: absolute;
+  left: 0.5em;
+  top: -2.5px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  background: var(--canvas);
+  transform: translateX(-50%);
+}
+
+.draft-line--quiet > i::after {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .draft-line > i {
+    left: -0.25em;
+    right: -0.25em;
+  }
+  .draft-line > i::after {
+    left: 0.25em;
+  }
+}
+
+/* Vertical datum used beside the hero heading */
+.draft-datum {
+  position: absolute;
+  width: 1px;
+  background: var(--draft);
+  pointer-events: none;
+}
+
+.draft-datum::before,
+.draft-datum::after {
+  content: "";
+  position: absolute;
+  left: -3px;
+  width: 7px;
+  height: 1px;
+  background: var(--draft-strong);
+}
+
+.draft-datum::before {
+  top: 0;
+}
+
+.draft-datum::after {
+  bottom: 0;
+}
+
+/* ──────────────────────────────────────
+   BUTTONS
+   ≥48px tall, 4px radius, no layout shift on hover/focus.
+────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 48px;
+  padding: 0 1.25rem;
+  border-radius: var(--radius-control);
+  border: 1px solid transparent;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 550;
+  line-height: 1;
+  letter-spacing: 0;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.btn-primary {
+  background: var(--btn-primary-bg);
+  border-color: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--btn-primary-bg-hover);
+  border-color: var(--btn-primary-bg-hover);
+}
+
+.btn-primary:active:not(:disabled) {
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.btn-secondary {
+  background: transparent;
+  border-color: var(--border-strong);
+  color: var(--fg);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--surface);
+  border-color: var(--fg);
+}
+
+.btn-secondary:active:not(:disabled) {
+  background: var(--accent-soft);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--fg-muted);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  color: var(--fg);
+  background: var(--surface);
+}
+
+.btn-sm {
+  min-height: 40px;
+  padding: 0 1rem;
+  font-size: 0.875rem;
+}
+
+.btn-icon {
+  width: 44px;
+  min-width: 44px;
+  padding: 0;
+}
+
+/* ──────────────────────────────────────
+   PANELS
+   Borders over shadows.
+────────────────────────────────────── */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-panel);
+}
+
+.panel-flat {
+  background: var(--canvas);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-panel);
+}
+
+/* Local drawing grid — only inside drawing areas, never page-wide */
+.drawing-grid {
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: center;
+}
+
+/* ──────────────────────────────────────
+   SEGMENTED CONTROL (tabs)
+────────────────────────────────────── */
+.segmented {
+  display: inline-flex;
+  padding: 2px;
+  gap: 2px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+}
+
+.segmented > [role="tab"],
+.segmented > button {
+  min-height: 36px;
+  padding: 0 0.875rem;
+  border-radius: 3px;
+  font-size: 0.875rem;
+  font-weight: 550;
+  color: var(--fg-muted);
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+.segmented > [aria-selected="true"],
+.segmented > [aria-pressed="true"] {
+  background: var(--accent-soft);
+  color: var(--fg);
+}
+
+/* ──────────────────────────────────────
+   FORM FIELDS
+   Visible labels, visible boundaries, ≥44px usable height.
+────────────────────────────────────── */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.field-label {
+  font-size: 0.875rem;
+  font-weight: 550;
+  line-height: 1.3;
+  color: var(--fg);
+}
+
+.field-label-optional {
+  margin-left: 0.375rem;
+  font-weight: 400;
+  color: var(--fg-muted);
+}
+
+.field-input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.625rem 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  color: var(--fg);
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.4;
+  outline: none;
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+.field-input::placeholder {
+  color: var(--fg-muted);
+  opacity: 0.75;
+}
+
+.field-input:hover {
+  border-color: var(--border-strong);
+}
+
+.field-input:focus {
+  border-color: var(--focus);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.field-input[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.field-input option {
+  background: var(--surface);
+  color: var(--fg);
+}
+
+select.field-input {
+  appearance: none;
+  padding-right: 2.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2353615B' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.625rem center;
+  background-size: 20px;
+}
+
+[data-theme="night"] select.field-input {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23AAB9B4' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
+textarea.field-input {
+  resize: vertical;
+  min-height: 112px;
+}
+
+.field-help {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--fg-muted);
+}
+
+.field-error {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--danger);
+}
+
+/* Legacy input class kept as an alias so older markup renders correctly */
+.cad-input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.625rem 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  color: var(--fg);
+  font-family: inherit;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+.cad-input:focus {
+  border-color: var(--focus);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* ──────────────────────────────────────
+   STATUS — shape + text, never colour alone
+────────────────────────────────────── */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1;
+  color: var(--fg-muted);
+}
+
+.status-ok {
+  color: var(--fg);
+}
+
+.status-error {
+  color: var(--danger);
 }
 
 /* ──────────────────────────────────────
    LENIS
 ────────────────────────────────────── */
-html.lenis, html.lenis body {
+html.lenis,
+html.lenis body {
   height: auto;
 }
 .lenis.lenis-smooth {
@@ -127,99 +671,48 @@ html.lenis, html.lenis body {
    SCROLLBAR
 ────────────────────────────────────── */
 ::-webkit-scrollbar {
-  width: 2px;
-  background: var(--color-void);
+  width: 8px;
+  background: var(--canvas);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-muted);
-  opacity: 0.3;
+  background: var(--border);
+  border-radius: 4px;
 }
 
 /* ──────────────────────────────────────
-   TYPOGRAPHY
+   MARQUEE (sponsor ticker)
 ────────────────────────────────────── */
-.font-script {
-  font-family: var(--font-pinyon-script, 'Pinyon Script', cursive);
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
-/* Brand wordmark — Helvetica, tight, corporate-precision */
-.font-display {
-  font-family: 'Helvetica Neue', Helvetica, 'Inter', Arial, sans-serif;
-  font-weight: 700;
-  letter-spacing: -0.025em;
+.marquee-track {
+  display: inline-flex;
+  align-items: center;
+  animation: marquee 28s linear infinite;
 }
 
-::selection {
-  background: rgba(88, 166, 255, 0.18);
-  color: var(--color-accent);
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
 }
 
-/* ──────────────────────────────────────
-   FORM INPUTS
-────────────────────────────────────── */
-.cad-input {
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--color-border-light);
-  color: var(--color-accent);
-  padding: 0.75rem 0;
-  width: 100%;
-  font-family: inherit;
-  font-size: 0.875rem;
-  letter-spacing: 0.02em;
-  outline: none;
-  transition: border-color 0.2s ease;
-}
-.cad-input:focus {
-  border-bottom-color: var(--color-glow-dim);
-}
-.cad-input::placeholder {
-  color: var(--color-muted);
-  opacity: 0.45;
-}
-.cad-input option {
-  background: var(--color-graphite);
-  color: var(--color-accent);
-}
-textarea.cad-input {
-  resize: none;
-  min-height: 80px;
+/* Monochrome partner marks; inverted on Night so they stay legible */
+.sponsor-badge {
+  filter: grayscale(1);
 }
 
-/* ──────────────────────────────────────
-   ANIMATIONS
-────────────────────────────────────── */
-@keyframes equation-drift {
-  0%, 100% { transform: translateY(0px); opacity: 0.1; }
-  50% { transform: translateY(-7px); opacity: 0.2; }
-}
-
-@keyframes scroll-line {
-  0% { transform: scaleY(0); transform-origin: top; opacity: 1; }
-  50% { transform: scaleY(1); transform-origin: top; opacity: 1; }
-  51% { transform: scaleY(1); transform-origin: bottom; opacity: 1; }
-  100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
-}
-
-@keyframes flow-pulse {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 1; }
-}
-
-@keyframes arch-dot-pulse {
-  0%, 100% { opacity: 0.4; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.3); }
-}
-
-@keyframes theme-ripple {
-  from { r: 0; }
-  to { r: 1500; }
+[data-theme="night"] .sponsor-badge {
+  filter: grayscale(1) invert(1) brightness(1.25);
 }
 
 /* ──────────────────────────────────────
    THEME SWITCH — radial wipe via View Transitions API
-   The browser snapshots old/new root and we clip-reveal the new one
-   from the click coordinates outward.
 ────────────────────────────────────── */
 ::view-transition-old(root),
 ::view-transition-new(root) {
@@ -236,7 +729,7 @@ textarea.cad-input {
 }
 
 html[data-theme-transition]::view-transition-new(root) {
-  animation: theme-wave 0.65s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: theme-wave var(--dur-solid) var(--ease) forwards;
 }
 
 @keyframes theme-wave {
@@ -248,16 +741,33 @@ html[data-theme-transition]::view-transition-new(root) {
   }
 }
 
+/* ──────────────────────────────────────
+   REDUCED MOTION
+────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(root),
   ::view-transition-new(root) {
     animation: none !important;
   }
+  .marquee-track {
+    animation: none;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }
 
-/* Horizontal scroll */
-.scroll-container-horizontal::-webkit-scrollbar { display: none; }
-.scroll-container-horizontal { scrollbar-width: none; -ms-overflow-style: none; }
-
-/* Arch layers */
-.arch-layer { will-change: transform, opacity; }
+/* Horizontal scroll helpers (existing) */
+.scroll-container-horizontal::-webkit-scrollbar {
+  display: none;
+}
+.scroll-container-horizontal {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}

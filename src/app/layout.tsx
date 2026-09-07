@@ -1,33 +1,28 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Pinyon_Script } from "next/font/google";
-// import "./globals.css";
+import localFont from "next/font/local";
 import "@/app/globals.css";
 import { SmoothScrollProvider } from "@/components/providers/SmoothScrollProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { MotionProvider } from "@/components/providers/MotionProvider";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import AccentBackground from "@/components/home/AccentBackground";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const adwaitaSans = localFont({
+  src: "./fonts/AdwaitaSans-Variable.woff2",
+  variable: "--font-adwaita-sans",
+  weight: "100 900",
   display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const pinyonScript = Pinyon_Script({
+const adwaitaMono = localFont({
+  src: "./fonts/AdwaitaMono-Regular.woff2",
+  variable: "--font-adwaita-mono",
   weight: "400",
-  variable: "--font-pinyon-script",
-  subsets: ["latin"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://juscad.com"),
   title: "JusCAD — Cognitive Engineering Systems",
   description:
     "An AI-native cognitive engineering system. Built for engineering thought, not just engineering commands.",
@@ -36,8 +31,25 @@ export const metadata: Metadata = {
     description:
       "The next generation of engineering software will not be defined by menus and commands. It will be defined by cognition.",
     type: "website",
+    images: [{ url: "/logo/juscad-stacked-ink.png", width: 2000, height: 2000, alt: "JusCAD" }],
   },
 };
+
+const themeInitScript = `
+(function () {
+  try {
+    var stored = localStorage.getItem("juscad-theme");
+    if (stored === "dark") stored = "night";
+    if (stored === "light") stored = "day";
+    var theme = stored === "night" || stored === "day"
+      ? stored
+      : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "night" : "day");
+    document.documentElement.dataset.theme = theme;
+  } catch (e) {
+    document.documentElement.dataset.theme = "day";
+  }
+})();
+`;
 
 export default function RootLayout({
   children,
@@ -47,17 +59,22 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      data-theme="dark"
-      className={`${geistSans.variable} ${geistMono.variable} ${pinyonScript.variable}`}
+      data-theme="day"
+      className={`${adwaitaSans.variable} ${adwaitaMono.variable}`}
+      suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body>
         <ThemeProvider>
-          <SmoothScrollProvider>
-            {/* <AccentBackground /> */}
-            <Navbar />
-            {children}
-            <Footer />
-          </SmoothScrollProvider>
+          <MotionProvider>
+            <SmoothScrollProvider>
+              <Navbar />
+              {children}
+              <Footer />
+            </SmoothScrollProvider>
+          </MotionProvider>
         </ThemeProvider>
       </body>
     </html>
