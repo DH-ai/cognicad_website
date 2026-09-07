@@ -15,7 +15,7 @@ const FOUNDERS = [
       "Researching on ai native cad archtectural black boxes like cad tokenizer, multimodal cad transformers and physics-aware latent space at the core of JusCAD. Background in Aerospace Engineering and  applied ML for engineering systems.",
     initials: "DC",
     photo: "/founders/dhruv.jpeg",
-    email: "dhruvchaturvedi@juscad.xyz",
+    email: "dhruvchaturvedi@juscad.com",
     socials: {
       twitter: "https://x.com/dhruvatafgc",
       linkedin: "https://www.linkedin.com/in/dhruv-chaturvedi-a01610283/",
@@ -29,7 +29,7 @@ const FOUNDERS = [
       "Co-founding JusCAD with a focus on developing the physics-aware latent space, manufacturing and synthesis capabilities. Background in Computational Mechanics, Neural Networks and Machine Learning for engineering applications.",
     initials: "SK",
     photo: "/founders/shresht.jpeg",
-    email: "shreshtkesari@juscad.xyz",
+    email: "shresth@juscad.com",
     socials: {
       twitter: "https://twitter.com/SaffronShresht",
       linkedin: "https://www.linkedin.com/in/shresth-keshari-626b2a267/",

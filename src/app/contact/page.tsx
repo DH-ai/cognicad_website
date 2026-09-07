@@ -9,6 +9,7 @@ import {
   DiscordLogoIcon,
   InstagramLogoIcon,
   XLogoIcon,
+  WhatsappLogoIcon
 } from "@phosphor-icons/react";
 
 const CONTACT_INFO = [
@@ -27,11 +28,13 @@ const CONTACT_INFO = [
     icon: PhoneIcon,
     label: "Phone",
     lines: ["+91 9171981824"],
+    lines2: ["+91 9171981824"],
+
   },
   {
     icon: EnvelopeSimpleIcon,
     label: "Email",
-    lines: ["enquire@juscad.com", "dhruvchaturvedi@juscad.com"],
+    lines: ["enquire@juscad.com"],
   },
 ];
 
@@ -45,11 +48,11 @@ const CONTACT_TYPES = [
 ];
 
 const SOCIAL_LINKS = [
-  {
-    icon: DiscordLogoIcon,
-    label: "Discord",
-    href: "https://discord.gg/Mt3JxYDpf",
-  },
+  // {
+  //   icon: DiscordLogoIcon,
+  //   label: "Discord",
+  //   href: "https://discord.gg/Mt3JxYDpf",
+  // },
   {
     icon: InstagramLogoIcon,
     label: "Instagram",
@@ -58,7 +61,12 @@ const SOCIAL_LINKS = [
   {
     icon: XLogoIcon,
     label: "X (Twitter)",
-    href: "https://twitter.com/juscad",
+    href: "https://twitter.com/juscadpvtltd",
+  },
+  {
+    icon: WhatsappLogoIcon,
+    label: "WhatsApp",
+    href: "https://chat.whatsapp.com/DLfIkHWaW7x51svmMcCGFr",
   },
 ];
 
