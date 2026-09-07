@@ -77,6 +77,7 @@ type FormState = "idle" | "loading" | "success" | "error";
 
 function ApplicationForm({ role }: { role: string }) {
   const [state, setState] = useState<FormState>("idle");
+  const slug = role.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -105,11 +106,12 @@ function ApplicationForm({ role }: { role: string }) {
 
   if (state === "success") {
     return (
-      <div className="py-12 px-10 border border-[var(--color-glow)]/20 mt-8">
-        <p className="text-[11px] tracking-[0.2em] uppercase text-[var(--color-glow)]/70 mb-3">
+      <div className="panel p-8 md:p-10 mt-8" role="status">
+        <p className="status status-ok mb-4">
+          <span aria-hidden="true">✓</span>
           Application received
         </p>
-        <p className="text-xl tracking-tight text-[var(--color-accent)] font-light">
+        <p className="type-small text-fg">
           We will reach out within 5 working days.
         </p>
       </div>
@@ -117,101 +119,98 @@ function ApplicationForm({ role }: { role: string }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-8 mt-8">
-      <input type="hidden" value={role} readOnly />
+    <form
+      onSubmit={handleSubmit}
+      className="panel p-6 md:p-8 mt-8 flex flex-col gap-6"
+      aria-label={`Application for ${role}`}
+    >
+      <input type="hidden" name="role" value={role} readOnly />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="flex flex-col gap-2">
-          <label
-            htmlFor={`name-${role}`}
-            className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/70"
-          >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="field">
+          <label htmlFor={`name-${slug}`} className="field-label">
             Name
           </label>
           <input
-            id={`name-${role}`}
+            id={`name-${slug}`}
             name="name"
-            className="cad-input"
+            autoComplete="name"
+            className="field-input"
             placeholder="Fenris Okafor"
             required
           />
         </div>
-        <div className="flex flex-col gap-2">
-          <label
-            htmlFor={`email-${role}`}
-            className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/70"
-          >
+        <div className="field">
+          <label htmlFor={`email-${slug}`} className="field-label">
             Email
           </label>
           <input
-            id={`email-${role}`}
+            id={`email-${slug}`}
             name="email"
             type="email"
-            className="cad-input"
+            autoComplete="email"
+            className="field-input"
             placeholder="fenris@geometrylabs.io"
             required
           />
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <label
-          htmlFor={`portfolio-${role}`}
-          className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/70"
-        >
-          Resume / Portfolio
+      <div className="field">
+        <label htmlFor={`portfolio-${slug}`} className="field-label">
+          Resume / portfolio
+          <span className="field-label-optional">Optional</span>
         </label>
         <input
-          id={`portfolio-${role}`}
+          id={`portfolio-${slug}`}
           name="portfolio"
-          className="cad-input"
+          type="url"
+          inputMode="url"
+          className="field-input"
           placeholder="Link to resume, portfolio, or GitHub"
         />
       </div>
 
-      <div className="flex flex-col gap-2">
-        <label
-          htmlFor={`why-juscad-${role}`}
-          className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/70"
-        >
+      <div className="field">
+        <label htmlFor={`why-juscad-${slug}`} className="field-label">
           Why JusCAD?
         </label>
         <textarea
-          id={`why-juscad-${role}`}
+          id={`why-juscad-${slug}`}
           name="whyJuscad"
-          className="cad-input"
-          placeholder="What about this problem draws you in specifically..."
+          className="field-input"
+          placeholder="What about this problem draws you in specifically…"
         />
       </div>
 
-      <div className="flex flex-col gap-2">
-        <label
-          htmlFor={`favorite-problem-${role}`}
-          className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/70"
-        >
+      <div className="field">
+        <label htmlFor={`favorite-problem-${slug}`} className="field-label">
           Favorite technical problem you have solved
         </label>
         <textarea
-          id={`favorite-problem-${role}`}
+          id={`favorite-problem-${slug}`}
           name="favoriteProblem"
-          className="cad-input"
-          placeholder="Tell us about something technically hard you worked through..."
+          className="field-input"
+          placeholder="Tell us about something technically hard you worked through…"
         />
       </div>
 
       {state === "error" && (
-        <p className="text-sm text-red-400/80">
+        <p className="status status-error" role="alert">
+          <span aria-hidden="true">✕</span>
           Submission failed. Please try again or email us at hello@juscad.io.
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={state === "loading"}
-        className="px-10 py-4 bg-[var(--color-accent)] text-[var(--color-void)] text-[11px] tracking-[0.18em] uppercase font-medium self-start hover:opacity-90 active:scale-[0.98] disabled:opacity-50 transition-all duration-200 cursor-pointer"
-      >
-        {state === "loading" ? "Submitting..." : "Submit Application"}
-      </button>
+      <div>
+        <button
+          type="submit"
+          disabled={state === "loading"}
+          className="btn btn-primary"
+        >
+          {state === "loading" ? "Submitting…" : "Submit application"}
+        </button>
+      </div>
     </form>
   );
 }
@@ -220,113 +219,116 @@ export default function JoinUsPage() {
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
 
   return (
-    <main className="relative z-10 min-h-[100dvh] pt-28 pb-32">
-      <div className="max-w-[1400px] mx-auto px-6 md:px-16 lg:px-24">
-        {/* Header */}
-        <div className="mb-24">
-          <p className="text-[11px] tracking-[0.25em] uppercase text-[var(--color-glow)]/60 mb-8">
-            Join Us
+    <main className="relative z-10 min-h-[100dvh] pt-32 md:pt-40 pb-24 md:pb-32 bg-canvas">
+      <div className="container-jc">
+        <header className="mb-20 md:mb-28 max-w-[62rem]">
+          <p className="eyebrow mb-8">
+            <span>Join us</span>
           </p>
-          <h1 className="text-5xl md:text-7xl tracking-tighter leading-[0.93] text-[var(--color-accent)] font-light mb-8 max-w-3xl">
+          <h1 className="type-hero text-fg mb-10 max-w-[14ch]">
             We are looking for obsessive builders.
           </h1>
-          <p className="text-[var(--color-muted)] text-lg leading-relaxed max-w-[52ch]">
+          <p className="type-lead text-muted measure">
             Our internship program is designed for students and early-career
             engineers who want to work on genuinely hard problems. No busywork.
             Real ownership from day one.
           </p>
-        </div>
+        </header>
 
-        {/* Culture */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-0 mb-24 border-t border-[var(--color-border-subtle)]">
-          {CULTURE_POINTS.map((point, i) => (
-            <div
-              key={point.title}
-              className={`py-8 ${
-                i % 2 === 0
-                  ? "md:pr-12 md:border-r border-[var(--color-border-subtle)]"
-                  : "md:pl-12"
-              } border-b border-[var(--color-border-subtle)]`}
-            >
-              <h3 className="text-base tracking-tight text-[var(--color-accent)] font-light mb-3">
-                {point.title}
-              </h3>
-              <p className="text-sm text-[var(--color-muted)]/70 leading-relaxed">
-                {point.description}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        {/* Open roles */}
-        <div className="mb-16">
-          <p className="text-[11px] tracking-[0.25em] uppercase text-[var(--color-glow)]/60 mb-12">
-            Open Internships
+        <section className="mb-20 md:mb-28 border-t border-line pt-12 md:pt-16">
+          <p className="eyebrow mb-10">
+            <span>01</span>
+            <span>How we work</span>
           </p>
-
-          <div className="flex flex-col divide-y divide-[var(--color-border-subtle)]">
-            {OPEN_ROLES.map((role) => (
-              <div key={role.title} className="py-10">
-                <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-5">
-                  <div>
-                    <h3 className="text-lg tracking-tight text-[var(--color-accent)] font-light mb-2">
-                      {role.title}
-                    </h3>
-                    <div className="flex items-center gap-3 flex-wrap">
-                      <span className="text-[10px] tracking-[0.15em] uppercase text-[var(--color-glow)]/60">
-                        {role.team}
-                      </span>
-                      <span className="text-[var(--color-muted)]/25 text-xs">·</span>
-                      <span className="text-[10px] tracking-[0.12em] uppercase text-[var(--color-muted)]/40">
-                        {role.location}
-                      </span>
-                      <span className="text-[var(--color-muted)]/25 text-xs">·</span>
-                      <span className="text-[10px] tracking-[0.12em] uppercase text-[var(--color-glow)]/50">
-                        {role.type} · {role.duration}
-                      </span>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() =>
-                      setSelectedRole(selectedRole === role.title ? null : role.title)
-                    }
-                    className="text-[11px] tracking-[0.15em] uppercase border border-[var(--color-accent)]/22 text-[var(--color-accent)]/65 px-5 py-2.5 hover:border-[var(--color-accent)]/45 hover:text-[var(--color-accent)] active:scale-[0.97] transition-all duration-200 self-start md:self-center cursor-pointer flex-shrink-0"
-                  >
-                    {selectedRole === role.title ? "Collapse" : "Apply"}
-                  </button>
-                </div>
-
-                <p className="text-sm text-[var(--color-muted)]/70 leading-relaxed max-w-[60ch] mb-5">
-                  {role.description}
-                </p>
-
-                <div className="flex flex-col gap-1.5">
-                  {role.requirements.map((req) => (
-                    <div key={req} className="flex items-start gap-3">
-                      <div className="w-px h-3 bg-[var(--color-glow)]/30 flex-shrink-0 mt-1.5" />
-                      <p className="text-sm text-[var(--color-muted)]/60">{req}</p>
-                    </div>
-                  ))}
-                </div>
-
-                {selectedRole === role.title && (
-                  <ApplicationForm role={role.title} />
-                )}
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {CULTURE_POINTS.map((point, i) => (
+              <article key={point.title} className="panel p-6 flex flex-col gap-3">
+                <span className="type-tech text-muted">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <h3 className="type-title text-fg">{point.title}</h3>
+                <p className="type-body text-muted">{point.description}</p>
+              </article>
             ))}
           </div>
-        </div>
+        </section>
 
-        {/* General applications */}
-        <div className="border-t border-[var(--color-border-subtle)] pt-12">
-          <p className="text-sm text-[var(--color-muted)] leading-relaxed max-w-[55ch]">
-            Not a student? We occasionally hire exceptional full-time engineers
-            directly on contracts basis. If you are deeply technical and want to work on a multi-decade
-            problem, reach out at{" "}
-            <span className="text-[var(--color-glow)]">dhruvchaturvedi@juscad.com</span>.
+        <section className="mb-16 border-t border-line pt-12 md:pt-16">
+          <p className="eyebrow mb-10">
+            <span>02</span>
+            <span>Open internships</span>
           </p>
-        </div>
+
+          <div className="flex flex-col divide-y divide-line border-y border-line">
+            {OPEN_ROLES.map((role) => {
+              const open = selectedRole === role.title;
+              const panelId = `apply-${role.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+              return (
+                <article key={role.title} className="py-10 md:py-12">
+                  <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-6">
+                    <div>
+                      <h3 className="type-small text-fg mb-3">{role.title}</h3>
+                      <ul className="flex items-center gap-x-3 gap-y-1 flex-wrap type-tech text-muted">
+                        <li>{role.team}</li>
+                        <li aria-hidden="true">·</li>
+                        <li>{role.location}</li>
+                        <li aria-hidden="true">·</li>
+                        <li>
+                          {role.type} · {role.duration}
+                        </li>
+                      </ul>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setSelectedRole(open ? null : role.title)}
+                      aria-expanded={open}
+                      aria-controls={panelId}
+                      className={`btn ${open ? "btn-secondary" : "btn-primary"} shrink-0 self-start`}
+                    >
+                      {open ? "Collapse" : "Apply"}
+                    </button>
+                  </div>
+
+                  <p className="type-body text-muted measure mb-6">
+                    {role.description}
+                  </p>
+
+                  <ul className="flex flex-col gap-2 measure">
+                    {role.requirements.map((req) => (
+                      <li key={req} className="flex items-start gap-3">
+                        <span
+                          aria-hidden="true"
+                          className="mt-[0.7em] w-3 h-px bg-blue shrink-0"
+                        />
+                        <p className="type-body text-muted break-words">{req}</p>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div id={panelId}>
+                    {open && <ApplicationForm role={role.title} />}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="pt-4">
+          <p className="type-body text-muted measure">
+            Not a student? We occasionally hire exceptional full-time engineers
+            directly on contracts basis. If you are deeply technical and want to
+            work on a multi-decade problem, reach out at{" "}
+            <a
+              href="mailto:dhruvchaturvedi@juscad.com"
+              className="text-fg underline underline-offset-4 decoration-line hover:decoration-fg transition-colors duration-[180ms]"
+            >
+              dhruvchaturvedi@juscad.com
+            </a>
+            .
+          </p>
+        </section>
       </div>
     </main>
   );
