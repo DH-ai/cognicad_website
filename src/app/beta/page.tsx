@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function BetaPage() {
   return (
-    <main className="relative z-10 min-h-[100dvh] pt-16">
+    <main className="relative z-10 min-h-[100dvh] pt-16 md:pt-[72px] bg-canvas">
       <BetaForm />
     </main>
   );

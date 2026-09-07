@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Why AI in CAD Is the Path to AGI — JusCAD",
@@ -9,24 +8,22 @@ export const metadata: Metadata = {
 
 export default function BlogPage() {
   return (
-    <main className="relative z-10 min-h-[100dvh] pt-28 pb-32">
-      <div className="max-w-[800px] mx-auto px-6 md:px-12">
-        <div className="mb-16">
-          {/* <p className="text-[11px] tracking-[0.25em] uppercase text-[var(--color-glow)]/60 mb-6">
-            Thesis · 4 min read
-          </p> */}
-          <h1 className="text-4xl md:text-6xl tracking-tighter leading-[0.1] text-[var(--color-accent)] font-light mb-8">
-            Coming Soon
-          </h1>
-          {/* <p className="text-lg text-[var(--color-muted)] leading-relaxed">
+    <main className="relative z-10 min-h-[100dvh] pt-32 md:pt-40 pb-24 md:pb-32 bg-canvas">
+      <div className="container-jc">
+        <header className="max-w-[62rem]">
+          <p className="eyebrow mb-8">
+            <span>Blog</span>
+          </p>
+          <h1 className="type-hero text-fg mb-8">Coming soon</h1>
+          {/* <p className="type-lead text-muted measure">
             Frontier models can write essays, prove theorems, and ship code.
             They still cannot reason about a load path. That gap is not an
             edge case — it is the missing modality.
           </p>*/}
-        </div>
+        </header>
         {/*
 
-        <article className="flex flex-col gap-7 text-[var(--color-accent)]/85 leading-[1.75] text-[17px]">
+        <article className="flex flex-col gap-7 text-fg/85 leading-[1.75] text-[17px] measure">
           <p>
             The story of frontier AI has been a story of tokens. Words, then
             code, then images decomposed into sequences a transformer can
@@ -83,25 +80,19 @@ export default function BlogPage() {
             every day are the teachers we have been overlooking.
           </p>
 
-          <p className="text-[var(--color-muted)] italic">
+          <p className="text-muted italic">
             If you build CAD, simulation, or engineering tools and this
             resonates — we&rsquo;d like to hear from you.
           </p>
         </article>
 
-        <div className="mt-20 pt-10 border-t border-[var(--color-border-subtle)] flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-          <Link
-            href="/beta"
-            className="px-8 py-3.5 bg-[var(--color-accent)] text-[var(--color-void)] text-[11px] tracking-[0.18em] uppercase font-medium hover:opacity-90 active:-translate-y-px transition-all duration-200 cursor-pointer"
-          >
-            Join the Beta
+        <div className="mt-20 pt-10 border-t border-line flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <Link href="/beta" className="btn btn-primary">
+            Join the beta
           </Link>
-          <Link
-            href="/about"
-            className="text-[11px] tracking-[0.18em] uppercase text-[var(--color-muted)] hover:text-[var(--color-accent)] transition-colors duration-200"
-          >
+          <Link href="/about" className="btn btn-ghost">
             Read the full thesis →
-          </Link> 
+          </Link>
         </div> */}
       </div>
     </main>

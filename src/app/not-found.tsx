@@ -1,190 +1,95 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+
+const EASE = [0.25, 1, 0.5, 1] as [number, number, number, number];
 
 const containerVariants = {
-  hidden: {
-    opacity: 0,
-    y: 30,
-  },
+  hidden: { opacity: 0, y: 16 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.7,
-      ease: [0.43, 0.13, 0.23, 0.96] as [number, number, number, number],
-      delayChildren: 0.1,
-      staggerChildren: 0.1,
+      duration: 0.5,
+      ease: EASE,
+      delayChildren: 0.05,
+      staggerChildren: 0.08,
     },
   },
 };
 
 const itemVariants = {
-  hidden: {
-    opacity: 0,
-    y: 20,
-  },
+  hidden: { opacity: 0, y: 12 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: {
-      duration: 0.6,
-      ease: [0.43, 0.13, 0.23, 0.96] as [number, number, number, number],
-    },
+    transition: { duration: 0.45, ease: EASE },
   },
 };
 
-const numberVariants = {
-  hidden: (direction: number) => ({
-    opacity: 0,
-    x: direction * 40,
-    y: 15,
-    rotate: direction * 5,
-  }),
-  visible: {
-    opacity: 0.7,
-    x: 0,
-    y: 0,
-    rotate: 0,
-    transition: {
-      duration: 0.8,
-      ease: [0.43, 0.13, 0.23, 0.96] as [number, number, number, number],
-    },
-  },
-};
-
-const ghostVariants = {
-  hidden: {
-    scale: 0.8,
-    opacity: 0,
-    y: 15,
-    rotate: -5,
-  },
-  visible: {
-    scale: 1,
-    opacity: 1,
-    y: 0,
-    rotate: 0,
-    transition: {
-      duration: 0.6,
-      ease: [0.43, 0.13, 0.23, 0.96] as [number, number, number, number],
-    },
-  },
-  hover: {
-    scale: 1.1,
-    y: -10,
-    rotate: [0, -5, 5, -5, 0],
-    transition: {
-      duration: 0.8,
-      ease: "easeInOut" as const,
-      rotate: {
-        duration: 2,
-        ease: "linear" as const,
-        repeat: Infinity,
-        repeatType: "reverse" as const,
-      },
-    },
-  },
-  floating: {
-    y: [-5, 5],
-    transition: {
-      y: {
-        duration: 2,
-        ease: "easeInOut" as const,
-        repeat: Infinity,
-        repeatType: "reverse" as const,
-      },
-    },
-  },
-};
+/** Drafted zero: an outlined figure with its construction centre lines. */
+function DraftedZero() {
+  return (
+    <svg
+      viewBox="0 0 120 160"
+      className="w-[72px] h-[96px] md:w-[104px] md:h-[140px]"
+      aria-hidden="true"
+      fill="none"
+    >
+      <line x1="60" y1="0" x2="60" y2="160" stroke="var(--draft)" strokeWidth="1" strokeDasharray="4 4" />
+      <line x1="0" y1="80" x2="120" y2="80" stroke="var(--draft)" strokeWidth="1" strokeDasharray="4 4" />
+      <rect x="18" y="12" width="84" height="136" rx="42" stroke="var(--fg)" strokeWidth="6" />
+      <circle cx="60" cy="80" r="3" fill="var(--accent)" />
+    </svg>
+  );
+}
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4">
-      <AnimatePresence mode="wait">
+    <main className="min-h-[100svh] flex flex-col items-center justify-center bg-canvas px-5 pt-24 pb-16">
+      <motion.div
+        className="text-center flex flex-col items-center"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <motion.p variants={itemVariants} className="type-tech text-muted mb-8">
+          Error 404 — sheet not found
+        </motion.p>
+
         <motion.div
-          className="text-center"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          exit="hidden"
+          variants={itemVariants}
+          className="flex items-center justify-center gap-4 md:gap-6 mb-10 text-fg"
         >
-          <div className="flex items-center justify-center gap-4 md:gap-6 mb-8 md:mb-12">
-            <motion.span
-              className="text-[80px] md:text-[120px] font-bold text-[#222222] opacity-70 select-none"
-              variants={numberVariants}
-              custom={-1}
-            >
-              4
-            </motion.span>
-            <motion.div
-              variants={ghostVariants}
-              whileHover="hover"
-              animate={["visible", "floating"]}
-            >
-              <Image
-                src="https://xubohuah.github.io/xubohua.top/Group.png"
-                alt="Ghost"
-                width={120}
-                height={120}
-                className="w-[80px] h-[80px] md:w-[120px] md:h-[120px] object-contain select-none"
-                draggable={false}
-                priority
-              />
-            </motion.div>
-            <motion.span
-              className="text-[80px] md:text-[120px] font-bold text-[#222222] opacity-70 select-none"
-              variants={numberVariants}
-              custom={1}
-            >
-              4
-            </motion.span>
-          </div>
-
-          <motion.h1
-            className="text-3xl md:text-5xl font-bold text-[#222222] mb-4 md:mb-6 opacity-70 select-none"
-            variants={itemVariants}
-          >
-            Boo! Page missing!
-          </motion.h1>
-
-          <motion.p
-            className="text-lg md:text-xl text-[#222222] mb-8 md:mb-12 opacity-50 select-none"
-            variants={itemVariants}
-          >
-            Whoops! This page must be a ghost - it&apos;s not here!
-          </motion.p>
-
-          <motion.div
-            variants={itemVariants}
-            whileHover={{
-              scale: 1.05,
-              transition: {
-                duration: 0.3,
-                ease: [0.43, 0.13, 0.23, 0.96] as [number, number, number, number],
-              },
-            }}
-          >
-            <Link
-              href="/"
-              className="inline-block bg-[#222222] text-white px-8 py-3 rounded-full text-lg font-medium hover:bg-[#000000] transition-colors select-none"
-            >
-              Find shelter
-            </Link>
-          </motion.div>
-
-          <motion.div className="mt-12" variants={itemVariants}>
-            <Link
-              href="/about"
-              className="text-[#222222] opacity-50 hover:opacity-70 transition-opacity underline select-none"
-            >
-              What means 404?
-            </Link>
-          </motion.div>
+          <span className="type-hero select-none">4</span>
+          <DraftedZero />
+          <span className="type-hero select-none">4</span>
         </motion.div>
-      </AnimatePresence>
-    </div>
+
+        <motion.h1 variants={itemVariants} className="type-small text-fg mb-4">
+          This page is not on the drawing.
+        </motion.h1>
+
+        <motion.p
+          variants={itemVariants}
+          className="type-body text-muted measure-narrow mb-10"
+        >
+          The page you are looking for may have moved or never existed.
+        </motion.p>
+
+        <motion.div
+          variants={itemVariants}
+          className="flex flex-wrap items-center justify-center gap-4"
+        >
+          <Link href="/" className="btn btn-primary">
+            Back to home
+          </Link>
+          <Link href="/about" className="btn btn-secondary">
+            About JusCAD
+          </Link>
+        </motion.div>
+      </motion.div>
+    </main>
   );
 }

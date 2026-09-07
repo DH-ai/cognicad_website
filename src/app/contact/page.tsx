@@ -1,23 +1,27 @@
 "use client";
 
 import { useState } from "react";
-import styles from "./page.module.css";
-// import { MapPin, Phone, EnvelopeSimple, ArrowUpRight } from "@phosphor-icons/react";1
 import {
   PhoneIcon,
   MapPinIcon,
   EnvelopeSimpleIcon,
-  ArrowUUpRightIcon,
+  ArrowUpRightIcon,
   DiscordLogoIcon,
   InstagramLogoIcon,
-  XLogoIcon as X,
+  XLogoIcon,
 } from "@phosphor-icons/react";
 
 const CONTACT_INFO = [
   {
     icon: MapPinIcon,
     label: "Address",
-    lines: ["Desai Sethi School of Entrepreneurship", "Indian Institute of Technology Bombay", "Powai", "Mumbai, Maharashtra 400076", "India"],
+    lines: [
+      "Desai Sethi School of Entrepreneurship",
+      "Indian Institute of Technology Bombay",
+      "Powai",
+      "Mumbai, Maharashtra 400076",
+      "India",
+    ],
   },
   {
     icon: PhoneIcon,
@@ -32,34 +36,31 @@ const CONTACT_INFO = [
 ];
 
 const CONTACT_TYPES = [
-  { label: "General Inquiry", value: "general" },
-  { label: "Beta Program", value: "beta" },
-  { label: "Research Collaboration", value: "research" },
-  { label: "Press & Media", value: "press" },
-  { label: "Investor Relations", value: "investor" },
+  { label: "General inquiry", value: "general" },
+  { label: "Beta program", value: "beta" },
+  { label: "Research collaboration", value: "research" },
+  { label: "Press & media", value: "press" },
+  { label: "Investor relations", value: "investor" },
   { label: "Partnership", value: "partnership" },
 ];
-X
+
 const SOCIAL_LINKS = [
   {
     icon: DiscordLogoIcon,
     label: "Discord",
     href: "https://discord.gg/Mt3JxYDpf",
-    hoverColor: "#5865F2",
   },
   {
     icon: InstagramLogoIcon,
     label: "Instagram",
     href: "https://instagram.com/juscad",
-    hoverColor: "#E1306C",
   },
   {
-    icon: X,
+    icon: XLogoIcon,
     label: "X (Twitter)",
     href: "https://twitter.com/juscad",
-    hoverColor: "#1DA1F2",
-  }
-]
+  },
+];
 
 type State = "idle" | "loading" | "success" | "error";
 
@@ -89,191 +90,220 @@ export default function ContactPage() {
   }
 
   return (
-    <main className="relative z-10 min-h-[100dvh] pt-28 pb-32">
-      <div className="max-w-[1400px] mx-auto px-6 md:px-16 lg:px-24">
-
-        {/* Header */}
-        <div className="mb-20">
-          <p className="text-[11px] tracking-[0.25em] uppercase text-[var(--color-glow)]/60 mb-6">
-            Contact
+    <main className="relative z-10 min-h-[100dvh] pt-32 md:pt-40 pb-24 md:pb-32 bg-canvas">
+      <div className="container-jc">
+        <header className="mb-20 md:mb-28 max-w-[62rem]">
+          <p className="eyebrow mb-8">
+            <span>Contact</span>
           </p>
-          <h1 className="text-5xl md:text-7xl tracking-tighter leading-[0.93] text-[var(--color-accent)] font-light mb-8 max-w-3xl">
-            Get in touch.
-          </h1>
-          <p className="text-[var(--color-muted)] text-lg leading-relaxed max-w-[48ch]">
+          <h1 className="type-hero text-fg mb-10">Get in touch.</h1>
+          <p className="type-lead text-muted measure">
             Whether you are an engineer interested in the beta, a researcher
             looking to collaborate, or a journalist — we respond to every note.
           </p>
-        </div>
+        </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_1.4fr] gap-20 items-start">
-          {/* Left — contact info */}
-          <div className="flex flex-col gap-12">
-            {CONTACT_INFO.map((item) => {
-              const Icon = item.icon;
-              return (
-                <div key={item.label} className="flex gap-5 items-start">
-                  <div className="w-9 h-9 border border-[var(--color-border-subtle)] flex items-center justify-center flex-shrink-0">
-                    <Icon size={14} weight="light" style={{ color: "var(--color-glow)" }} />
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-16 lg:gap-24 items-start border-t border-line pt-12 md:pt-16">
+          <div className="flex flex-col gap-10">
+            <dl className="flex flex-col gap-8">
+              {CONTACT_INFO.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div key={item.label} className="flex gap-5 items-start">
+                    <div
+                      className="w-11 h-11 panel flex items-center justify-center shrink-0 text-blue"
+                      aria-hidden="true"
+                    >
+                      <Icon size={22} weight="light" />
+                    </div>
+                    <div>
+                      <dt className="type-tech text-muted mb-2">{item.label}</dt>
+                      <dd className="flex flex-col">
+                        {item.lines.map((line) => {
+                          const isEmail = line.includes("@");
+                          return isEmail ? (
+                            <a
+                              key={line}
+                              href={`mailto:${line}`}
+                              className="type-body text-fg underline underline-offset-4 decoration-line hover:decoration-fg transition-colors duration-[180ms] self-start"
+                            >
+                              {line}
+                            </a>
+                          ) : (
+                            <span key={line} className="type-body text-fg/85">
+                              {line}
+                            </span>
+                          );
+                        })}
+                      </dd>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/50 mb-2">
-                      {item.label}
-                    </p>
-                    {item.lines.map((line) => (
-                      <p key={line} className="text-sm text-[var(--color-muted)] leading-relaxed">
-                        {line}
-                      </p>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </dl>
 
-            {/* Map placeholder */}
-            {/* <div claNa·  */}
-
-              <div className="border-t border-[var(--color-border-subtle)] pt-8">
-                <p className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/50 mb-4">
-                  Join us
-                </p>
-                <div className="flex flex-col gap-3">
-                  {SOCIAL_LINKS.map((item) => {
-                    const Icon = item.icon;
-                    return (
+            <div className="border-t border-line pt-8">
+              <p className="type-tech text-muted mb-4">Join us</p>
+              <ul className="flex flex-col gap-3">
+                {SOCIAL_LINKS.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <li key={item.label}>
                       <a
-                        key={item.label}
                         href={item.href}
                         target="_blank"
                         rel="noreferrer"
-                        className={`group glass ${styles.socialCard} flex items-center gap-4 px-4 py-3 border border-[var(--color-border-subtle)]/60 transition-all duration-300 hover:scale-[1.01] hover:border-transparent hover:shadow-[0_18px_60px_-38px_var(--hover-color)] active:scale-[0.99]`}
-                        style={{
-                          ["--hover-color" as string]: item.hoverColor,
-                        }}
+                        className="group panel flex items-center gap-4 px-4 py-3 hover:border-line-strong transition-colors duration-[180ms]"
                       >
-                        <div className="w-10 h-10 rounded-full border border-[var(--color-border-subtle)]/70 bg-[var(--color-void)]/20 backdrop-blur-sm flex items-center justify-center text-[var(--color-muted)]/75 transition-all duration-300 group-hover:border-transparent group-hover:bg-[var(--hover-color)]/15 group-hover:text-[var(--hover-color)] group-hover:shadow-[0_14px_38px_-26px_var(--hover-color)] group-hover:scale-[1.02]">
-                          <Icon size={18} weight="light" className="transition-colors duration-300" />
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-sm text-[var(--color-accent)] transition-colors duration-300 group-hover:text-[var(--hover-color)]">{item.label}</p>
-                          <p className="text-xs text-[var(--color-muted)]/55 transition-colors duration-300 group-hover:text-[var(--hover-color)]/75">
+                        <span
+                          className="w-10 h-10 rounded-[4px] bg-canvas border border-line flex items-center justify-center text-muted group-hover:text-fg transition-colors duration-[180ms]"
+                          aria-hidden="true"
+                        >
+                          <Icon size={20} weight="light" />
+                        </span>
+                        <span className="flex-1 min-w-0">
+                          <span className="block text-base font-[550] text-fg">
+                            {item.label}
+                          </span>
+                          <span className="block type-tech-sm text-muted truncate">
                             {item.href.replace(/^https?:\/\//, "")}
-                          </p>
-                        </div>
-                        <ArrowUUpRightIcon
-                          size={12}
-                          weight="bold"
-                          style={{ color: "var(--color-glow)" }}
-                          className="transition-[color,transform] duration-300 group-hover:!text-[var(--hover-color)] group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                          </span>
+                        </span>
+                        <ArrowUpRightIcon
+                          size={18}
+                          weight="regular"
+                          aria-hidden="true"
+                          className="text-muted group-hover:text-fg transition-colors duration-[180ms]"
                         />
                       </a>
-                    );
-                  })}
-                </div>
-              </div>
-
-            {/* Office hours */}
-            {/* <div className="border-t border-[var(--color-border-subtle)] pt-8">
-              <p className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/50 mb-3">
-                Office Hours
-              </p>
-              <p className="text-sm text-[var(--color-muted)] leading-relaxed">
-                Monday — Friday, 9:00 AM – 6:00 PM PST
-              </p>
-              <p className="text-xs text-[var(--color-muted)]/40 mt-1">
-                We typically respond within 24 hours.
-              </p>
-            </div> */}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           </div>
 
-          {/* Right — form */}
           <div>
             {state === "success" ? (
-              <div className="glass p-10">
-                <p className="text-[11px] tracking-[0.2em] uppercase text-[var(--color-glow)]/70 mb-4">
+              <div className="panel p-8 md:p-12" role="status">
+                <p className="status status-ok mb-6">
+                  <span aria-hidden="true">✓</span>
                   Message sent
                 </p>
-                <p className="text-2xl tracking-tight text-[var(--color-accent)] font-light mb-4">
+                <p className="type-small text-fg mb-4">
                   We received your message.
                 </p>
-                <p className="text-sm text-[var(--color-muted)] leading-relaxed max-w-[40ch]">
-                  Someone from the team will follow up at the email you provided,
-                  usually within one business day.
+                <p className="type-body text-muted measure-narrow">
+                  Someone from the team will follow up at the email you
+                  provided, usually within one business day.
                 </p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/70">
+              <form
+                onSubmit={handleSubmit}
+                className="panel p-6 md:p-10 flex flex-col gap-6"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="field">
+                    <label htmlFor="contact-name" className="field-label">
                       Name
                     </label>
                     <input
-                      className="cad-input"
+                      id="contact-name"
+                      name="name"
+                      autoComplete="name"
+                      className="field-input"
                       placeholder="Kaspar Delacroix"
                       value={fields.name}
-                      onChange={(e) => setFields((f) => ({ ...f, name: e.target.value }))}
+                      onChange={(e) =>
+                        setFields((f) => ({ ...f, name: e.target.value }))
+                      }
                       required
                     />
                   </div>
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/70">
+                  <div className="field">
+                    <label htmlFor="contact-email" className="field-label">
                       Email
                     </label>
                     <input
+                      id="contact-email"
+                      name="email"
                       type="email"
-                      className="cad-input"
+                      autoComplete="email"
+                      className="field-input"
                       placeholder="kaspar@propulsion.io"
                       value={fields.email}
-                      onChange={(e) => setFields((f) => ({ ...f, email: e.target.value }))}
+                      onChange={(e) =>
+                        setFields((f) => ({ ...f, email: e.target.value }))
+                      }
                       required
                     />
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-2">
-                  <label className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/70">
+                <div className="field">
+                  <label htmlFor="contact-type" className="field-label">
                     Nature of inquiry
+                    <span className="field-label-optional">Optional</span>
                   </label>
                   <select
-                    className="cad-input"
+                    id="contact-type"
+                    name="type"
+                    className="field-input"
                     value={fields.type}
-                    onChange={(e) => setFields((f) => ({ ...f, type: e.target.value }))}
+                    onChange={(e) =>
+                      setFields((f) => ({ ...f, type: e.target.value }))
+                    }
                   >
-                    <option value="" disabled>Select type</option>
+                    <option value="" disabled>
+                      Select type
+                    </option>
                     {CONTACT_TYPES.map((t) => (
-                      <option key={t.value} value={t.value}>{t.label}</option>
+                      <option key={t.value} value={t.value}>
+                        {t.label}
+                      </option>
                     ))}
                   </select>
                 </div>
 
-                <div className="flex flex-col gap-2">
-                  <label className="text-[10px] tracking-[0.2em] uppercase text-[var(--color-muted)]/70">
+                <div className="field">
+                  <label htmlFor="contact-message" className="field-label">
                     Message
                   </label>
                   <textarea
-                    className="cad-input"
-                    rows={5}
-                    placeholder="Describe what you are working on and how we might be relevant..."
+                    id="contact-message"
+                    name="message"
+                    className="field-input"
+                    rows={6}
+                    placeholder="Describe what you are working on and how we might be relevant…"
                     value={fields.message}
-                    onChange={(e) => setFields((f) => ({ ...f, message: e.target.value }))}
+                    onChange={(e) =>
+                      setFields((f) => ({ ...f, message: e.target.value }))
+                    }
+                    required
                   />
                 </div>
 
                 {state === "error" && (
-                  <p className="text-sm text-red-400/80">
-                    Submission failed. Please try again or email us at enquiry@juscad.com.
+                  <p className="status status-error" role="alert">
+                    <span aria-hidden="true">✕</span>
+                    Submission failed. Please try again or email us at
+                    enquiry@juscad.com.
                   </p>
                 )}
 
-                <button
-                  type="submit"
-                  disabled={state === "loading"}
-                  className="px-10 py-4 bg-[var(--color-accent)] text-[var(--color-void)] text-[11px] tracking-[0.18em] uppercase font-medium self-start hover:opacity-90 active:scale-[0.98] disabled:opacity-50 transition-all duration-200 cursor-pointer flex items-center gap-2"
-                >
-                  {state === "loading" ? "Sending..." : "Send Message"}
-                  {state !== "loading" && <ArrowUUpRightIcon size={12} weight="bold" />}
-                </button>
+                <div>
+                  <button
+                    type="submit"
+                    disabled={state === "loading"}
+                    className="btn btn-primary"
+                  >
+                    {state === "loading" ? "Sending…" : "Send message"}
+                    {state !== "loading" && (
+                      <ArrowUpRightIcon size={16} weight="regular" aria-hidden="true" />
+                    )}
+                  </button>
+                </div>
               </form>
             )}
           </div>

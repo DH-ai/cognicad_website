@@ -14,7 +14,7 @@ const FOUNDERS = [
     background:
       "Researching on ai native cad archtectural black boxes like cad tokenizer, multimodal cad transformers and physics-aware latent space at the core of JusCAD. Background in Aerospace Engineering and  applied ML for engineering systems.",
     initials: "DC",
-    photo: "/founders/dhruv.jpeg", // Add photo path
+    photo: "/founders/dhruv.jpeg",
     email: "dhruvchaturvedi@juscad.xyz",
     socials: {
       twitter: "https://x.com/dhruvatafgc",
@@ -28,7 +28,7 @@ const FOUNDERS = [
     background:
       "Co-founding JusCAD with a focus on developing the physics-aware latent space, manufacturing and synthesis capabilities. Background in Computational Mechanics, Neural Networks and Machine Learning for engineering applications.",
     initials: "SK",
-    photo: "/founders/shresht.jpeg", // Add photo path
+    photo: "/founders/shresht.jpeg",
     email: "shreshtkesari@juscad.xyz",
     socials: {
       twitter: "https://twitter.com/SaffronShresht",
@@ -61,191 +61,179 @@ const PILLARS = [
     index: "04",
     title: "A horizontal intelligence layer",
     description:
-      "MMechanical, aerospace, electronics, robotics, thermal systems, and beyond — our goal is to build a shared intelligence layer across engineering disciplines. If frontier AI models are becoming the productivity layer for knowledge work, JusCAD aims to become the intelligence layer for engineering workflows — accelerating design cycles from weeks to hours.",
+      "Mechanical, aerospace, electronics, robotics, thermal systems, and beyond — our goal is to build a shared intelligence layer across engineering disciplines. If frontier AI models are becoming the productivity layer for knowledge work, JusCAD aims to become the intelligence layer for engineering workflows — accelerating design cycles from weeks to hours.",
   },
 ];
 
 export default function AboutPage() {
   return (
-    <main className="relative z-10 min-h-[100dvh] pt-28 pb-32">
-      <div className="max-w-[1400px] mx-auto px-6 md:px-16 lg:px-24">
-        <div className="mb-28">
-          <p className="text-[11px] tracking-[0.25em] uppercase text-[var(--color-glow)]/60 mb-8">
-            About
+    <main className="relative z-10 min-h-[100dvh] pt-32 md:pt-40 pb-24 md:pb-32 bg-canvas">
+      <div className="container-jc">
+        <header className="mb-24 md:mb-32 max-w-[62rem]">
+          <p className="eyebrow mb-8">
+            <span>About</span>
           </p>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl tracking-tighter leading-[0.93] text-[var(--color-accent)] font-light mb-12 max-w-4xl">
+          <h1 className="type-hero text-fg mb-10">
             The intelligence layer for engineering.
           </h1>
-          <p className="text-lg text-[var(--color-muted)] leading-relaxed max-w-[58ch]">
+          <p className="type-lead text-muted measure">
             We&rsquo;re building an AI-native engineering platform that
             fundamentally changes how complex physical systems are designed —
             and over time, evolves into a new class of foundation model for
             engineering itself.
           </p>
-        </div>
+        </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_1.3fr] gap-20 mb-28 border-t border-[var(--color-border-subtle)] pt-16">
+        <section className="grid grid-cols-1 lg:grid-cols-[1fr_1.3fr] gap-12 lg:gap-24 mb-24 md:mb-32 border-t border-line pt-12 md:pt-16">
           <div>
-            <p className="text-[11px] tracking-[0.25em] uppercase text-[var(--color-glow)]/60 mb-6">
-              The Shift
+            <p className="eyebrow mb-6">
+              <span>01</span>
+              <span>The shift</span>
             </p>
-            <h2 className="text-3xl md:text-4xl tracking-tighter leading-tight text-[var(--color-accent)] font-light">
+            <h2 className="type-small text-fg max-w-[22ch]">
               From AI as autocomplete to AI as an engineering partner.
             </h2>
           </div>
-          <div className="flex flex-col gap-6">
-            <p className="text-[var(--color-muted)] leading-relaxed text-base">
-              An engineer describes a system in natural language — a propulsion assembly, a structural bracket under load, a thermal management loop. The platform translates that intent into structured engineering artifacts, then orchestrates the workflow: generate geometry, apply constraints, run simulations, evaluate performance, and iterate.
-
+          <div className="flex flex-col gap-6 measure">
+            <p className="type-body text-muted">
+              An engineer describes a system in natural language — a propulsion
+              assembly, a structural bracket under load, a thermal management
+              loop. The platform translates that intent into structured
+              engineering artifacts, then orchestrates the workflow: generate
+              geometry, apply constraints, run simulations, evaluate
+              performance, and iterate.
             </p>
-            <p className="text-[var(--color-muted)] leading-relaxed text-base">
-              Engineering is fundamentally reasoning under constraints — balancing strength against weight, performance against cost, efficiency against manufacturability. Most AI systems operate at the surface level of engineering. We aim to model the underlying structure and physics.
-
+            <p className="type-body text-muted">
+              Engineering is fundamentally reasoning under constraints —
+              balancing strength against weight, performance against cost,
+              efficiency against manufacturability. Most AI systems operate at
+              the surface level of engineering. We aim to model the underlying
+              structure and physics.
             </p>
-            <p className="text-[var(--color-accent)]/70 leading-relaxed text-base">
-              Rather than replacing existing engineering software, JusCAD integrates with CAD, simulation, and analysis workflows as an intelligence layer that understands both engineering language and physical behavior.
-
+            <p className="type-body text-fg/85">
+              Rather than replacing existing engineering software, JusCAD
+              integrates with CAD, simulation, and analysis workflows as an
+              intelligence layer that understands both engineering language and
+              physical behavior.
             </p>
-            
-
           </div>
-        </div>
+        </section>
 
-        <div className="mb-28 border-t border-[var(--color-border-subtle)] pt-16">
-          <p className="text-[11px] tracking-[0.25em] uppercase text-[var(--color-glow)]/60 mb-16">
-            How we&rsquo;re different
+        <section className="mb-24 md:mb-32 border-t border-line pt-12 md:pt-16">
+          <p className="eyebrow mb-12">
+            <span>02</span>
+            <span>How we&rsquo;re different</span>
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-0 divide-y divide-[var(--color-border-subtle)] md:divide-y-0">
-            {PILLARS.map((p, i) => (
-              <div
-                key={p.title}
-                className={`py-10 pr-0 md:pr-12 ${i % 2 === 0 ? "md:border-r border-[var(--color-border-subtle)]" : "md:pl-12"} ${i < 2 ? "md:border-b border-[var(--color-border-subtle)]" : ""}`}
-              >
-                <div className="flex items-baseline gap-4 mb-5">
-                  <span className="font-[family-name:var(--font-geist-mono)] text-[10px] text-[var(--color-muted)]/40 tracking-widest">
-                    {p.index}
-                  </span>
-                  <h3 className="text-lg tracking-tight text-[var(--color-accent)] font-light">
-                    {p.title}
-                  </h3>
-                </div>
-                <p className="text-sm text-[var(--color-muted)]/70 leading-relaxed max-w-[45ch]">
-                  {p.description}
-                </p>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {PILLARS.map((p) => (
+              <article key={p.title} className="panel p-6 md:p-8 flex flex-col gap-4">
+                <span className="type-tech text-muted">{p.index}</span>
+                <h3 className="type-title text-fg">{p.title}</h3>
+                <p className="type-body text-muted max-w-[52ch]">{p.description}</p>
+              </article>
             ))}
           </div>
-        </div>
+        </section>
 
-        <div className="mb-28 border-t border-[var(--color-border-subtle)] pt-16">
-          <p className="text-[11px] tracking-[0.25em] uppercase text-[var(--color-glow)]/60 mb-16">
-            Founders
+        <section className="mb-24 md:mb-32 border-t border-line pt-12 md:pt-16">
+          <p className="eyebrow mb-12">
+            <span>03</span>
+            <span>Founders</span>
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
             {FOUNDERS.map((f) => (
-              <div key={f.name} className="flex flex-col">
-                {/* Photo Section */}
-                <div className="relative mb-6 w-64 h-64 bg-[var(--color-border-subtle)] border border-[var(--color-border-subtle)] flex items-center justify-center overflow-hidden">
+              <article key={f.name} className="flex flex-col">
+                <div className="relative mb-6 w-56 h-56 md:w-64 md:h-64 panel overflow-hidden">
                   {f.photo ? (
                     <Image
                       src={f.photo}
-                      alt={f.name}
+                      alt={`Portrait of ${f.name}`}
                       fill
+                      sizes="256px"
                       className="object-cover"
                     />
                   ) : (
-                    <span className="text-sm font-[family-name:var(--font-geist-mono)] text-[var(--color-muted)]/40 tracking-widest">
-                      Photo
+                    <span className="absolute inset-0 flex items-center justify-center type-tech text-muted">
+                      {f.initials}
                     </span>
                   )}
                 </div>
 
-                {/* Info Section */}
-                <div className="flex gap-6 mb-6">
+                <h3 className="type-title text-fg">{f.name}</h3>
+                <p className="type-tech text-muted mt-1 mb-4">{f.role}</p>
+                <p className="type-body text-muted measure-narrow mb-6">
+                  {f.background}
+                </p>
+
+                <dl className="flex flex-col gap-4 border-t border-line pt-5">
                   <div>
-                    <h3 className="text-lg tracking-tight text-[var(--color-accent)] font-light mb-0.5">
-                      {f.name}
-                    </h3>
-                    <p className="text-[11px] tracking-[0.12em] uppercase text-[var(--color-glow)]/60 mb-4">
-                      {f.role}
-                    </p>
-                    <p className="text-sm text-[var(--color-muted)]/70 leading-relaxed">
-                      {f.background}
-                    </p>
+                    <dt className="type-tech text-muted mb-1">Email</dt>
+                    <dd>
+                      <a
+                        href={`mailto:${f.email}`}
+                        className="text-base text-fg underline underline-offset-4 decoration-line hover:decoration-fg transition-colors duration-[180ms]"
+                      >
+                        {f.email}
+                      </a>
+                    </dd>
                   </div>
-                </div>
-
-                {/* Email Section */}
-                <div className="mb-4 pb-4 border-b border-[var(--color-border-subtle)]">
-                  <p className="text-[11px] tracking-[0.12em] uppercase text-[var(--color-glow)]/60 mb-2">
-                    Email
-                  </p>
-                  <a
-                    href={`mailto:${f.email}`}
-                    className="text-sm text-[var(--color-accent)] hover:text-[var(--color-accent)]/80 transition-colors"
-                  >
-                    {f.email}
-                  </a>
-                </div>
-
-                {/* Social Links Section */}
-                <div>
-                  <p className="text-[11px] tracking-[0.12em] uppercase text-[var(--color-glow)]/60 mb-3">
-                    Connect
-                  </p>
-                  <div className="flex gap-4">
-                    {f.socials.twitter && (
-                      <a
-                        href={f.socials.twitter}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-[var(--color-muted)]/60 hover:text-[var(--color-accent)] transition-colors"
-                      >
-                        Twitter
-                      </a>
-                    )}
-                    {f.socials.linkedin && (
-                      <a
-                        href={f.socials.linkedin}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-[var(--color-muted)]/60 hover:text-[var(--color-accent)] transition-colors"
-                      >
-                        LinkedIn
-                      </a>
-                    )}
-                    {f.socials.github && (
-                      <a
-                        href={f.socials.github}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-[var(--color-muted)]/60 hover:text-[var(--color-accent)] transition-colors"
-                      >
-                        GitHub
-                      </a>
-                    )}
+                  <div>
+                    <dt className="type-tech text-muted mb-1">Connect</dt>
+                    <dd className="flex gap-5">
+                      {f.socials.twitter && (
+                        <a
+                          href={f.socials.twitter}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-base text-muted hover:text-fg transition-colors duration-[180ms]"
+                        >
+                          Twitter
+                        </a>
+                      )}
+                      {f.socials.linkedin && (
+                        <a
+                          href={f.socials.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-base text-muted hover:text-fg transition-colors duration-[180ms]"
+                        >
+                          LinkedIn
+                        </a>
+                      )}
+                      {f.socials.github && (
+                        <a
+                          href={f.socials.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-base text-muted hover:text-fg transition-colors duration-[180ms]"
+                        >
+                          GitHub
+                        </a>
+                      )}
+                    </dd>
                   </div>
-                </div>
-              </div>
+                </dl>
+              </article>
             ))}
           </div>
-        </div>
+        </section>
 
-        <div className="mb-28 border-t border-[var(--color-border-subtle)] pt-16">
-          <p className="text-[11px] tracking-[0.25em] uppercase text-[var(--color-glow)]/60 mb-8">
-            Long-Term Vision
+        <section className="mb-24 md:mb-32 border-t border-line pt-12 md:pt-16">
+          <p className="eyebrow mb-8">
+            <span>04</span>
+            <span>Long-term vision</span>
           </p>
-          <h2 className="text-3xl md:text-4xl tracking-tighter leading-tight text-[var(--color-accent)] font-light mb-10 max-w-3xl">
+          <h2 className="type-section text-fg mb-10 max-w-[20ch]">
             The Large Spatial Engineering Model.
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl">
-            <p className="text-[var(--color-muted)] leading-relaxed text-base">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-[64rem]">
+            <p className="type-body text-muted">
               Frontier models excel at language and code, but lack a deep
               understanding of space. Engineering is, at its core, a spatial
               discipline — wings, chips, heat exchangers, robots — geometry,
               topology, and constraints interacting in three dimensions.
             </p>
-            <p className="text-[var(--color-muted)] leading-relaxed text-base">
+            <p className="type-body text-muted">
               LSEM unifies geometry, physics, and constraints in a single
               latent space. It enables reasoning across structure and physics
               simultaneously — not just generating designs, but iteratively
@@ -253,18 +241,19 @@ export default function AboutPage() {
               cognition at scale.
             </p>
           </div>
-        </div>
+        </section>
 
-        <div className="border-t border-[var(--color-border-subtle)] pt-16">
-          <p className="text-[11px] tracking-[0.25em] uppercase text-[var(--color-glow)]/60 mb-8">
-            Mission
+        <section className="border-t border-line pt-12 md:pt-16">
+          <p className="eyebrow mb-8">
+            <span>05</span>
+            <span>Mission</span>
           </p>
-          <p className="text-3xl md:text-4xl tracking-tighter leading-tight text-[var(--color-accent)] font-light max-w-3xl">
+          <p className="type-small text-fg max-w-[40ch]">
             In the near term, we accelerate engineers. In the long term, we
             redefine engineering itself — the intelligence layer for the
             machines, systems, and infrastructure that define the real world.
           </p>
-        </div>
+        </section>
       </div>
     </main>
   );
