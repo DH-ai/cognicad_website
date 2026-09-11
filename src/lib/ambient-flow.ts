@@ -18,6 +18,7 @@ uniform vec2 u_trail_a;
 uniform vec2 u_trail_b;
 uniform float u_pointer_speed;
 uniform float u_pointer_down;
+uniform float u_wake_strength;
 uniform float u_time;
 uniform float u_light_mode;
 
@@ -72,6 +73,13 @@ float ringAt(vec2 point, vec2 centre, float radius, float width) {
   return exp(-pow((distanceToCentre - radius) / width, 2.0));
 }
 
+float distanceToSegment(vec2 point, vec2 start, vec2 end) {
+  vec2 segment = end - start;
+  float lengthSquared = max(dot(segment, segment), 0.0001);
+  float position = clamp(dot(point - start, segment) / lengthSquared, 0.0, 1.0);
+  return length(point - (start + segment * position));
+}
+
 float particleField(vec2 point, float aspect, float time, float turbulence) {
   vec2 centre = vec2(aspect * 0.64, 0.36);
   vec2 local = point - centre;
@@ -106,8 +114,25 @@ void main() {
   // fluid wake visible in the reference rather than translating the whole art.
   float interaction = 0.022 + u_pointer_speed * 0.042 + u_pointer_down * 0.025;
   vec2 flowPoint = warpAround(basePoint, pointer, interaction, u_pointer_speed * 0.027);
-  flowPoint = warpAround(flowPoint, trailA, u_pointer_speed * 0.023, -u_pointer_speed * 0.012);
-  flowPoint = warpAround(flowPoint, trailB, u_pointer_speed * 0.013, u_pointer_speed * 0.008);
+  flowPoint = warpAround(flowPoint, trailA, u_wake_strength * 0.021, -u_wake_strength * 0.011);
+  flowPoint = warpAround(flowPoint, trailB, u_wake_strength * 0.012, u_wake_strength * 0.007);
+
+  // Treat the delayed samples as a curved velocity ribbon. It gently advects
+  // particle coordinates along the travelled path instead of painting a thick
+  // trail over the interface.
+  vec2 wakeVector = pointer - trailB;
+  float wakeLength = max(length(wakeVector), 0.0001);
+  vec2 wakeDirection = wakeVector / wakeLength;
+  vec2 wakeNormal = vec2(-wakeDirection.y, wakeDirection.x);
+  float firstSegment = distanceToSegment(basePoint, pointer, trailA);
+  float secondSegment = distanceToSegment(basePoint, trailA, trailB);
+  float wakeRibbon = exp(-(firstSegment * firstSegment) / 0.0032);
+  wakeRibbon += exp(-(secondSegment * secondSegment) / 0.0045) * 0.58;
+  wakeRibbon *= u_wake_strength * smoothstep(0.012, 0.14, wakeLength);
+  float wakePosition = dot(basePoint - trailB, wakeDirection) / wakeLength;
+  float wakeWave = sin(wakePosition * 9.0 - time * 5.0);
+  flowPoint -= wakeDirection * wakeRibbon * 0.01;
+  flowPoint += wakeNormal * wakeWave * wakeRibbon * 0.012;
 
   float turbulence = (fbm(flowPoint * 1.18 + vec2(time * 0.15, -time * 0.08)) - 0.5) * 0.27;
   float upperMass = gaussianBand(flowPoint, 0.02, 0.32, 1.1, time, turbulence);
@@ -122,8 +147,8 @@ void main() {
   float pointerDistance = length(basePoint - pointer);
   float ringRadius = 0.052 + u_pointer_speed * 0.045 + u_pointer_down * 0.022;
   float pointerRing = ringAt(basePoint, pointer, ringRadius, 0.009 + u_pointer_speed * 0.006);
-  float wakeRings = ringAt(basePoint, trailA, 0.047, 0.011) * u_pointer_speed * 0.58;
-  wakeRings += ringAt(basePoint, trailB, 0.043, 0.012) * u_pointer_speed * 0.3;
+  float wakeRings = ringAt(basePoint, trailA, 0.047, 0.011) * u_wake_strength * 0.5;
+  wakeRings += ringAt(basePoint, trailB, 0.043, 0.012) * u_wake_strength * 0.26;
   float dimple = exp(-(pointerDistance * pointerDistance) / 0.0025);
 
   vec3 deepNavy = vec3(0.004, 0.012, 0.027);
@@ -138,6 +163,7 @@ void main() {
   darkColour += iceBlue * pow(brightFold, 2.4) * (0.18 + surfaceNoise * 0.18);
   darkColour += pearl * pow(brightFold, 6.0) * (0.06 + surfaceNoise * 0.1);
   darkColour += vec3(0.15, 0.32, 0.47) * particles * (0.26 + upperMass * 0.2);
+  darkColour += bodyBlue * wakeRibbon * (0.045 + surfaceNoise * 0.035);
 
   // Bright rim plus a darker centre reads as a pressure dimple. A moving
   // pointer stretches that dimple into two progressively softer rings.
@@ -160,6 +186,7 @@ void main() {
   float ringInk = clamp(pointerRing * (0.22 + u_pointer_speed * 0.5) + wakeRings * 0.38, 0.0, 0.72);
   lightColour = mix(lightColour, blueprint, particleInk);
   lightColour = mix(lightColour, blueprint, ringInk);
+  lightColour = mix(lightColour, softBlue, clamp(wakeRibbon * 0.07, 0.0, 0.12));
   lightColour = mix(lightColour, vec3(0.91, 0.95, 0.97), dimple * (0.1 + u_pointer_down * 0.12));
 
   float horizontalVignette = 1.0 - smoothstep(0.5, 1.4, abs(uv.x - 0.53) * 1.35);
@@ -270,6 +297,7 @@ export function createAmbientFlow(
   const trailBUniform = gl.getUniformLocation(program, "u_trail_b");
   const pointerSpeed = gl.getUniformLocation(program, "u_pointer_speed");
   const pointerDown = gl.getUniformLocation(program, "u_pointer_down");
+  const wakeStrength = gl.getUniformLocation(program, "u_wake_strength");
   const time = gl.getUniformLocation(program, "u_time");
   const lightMode = gl.getUniformLocation(program, "u_light_mode");
 
@@ -285,6 +313,7 @@ export function createAmbientFlow(
     targetY: 0.3,
     speed: 0,
     targetSpeed: 0,
+    wakeStrength: 0,
     pressure: 0,
     targetPressure: 0,
   };
@@ -297,13 +326,13 @@ export function createAmbientFlow(
     const isCompactViewport = viewportWidth < 768;
     const qualityCap = isSoftwareRenderer
       ? isCompactViewport
-        ? 0.42
-        : 0.5
+        ? 0.36
+        : 0.4
       : isCompactViewport
         ? 0.6
         : 0.72;
-    const maximumWidth = isSoftwareRenderer ? 800 : 1152;
-    const maximumHeight = isSoftwareRenderer ? 450 : 648;
+    const maximumWidth = isSoftwareRenderer ? 640 : 1152;
+    const maximumHeight = isSoftwareRenderer ? 360 : 648;
     const scale = Math.min(
       window.devicePixelRatio || 1,
       qualityCap,
@@ -337,6 +366,10 @@ export function createAmbientFlow(
     cursor.x = nextX;
     cursor.y = nextY;
     cursor.targetSpeed = Math.max(cursor.targetSpeed, Math.min(distance * 11, 1));
+    cursor.wakeStrength = Math.max(
+      cursor.wakeStrength,
+      Math.min(distance * 8, 1),
+    );
   }
 
   function onPointerMove(event: PointerEvent) {
@@ -375,6 +408,9 @@ export function createAmbientFlow(
       return;
     }
 
+    const frameDelta = previousFrame === 0
+      ? 1 / 60
+      : Math.min((timestamp - previousFrame) * 0.001, 0.1);
     previousFrame = timestamp;
     trailA.x += (cursor.x - trailA.x) * 0.09;
     trailA.y += (cursor.y - trailA.y) * 0.09;
@@ -382,6 +418,10 @@ export function createAmbientFlow(
     trailB.y += (trailA.y - trailB.y) * 0.055;
     cursor.speed += (cursor.targetSpeed - cursor.speed) * 0.2;
     cursor.targetSpeed *= 0.72;
+    cursor.wakeStrength = Math.max(
+      cursor.speed,
+      cursor.wakeStrength * Math.exp(-frameDelta * 2.15),
+    );
     cursor.pressure += (cursor.targetPressure - cursor.pressure) * 0.16;
 
     gl.useProgram(program);
@@ -394,6 +434,7 @@ export function createAmbientFlow(
     gl.uniform2f(trailBUniform, trailB.x, trailB.y);
     gl.uniform1f(pointerSpeed, cursor.speed);
     gl.uniform1f(pointerDown, cursor.pressure);
+    gl.uniform1f(wakeStrength, cursor.wakeStrength);
     gl.uniform1f(time, timestamp * 0.001);
     gl.uniform1f(lightMode, theme === "day" ? 1 : 0);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
