@@ -1,0 +1,403 @@
+const VERTEX_SHADER_SOURCE = `
+attribute vec2 a_position;
+varying vec2 v_uv;
+
+void main() {
+  v_uv = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}
+`;
+
+const FRAGMENT_SHADER_SOURCE = `
+precision highp float;
+
+varying vec2 v_uv;
+uniform vec2 u_resolution;
+uniform vec2 u_pointer;
+uniform vec2 u_trail_a;
+uniform vec2 u_trail_b;
+uniform float u_pointer_speed;
+uniform float u_pointer_down;
+uniform float u_time;
+uniform float u_light_mode;
+
+float hash(vec2 point) {
+  return fract(sin(dot(point, vec2(127.1, 311.7))) * 43758.5453123);
+}
+
+float noise(vec2 point) {
+  vec2 cell = floor(point);
+  vec2 local = fract(point);
+  local = local * local * (3.0 - 2.0 * local);
+
+  return mix(
+    mix(hash(cell), hash(cell + vec2(1.0, 0.0)), local.x),
+    mix(hash(cell + vec2(0.0, 1.0)), hash(cell + vec2(1.0, 1.0)), local.x),
+    local.y
+  );
+}
+
+float fbm(vec2 point) {
+  float result = 0.0;
+  float amplitude = 0.5;
+
+  for (int index = 0; index < 4; index++) {
+    result += amplitude * noise(point);
+    point = point * 2.03 + vec2(17.3, 9.2);
+    amplitude *= 0.5;
+  }
+
+  return result;
+}
+
+float gaussianBand(vec2 point, float centre, float width, float phase, float time, float turbulence) {
+  float broadWave = sin(point.x * 1.18 + phase + time * 0.72) * 0.09;
+  float fineWave = sin(point.x * 2.7 - phase + time * 0.34) * 0.035;
+  float axis = centre + broadWave + fineWave + turbulence;
+  return exp(-pow(abs(point.y - axis) / width, 2.0));
+}
+
+vec2 warpAround(vec2 point, vec2 centre, float pull, float swirl) {
+  vec2 delta = point - centre;
+  float distanceToCentre = max(length(delta), 0.0001);
+  float influence = exp(-(distanceToCentre * distanceToCentre) / 0.018);
+  vec2 normal = delta / distanceToCentre;
+  vec2 tangent = vec2(-normal.y, normal.x);
+
+  return point - normal * influence * pull + tangent * influence * swirl;
+}
+
+float ringAt(vec2 point, vec2 centre, float radius, float width) {
+  float distanceToCentre = length(point - centre);
+  return exp(-pow((distanceToCentre - radius) / width, 2.0));
+}
+
+float particleField(vec2 point, float aspect, float time, float turbulence) {
+  vec2 centre = vec2(aspect * 0.64, 0.36);
+  vec2 local = point - centre;
+  float angle = atan(local.y, local.x);
+  float radius = length(local * vec2(0.73, 1.34));
+
+  local += vec2(
+    sin(angle * 3.0 + radius * 14.0 - time * 1.5) * 0.027,
+    cos(angle * 2.0 - radius * 17.0 + time) * 0.022
+  );
+  local += vec2(turbulence * 0.18, turbulence * 0.09);
+
+  vec2 lattice = fract(local * vec2(72.0, 78.0)) - 0.5;
+  float dotShape = 1.0 - smoothstep(0.065, 0.145, length(lattice));
+  float brokenEdge = (noise(local * 3.4 + time * 0.08) - 0.5) * 0.19;
+  float mask = 1.0 - smoothstep(0.32, 0.67, radius + brokenEdge);
+  float shimmer = 0.55 + 0.45 * noise(floor(local * vec2(72.0, 78.0)) * 0.17 + time * 0.18);
+
+  return dotShape * mask * shimmer;
+}
+
+void main() {
+  float aspect = u_resolution.x / u_resolution.y;
+  vec2 uv = vec2(v_uv.x, 1.0 - v_uv.y);
+  vec2 basePoint = vec2(uv.x * aspect, uv.y);
+  vec2 pointer = vec2(u_pointer.x * aspect, u_pointer.y);
+  vec2 trailA = vec2(u_trail_a.x * aspect, u_trail_a.y);
+  vec2 trailB = vec2(u_trail_b.x * aspect, u_trail_b.y);
+  float time = u_time * 0.16;
+
+  // The pointer dents the field locally. Two slower samples create the short,
+  // fluid wake visible in the reference rather than translating the whole art.
+  float interaction = 0.022 + u_pointer_speed * 0.042 + u_pointer_down * 0.025;
+  vec2 flowPoint = warpAround(basePoint, pointer, interaction, u_pointer_speed * 0.027);
+  flowPoint = warpAround(flowPoint, trailA, u_pointer_speed * 0.023, -u_pointer_speed * 0.012);
+  flowPoint = warpAround(flowPoint, trailB, u_pointer_speed * 0.013, u_pointer_speed * 0.008);
+
+  float turbulence = (fbm(flowPoint * 1.18 + vec2(time * 0.15, -time * 0.08)) - 0.5) * 0.27;
+  float upperMass = gaussianBand(flowPoint, 0.02, 0.32, 1.1, time, turbulence);
+  float middleFold = gaussianBand(flowPoint, 0.19, 0.17, 3.7, time + 1.2, turbulence * 0.72);
+  float brightFold = gaussianBand(flowPoint, 0.10, 0.105, 5.4, time - 0.8, turbulence * 0.48);
+  float lowerVeil = gaussianBand(flowPoint, 0.34, 0.24, 2.3, time + 2.2, turbulence * 0.55);
+  float surfaceNoise = fbm(flowPoint * 2.05 + vec2(-time * 0.08, time * 0.05));
+  float particles = particleField(flowPoint, aspect, time, turbulence);
+
+  float pointerDistance = length(basePoint - pointer);
+  float ringRadius = 0.052 + u_pointer_speed * 0.045 + u_pointer_down * 0.022;
+  float pointerRing = ringAt(basePoint, pointer, ringRadius, 0.009 + u_pointer_speed * 0.006);
+  float wakeRings = ringAt(basePoint, trailA, 0.047, 0.011) * u_pointer_speed * 0.58;
+  wakeRings += ringAt(basePoint, trailB, 0.043, 0.012) * u_pointer_speed * 0.3;
+  float dimple = exp(-(pointerDistance * pointerDistance) / 0.0025);
+
+  vec3 deepNavy = vec3(0.004, 0.012, 0.027);
+  vec3 hazeBlue = vec3(0.018, 0.115, 0.255);
+  vec3 bodyBlue = vec3(0.095, 0.31, 0.60);
+  vec3 iceBlue = vec3(0.48, 0.70, 0.88);
+  vec3 pearl = vec3(0.73, 0.84, 0.91);
+  vec3 darkColour = mix(vec3(0.014, 0.074, 0.16), deepNavy, smoothstep(0.12, 0.92, uv.y));
+
+  darkColour += hazeBlue * (upperMass * 0.5 + lowerVeil * 0.24);
+  darkColour += bodyBlue * (upperMass * 0.38 + middleFold * 0.62);
+  darkColour += iceBlue * pow(brightFold, 2.4) * (0.28 + surfaceNoise * 0.32);
+  darkColour += pearl * pow(brightFold, 6.0) * (0.12 + surfaceNoise * 0.2);
+  darkColour += vec3(0.28, 0.61, 0.96) * particles * (0.48 + upperMass * 0.4);
+
+  // Bright rim plus a darker centre reads as a pressure dimple. A moving
+  // pointer stretches that dimple into two progressively softer rings.
+  darkColour += iceBlue * (pointerRing * (0.18 + u_pointer_speed * 0.4) + wakeRings * 0.32);
+  darkColour -= vec3(0.035, 0.10, 0.18) * dimple * (0.22 + u_pointer_down * 0.38);
+
+  // Light mode uses the same geometry with a purpose-built paper palette.
+  // Dark dots and pressure rings retain definition without compromising the
+  // foreground's Ink-on-Paper contrast.
+  vec3 paper = vec3(0.957, 0.953, 0.933);
+  vec3 paleSteel = vec3(0.70, 0.82, 0.91);
+  vec3 softBlue = vec3(0.48, 0.68, 0.84);
+  vec3 blueprint = vec3(0.08, 0.28, 0.48);
+  vec3 lightColour = mix(vec3(0.82, 0.89, 0.95), paper, smoothstep(0.12, 0.92, uv.y));
+
+  lightColour = mix(lightColour, paleSteel, upperMass * 0.34 + lowerVeil * 0.1);
+  lightColour = mix(lightColour, softBlue, middleFold * 0.2);
+  lightColour += vec3(0.12, 0.15, 0.16) * pow(brightFold, 4.0) * (0.08 + surfaceNoise * 0.08);
+  float particleInk = clamp(particles * (0.44 + upperMass * 0.18), 0.0, 0.7);
+  float ringInk = clamp(pointerRing * (0.22 + u_pointer_speed * 0.5) + wakeRings * 0.38, 0.0, 0.72);
+  lightColour = mix(lightColour, blueprint, particleInk);
+  lightColour = mix(lightColour, blueprint, ringInk);
+  lightColour = mix(lightColour, vec3(0.91, 0.95, 0.97), dimple * (0.1 + u_pointer_down * 0.12));
+
+  float horizontalVignette = 1.0 - smoothstep(0.5, 1.4, abs(uv.x - 0.53) * 1.35);
+  darkColour *= 0.84 + horizontalVignette * 0.16;
+  lightColour *= 0.96 + horizontalVignette * 0.04;
+
+  // Fade into the site rather than ending at a rectangular canvas edge.
+  float pageFade = 1.0 - smoothstep(0.48, 0.98, uv.y);
+  darkColour = mix(deepNavy, darkColour, pageFade);
+  lightColour = mix(paper, lightColour, pageFade);
+  vec3 colour = mix(darkColour, lightColour, u_light_mode);
+
+  gl_FragColor = vec4(max(colour, vec3(0.0)), 1.0);
+}
+`;
+
+function compileShader(
+  gl: WebGLRenderingContext,
+  type: number,
+  source: string,
+) {
+  const shader = gl.createShader(type);
+  if (!shader) throw new Error("Unable to create the ambient-flow shader.");
+
+  gl.shaderSource(shader, source);
+  gl.compileShader(shader);
+
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    const info = gl.getShaderInfoLog(shader) ?? "Unknown shader error";
+    gl.deleteShader(shader);
+    throw new Error(info);
+  }
+
+  return shader;
+}
+
+/**
+ * Starts the interactive shader backdrop. It is deliberately a single-pass
+ * renderer: the pointer still creates a convincing local wake without the
+ * memory cost and compatibility risks of a multi-buffer fluid solver.
+ */
+export function createAmbientFlow(
+  canvas: HTMLCanvasElement,
+  theme: "day" | "night",
+) {
+  const context = canvas.getContext("webgl", {
+    alpha: false,
+    antialias: false,
+    depth: false,
+    powerPreference: "high-performance",
+    preserveDrawingBuffer: false,
+    stencil: false,
+  });
+
+  if (!context) return null;
+  const gl = context as WebGLRenderingContext;
+
+  const vertexShader = compileShader(gl, gl.VERTEX_SHADER, VERTEX_SHADER_SOURCE);
+  const fragmentShader = compileShader(gl, gl.FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE);
+  const program = gl.createProgram();
+
+  if (!program) {
+    gl.deleteShader(vertexShader);
+    gl.deleteShader(fragmentShader);
+    throw new Error("Unable to create the ambient-flow program.");
+  }
+
+  gl.attachShader(program, vertexShader);
+  gl.attachShader(program, fragmentShader);
+  gl.linkProgram(program);
+  gl.deleteShader(vertexShader);
+  gl.deleteShader(fragmentShader);
+
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    const info = gl.getProgramInfoLog(program) ?? "Unknown program error";
+    gl.deleteProgram(program);
+    throw new Error(info);
+  }
+
+  const buffer = gl.createBuffer();
+  if (!buffer) {
+    gl.deleteProgram(program);
+    throw new Error("Unable to create the ambient-flow geometry.");
+  }
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.bufferData(
+    gl.ARRAY_BUFFER,
+    new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
+    gl.STATIC_DRAW,
+  );
+
+  const position = gl.getAttribLocation(program, "a_position");
+  const resolution = gl.getUniformLocation(program, "u_resolution");
+  const pointer = gl.getUniformLocation(program, "u_pointer");
+  const trailAUniform = gl.getUniformLocation(program, "u_trail_a");
+  const trailBUniform = gl.getUniformLocation(program, "u_trail_b");
+  const pointerSpeed = gl.getUniformLocation(program, "u_pointer_speed");
+  const pointerDown = gl.getUniformLocation(program, "u_pointer_down");
+  const time = gl.getUniformLocation(program, "u_time");
+  const lightMode = gl.getUniformLocation(program, "u_light_mode");
+
+  let disposed = false;
+  let contextLost = false;
+  let frame = 0;
+  let previousFrame = 0;
+  const cursor = {
+    x: 0.68,
+    y: 0.3,
+    targetX: 0.68,
+    targetY: 0.3,
+    speed: 0,
+    targetSpeed: 0,
+    pressure: 0,
+    targetPressure: 0,
+  };
+  const trailA = { x: cursor.x, y: cursor.y };
+  const trailB = { x: cursor.x, y: cursor.y };
+
+  function resize() {
+    const viewportWidth = Math.max(window.innerWidth, 1);
+    const viewportHeight = Math.max(window.innerHeight, 1);
+    const qualityCap = viewportWidth < 768 ? 0.78 : 0.9;
+    const scale = Math.min(
+      window.devicePixelRatio || 1,
+      qualityCap,
+      1440 / viewportWidth,
+      900 / viewportHeight,
+    );
+    const width = Math.max(1, Math.floor(viewportWidth * scale));
+    const height = Math.max(1, Math.floor(viewportHeight * scale));
+
+    if (canvas.width !== width || canvas.height !== height) {
+      canvas.width = width;
+      canvas.height = height;
+    }
+
+    gl.viewport(0, 0, width, height);
+  }
+
+  function updatePointer(event: PointerEvent) {
+    const nextX = Math.min(Math.max(event.clientX / Math.max(window.innerWidth, 1), 0), 1);
+    const nextY = Math.min(Math.max(event.clientY / Math.max(window.innerHeight, 1), 0), 1);
+    const aspect = Math.max(window.innerWidth, 1) / Math.max(window.innerHeight, 1);
+    const distance = Math.hypot((nextX - cursor.targetX) * aspect, nextY - cursor.targetY);
+
+    cursor.targetX = nextX;
+    cursor.targetY = nextY;
+    cursor.targetSpeed = Math.max(cursor.targetSpeed, Math.min(distance * 11, 1));
+  }
+
+  function onPointerMove(event: PointerEvent) {
+    updatePointer(event);
+  }
+
+  function onPointerDown(event: PointerEvent) {
+    updatePointer(event);
+    cursor.targetPressure = 1;
+    cursor.targetSpeed = Math.max(cursor.targetSpeed, 0.72);
+  }
+
+  function onPointerUp() {
+    cursor.targetPressure = 0;
+  }
+
+  function onContextLost(event: Event) {
+    event.preventDefault();
+    contextLost = true;
+    canvas.dataset.ambientState = "unavailable";
+    window.cancelAnimationFrame(frame);
+    frame = 0;
+  }
+
+  function render(timestamp: number) {
+    if (disposed || contextLost || document.hidden) {
+      frame = 0;
+      return;
+    }
+
+    if (timestamp - previousFrame < 1000 / 30) {
+      frame = window.requestAnimationFrame(render);
+      return;
+    }
+
+    previousFrame = timestamp;
+    cursor.x += (cursor.targetX - cursor.x) * 0.18;
+    cursor.y += (cursor.targetY - cursor.y) * 0.18;
+    trailA.x += (cursor.x - trailA.x) * 0.09;
+    trailA.y += (cursor.y - trailA.y) * 0.09;
+    trailB.x += (trailA.x - trailB.x) * 0.055;
+    trailB.y += (trailA.y - trailB.y) * 0.055;
+    cursor.speed += (cursor.targetSpeed - cursor.speed) * 0.2;
+    cursor.targetSpeed *= 0.72;
+    cursor.pressure += (cursor.targetPressure - cursor.pressure) * 0.16;
+
+    gl.useProgram(program);
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.enableVertexAttribArray(position);
+    gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+    gl.uniform2f(resolution, canvas.width, canvas.height);
+    gl.uniform2f(pointer, cursor.x, cursor.y);
+    gl.uniform2f(trailAUniform, trailA.x, trailA.y);
+    gl.uniform2f(trailBUniform, trailB.x, trailB.y);
+    gl.uniform1f(pointerSpeed, cursor.speed);
+    gl.uniform1f(pointerDown, cursor.pressure);
+    gl.uniform1f(time, timestamp * 0.001);
+    gl.uniform1f(lightMode, theme === "day" ? 1 : 0);
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+    frame = window.requestAnimationFrame(render);
+  }
+
+  function onVisibilityChange() {
+    if (!disposed && !contextLost && !document.hidden && frame === 0) {
+      previousFrame = 0;
+      frame = window.requestAnimationFrame(render);
+    }
+  }
+
+  resize();
+  window.addEventListener("resize", resize, { passive: true });
+  window.addEventListener("pointermove", onPointerMove, { passive: true });
+  window.addEventListener("pointerdown", onPointerDown, { passive: true });
+  window.addEventListener("pointerup", onPointerUp, { passive: true });
+  window.addEventListener("pointercancel", onPointerUp, { passive: true });
+  canvas.addEventListener("webglcontextlost", onContextLost);
+  document.addEventListener("visibilitychange", onVisibilityChange);
+  frame = window.requestAnimationFrame(render);
+
+  return () => {
+    disposed = true;
+    window.cancelAnimationFrame(frame);
+    window.removeEventListener("resize", resize);
+    window.removeEventListener("pointermove", onPointerMove);
+    window.removeEventListener("pointerdown", onPointerDown);
+    window.removeEventListener("pointerup", onPointerUp);
+    window.removeEventListener("pointercancel", onPointerUp);
+    canvas.removeEventListener("webglcontextlost", onContextLost);
+    document.removeEventListener("visibilitychange", onVisibilityChange);
+    gl.deleteBuffer(buffer);
+    gl.deleteProgram(program);
+  };
+}

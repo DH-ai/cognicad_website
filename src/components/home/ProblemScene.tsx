@@ -51,7 +51,7 @@ export default function ProblemScene() {
   return (
     <section
       ref={sectionRef}
-      className="relative lg:min-h-[100svh] flex items-center bg-canvas overflow-hidden border-t border-line"
+      className="ambient-flow-continuation relative lg:min-h-[100svh] flex items-center bg-canvas overflow-hidden border-t border-line"
     >
       {/* Fragmented tool panels — decorative, desktop only */}
       <div className="absolute inset-y-0 left-0 w-[42%] hidden lg:block" aria-hidden="true">

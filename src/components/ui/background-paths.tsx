@@ -38,14 +38,15 @@ export function BackgroundPaths({
 
         <div className="relative max-w-[62rem]">
           <motion.p
+            aria-label="Field 01 — Interactive cognition"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, ease: EASE }}
-            className="type-tech text-muted mb-8 md:mb-12 flex items-center gap-3"
+            className="hero-figure-label type-tech mb-8 md:mb-12 inline-flex items-center"
           >
-            <span>Fig. 01</span>
-            <span aria-hidden="true" className="h-px w-6 bg-line-strong" />
-            <span>Cognitive engineering system</span>
+            <span className="hero-figure-index">Field 01</span>
+            <span aria-hidden="true" className="hero-figure-pulse" />
+            <span className="hero-figure-copy">Interactive cognition</span>
           </motion.p>
 
           <motion.h1
