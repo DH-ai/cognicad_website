@@ -20,7 +20,7 @@ function Badge({ sponsor }: { sponsor: Sponsor }) {
     <img
       src={`/sponsors/${sponsor.badge}`}
       alt={label}
-      className="sponsor-badge h-12 sm:h-14 md:h-16 w-auto max-w-[160px] object-contain"
+      className="sponsor-badge h-16 sm:h-20 md:h-24 w-auto max-w-[220px] object-contain"
     />
   ) : (
     <span className="text-base text-muted">{label}</span>
@@ -33,13 +33,13 @@ function Badge({ sponsor }: { sponsor: Sponsor }) {
         target="_blank"
         rel="noopener noreferrer"
         aria-label={label}
-        className="flex items-center justify-center px-2 py-2 rounded-[4px] opacity-80 hover:opacity-100 transition-opacity duration-[180ms]"
+        className="flex items-center justify-center px-2 py-2 rounded-[4px] opacity-90 hover:opacity-100 transition-opacity duration-[180ms]"
       >
         {content}
       </a>
     );
   }
-  return <div className="flex items-center justify-center px-2 py-2 opacity-80">{content}</div>;
+  return <div className="flex items-center justify-center px-2 py-2 opacity-90">{content}</div>;
 }
 
 export default function SponsorTicker({ sponsors }: { sponsors: Sponsor[] }) {

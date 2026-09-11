@@ -38,8 +38,8 @@
 
   /* Construction lines: Line at ~16% Ink on Paper/White */
   --draft: rgba(16, 22, 25, 0.16);
-  --draft-strong: rgba(16, 22, 25, 0.32);
-  --draft-on-blue: rgba(255, 255, 255, 0.35);
+  --draft-strong: rgba(13, 18, 20, 0.32);
+  --draft-on-blue: rgba(251, 247, 247, 0.738);
   --grid-line: rgba(16, 22, 25, 0.07);
 
   /* Primary button: Ink with Paper text */
@@ -82,8 +82,8 @@
   --accent-soft: var(--blue-light);
   --focus: var(--datum);
 
-  --draft: var(--line);
-  --draft-strong: #3A4A47;
+  --draft: rgba(127, 169, 209, 0.24);
+  --draft-strong: rgba(127, 169, 209, 0.52);
   --draft-on-blue: rgba(255, 255, 255, 0.35);
   --grid-line: rgba(233, 239, 236, 0.06);
 
@@ -168,42 +168,6 @@ body {
 .fluid-background {
   z-index: 0;
   background: var(--canvas);
-}
-
-.hero-figure-label {
-  gap: 0.625rem;
-  padding: 0.375rem 0.625rem 0.375rem 0.375rem;
-  color: var(--fg);
-  border: 1px solid var(--draft-strong);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--canvas) 84%, transparent);
-  box-shadow: 0 8px 28px color-mix(in srgb, var(--canvas) 24%, transparent);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-.hero-figure-index {
-  padding: 0.25rem 0.5rem;
-  border-radius: 999px;
-  color: var(--canvas);
-  background: var(--fg);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-}
-
-.hero-figure-pulse {
-  width: 0.375rem;
-  height: 0.375rem;
-  border-radius: 999px;
-  background: var(--focus);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus) 18%, transparent);
-}
-
-.hero-figure-copy {
-  padding-right: 0.125rem;
-  font-weight: 550;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 [data-theme="day"] .hero-fluid-surface {
@@ -506,6 +470,45 @@ body {
   box-shadow: inset 0 0 0 1px var(--accent);
 }
 
+.hero-beta-cta {
+  gap: 0.625rem;
+  padding-left: 1rem;
+  padding-right: 0.625rem;
+}
+
+.cta-label {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.cta-date {
+  padding: 0.5rem 0.625rem;
+  border-radius: 2px;
+  background: color-mix(in srgb, currentColor 8%, transparent);
+  opacity: 0.78;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
+}
+
+.cta-arrow {
+  display: inline-grid;
+  width: 1.5rem;
+  height: 1.5rem;
+  place-items: center;
+  font-size: 1rem;
+  line-height: 1;
+  opacity: 0.82;
+  transition: transform var(--dur) var(--ease);
+}
+
+.hero-beta-cta:hover .cta-arrow {
+  transform: translateX(2px);
+}
+
 .btn-secondary {
   background: transparent;
   border-color: var(--border-strong);
@@ -781,13 +784,17 @@ html.lenis body {
   animation-play-state: paused;
 }
 
-/* Monochrome partner marks; inverted on Night so they stay legible */
+/* Monochrome partner marks; metallic source art is lifted on Night. */
 .sponsor-badge {
   filter: grayscale(1);
 }
 
 [data-theme="night"] .sponsor-badge {
-  filter: grayscale(1) invert(1) brightness(1.25);
+  filter:
+    grayscale(1)
+    brightness(1.45)
+    contrast(0.92)
+    drop-shadow(0 0 10px rgba(127, 169, 209, 0.12));
 }
 
 /* ──────────────────────────────────────

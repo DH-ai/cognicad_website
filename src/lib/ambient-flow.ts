@@ -125,22 +125,22 @@ void main() {
   float dimple = exp(-(pointerDistance * pointerDistance) / 0.0025);
 
   vec3 deepNavy = vec3(0.004, 0.012, 0.027);
-  vec3 hazeBlue = vec3(0.018, 0.115, 0.255);
-  vec3 bodyBlue = vec3(0.095, 0.31, 0.60);
-  vec3 iceBlue = vec3(0.48, 0.70, 0.88);
-  vec3 pearl = vec3(0.73, 0.84, 0.91);
-  vec3 darkColour = mix(vec3(0.014, 0.074, 0.16), deepNavy, smoothstep(0.12, 0.92, uv.y));
+  vec3 hazeBlue = vec3(0.012, 0.055, 0.12);
+  vec3 bodyBlue = vec3(0.04, 0.13, 0.25);
+  vec3 iceBlue = vec3(0.24, 0.38, 0.52);
+  vec3 pearl = vec3(0.40, 0.50, 0.56);
+  vec3 darkColour = mix(vec3(0.008, 0.032, 0.068), deepNavy, smoothstep(0.12, 0.92, uv.y));
 
-  darkColour += hazeBlue * (upperMass * 0.5 + lowerVeil * 0.24);
-  darkColour += bodyBlue * (upperMass * 0.38 + middleFold * 0.62);
-  darkColour += iceBlue * pow(brightFold, 2.4) * (0.28 + surfaceNoise * 0.32);
-  darkColour += pearl * pow(brightFold, 6.0) * (0.12 + surfaceNoise * 0.2);
-  darkColour += vec3(0.28, 0.61, 0.96) * particles * (0.48 + upperMass * 0.4);
+  darkColour += hazeBlue * (upperMass * 0.36 + lowerVeil * 0.16);
+  darkColour += bodyBlue * (upperMass * 0.26 + middleFold * 0.44);
+  darkColour += iceBlue * pow(brightFold, 2.4) * (0.18 + surfaceNoise * 0.18);
+  darkColour += pearl * pow(brightFold, 6.0) * (0.06 + surfaceNoise * 0.1);
+  darkColour += vec3(0.15, 0.32, 0.47) * particles * (0.26 + upperMass * 0.2);
 
   // Bright rim plus a darker centre reads as a pressure dimple. A moving
   // pointer stretches that dimple into two progressively softer rings.
-  darkColour += iceBlue * (pointerRing * (0.18 + u_pointer_speed * 0.4) + wakeRings * 0.32);
-  darkColour -= vec3(0.035, 0.10, 0.18) * dimple * (0.22 + u_pointer_down * 0.38);
+  darkColour += iceBlue * (pointerRing * (0.1 + u_pointer_speed * 0.22) + wakeRings * 0.2);
+  darkColour -= vec3(0.025, 0.07, 0.13) * dimple * (0.16 + u_pointer_down * 0.26);
 
   // Light mode uses the same geometry with a purpose-built paper palette.
   // Dark dots and pressure rings retain definition without compromising the

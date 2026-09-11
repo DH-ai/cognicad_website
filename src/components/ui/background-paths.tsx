@@ -15,6 +15,7 @@ export function BackgroundPaths({
   title = "JusCAD",
   ctaLabel = "Join the beta",
   ctaHref = "/beta",
+  ctaDate = "October 15",
   subtitle,
   subtitle2,
   sponsors,
@@ -24,6 +25,7 @@ export function BackgroundPaths({
   ctaHref?: string;
   subtitle?: string;
   subtitle2?: string;
+  ctaDate?: string;
   sponsors?: Sponsor[];
 }) {
   return (
@@ -38,15 +40,14 @@ export function BackgroundPaths({
 
         <div className="relative max-w-[62rem]">
           <motion.p
-            aria-label="Field 01 — Interactive cognition"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, ease: EASE }}
-            className="hero-figure-label type-tech mb-8 md:mb-12 inline-flex items-center"
+            className="type-tech text-muted mb-8 md:mb-12 flex items-center gap-3"
           >
-            <span className="hero-figure-index">Field 01</span>
-            <span aria-hidden="true" className="hero-figure-pulse" />
-            <span className="hero-figure-copy">Interactive cognition</span>
+            <span>Fig. 01</span>
+            <span aria-hidden="true" className="h-px w-6 bg-line-strong" />
+            <span>Cognitive engineering system</span>
           </motion.p>
 
           <motion.h1
@@ -89,11 +90,12 @@ export function BackgroundPaths({
             transition={{ duration: 0.6, ease: EASE, delay: 0.3 }}
             className="mt-8 md:mt-12 flex flex-wrap items-center gap-4"
           >
-            <Link href={ctaHref} className="btn btn-primary">
-              {ctaLabel}
-              <span aria-hidden="true">→</span>
+            <Link href={ctaHref} className="btn btn-primary hero-beta-cta">
+              <span className="cta-label">{ctaLabel}</span>
+              <span className="cta-date">{ctaDate}</span>
+              <span aria-hidden="true" className="cta-arrow">→</span>
             </Link>
-            <Link href="/about" className="btn btn-secondary">
+            <Link href="/about" className="btn btn-secondary type-tech font-semibold">
               About JusCAD
             </Link>
           </motion.div>
