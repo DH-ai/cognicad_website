@@ -27,7 +27,7 @@ export function BackgroundPaths({
   sponsors?: Sponsor[];
 }) {
   return (
-    <section className="relative w-full overflow-hidden bg-canvas">
+    <section className="hero-fluid-surface relative w-full overflow-hidden bg-canvas">
       <div className="container-jc relative min-h-[100svh] flex flex-col justify-center pt-28 pb-16 md:pt-36 md:pb-20">
         {/* Vertical datum — desktop only */}
         <span
