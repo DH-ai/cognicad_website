@@ -41,7 +41,7 @@ float fbm(vec2 point) {
   float result = 0.0;
   float amplitude = 0.5;
 
-  for (int index = 0; index < 4; index++) {
+  for (int index = 0; index < 3; index++) {
     result += amplitude * noise(point);
     point = point * 2.03 + vec2(17.3, 9.2);
     amplitude *= 0.5;
@@ -114,7 +114,9 @@ void main() {
   float middleFold = gaussianBand(flowPoint, 0.19, 0.17, 3.7, time + 1.2, turbulence * 0.72);
   float brightFold = gaussianBand(flowPoint, 0.10, 0.105, 5.4, time - 0.8, turbulence * 0.48);
   float lowerVeil = gaussianBand(flowPoint, 0.34, 0.24, 2.3, time + 2.2, turbulence * 0.55);
-  float surfaceNoise = fbm(flowPoint * 2.05 + vec2(-time * 0.08, time * 0.05));
+  // One noise sample is enough for highlight grain. A second multi-octave FBM
+  // here doubled a large part of the fragment cost without adding useful form.
+  float surfaceNoise = noise(flowPoint * 2.05 + vec2(-time * 0.08, time * 0.05));
   float particles = particleField(flowPoint, aspect, time, turbulence);
 
   float pointerDistance = length(basePoint - pointer);
@@ -214,9 +216,20 @@ export function createAmbientFlow(
 
   if (!context) return null;
   const gl = context as WebGLRenderingContext;
+  const rendererInfo = gl.getExtension("WEBGL_debug_renderer_info");
+  const rendererName = rendererInfo
+    ? String(gl.getParameter(rendererInfo.UNMASKED_RENDERER_WEBGL))
+    : "";
+  const isSoftwareRenderer = /swiftshader|llvmpipe|software/i.test(
+    rendererName,
+  );
+  const fragmentSource = isSoftwareRenderer
+    ? FRAGMENT_SHADER_SOURCE.replace("index < 3", "index < 2")
+    : FRAGMENT_SHADER_SOURCE;
+  canvas.dataset.ambientRenderer = isSoftwareRenderer ? "software" : "hardware";
 
   const vertexShader = compileShader(gl, gl.VERTEX_SHADER, VERTEX_SHADER_SOURCE);
-  const fragmentShader = compileShader(gl, gl.FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE);
+  const fragmentShader = compileShader(gl, gl.FRAGMENT_SHADER, fragmentSource);
   const program = gl.createProgram();
 
   if (!program) {
@@ -264,6 +277,7 @@ export function createAmbientFlow(
   let contextLost = false;
   let frame = 0;
   let previousFrame = 0;
+  let minimumFrameInterval = 0;
   const cursor = {
     x: 0.68,
     y: 0.3,
@@ -280,12 +294,21 @@ export function createAmbientFlow(
   function resize() {
     const viewportWidth = Math.max(window.innerWidth, 1);
     const viewportHeight = Math.max(window.innerHeight, 1);
-    const qualityCap = viewportWidth < 768 ? 0.78 : 0.9;
+    const isCompactViewport = viewportWidth < 768;
+    const qualityCap = isSoftwareRenderer
+      ? isCompactViewport
+        ? 0.42
+        : 0.5
+      : isCompactViewport
+        ? 0.6
+        : 0.72;
+    const maximumWidth = isSoftwareRenderer ? 800 : 1152;
+    const maximumHeight = isSoftwareRenderer ? 450 : 648;
     const scale = Math.min(
       window.devicePixelRatio || 1,
       qualityCap,
-      1440 / viewportWidth,
-      900 / viewportHeight,
+      maximumWidth / viewportWidth,
+      maximumHeight / viewportHeight,
     );
     const width = Math.max(1, Math.floor(viewportWidth * scale));
     const height = Math.max(1, Math.floor(viewportHeight * scale));
@@ -296,6 +319,9 @@ export function createAmbientFlow(
     }
 
     gl.viewport(0, 0, width, height);
+    // Desktop follows requestAnimationFrame at the display refresh rate.
+    // Compact devices retain a 30 FPS ceiling to protect battery and thermals.
+    minimumFrameInterval = isCompactViewport ? 1000 / 30 : 0;
   }
 
   function updatePointer(event: PointerEvent) {
@@ -306,6 +332,10 @@ export function createAmbientFlow(
 
     cursor.targetX = nextX;
     cursor.targetY = nextY;
+    // The pressure dimple should feel attached to the physical pointer. The
+    // two trail samples below are the only intentionally delayed positions.
+    cursor.x = nextX;
+    cursor.y = nextY;
     cursor.targetSpeed = Math.max(cursor.targetSpeed, Math.min(distance * 11, 1));
   }
 
@@ -337,14 +367,15 @@ export function createAmbientFlow(
       return;
     }
 
-    if (timestamp - previousFrame < 1000 / 30) {
+    if (
+      minimumFrameInterval > 0 &&
+      timestamp - previousFrame < minimumFrameInterval
+    ) {
       frame = window.requestAnimationFrame(render);
       return;
     }
 
     previousFrame = timestamp;
-    cursor.x += (cursor.targetX - cursor.x) * 0.18;
-    cursor.y += (cursor.targetY - cursor.y) * 0.18;
     trailA.x += (cursor.x - trailA.x) * 0.09;
     trailA.y += (cursor.y - trailA.y) * 0.09;
     trailB.x += (trailA.x - trailB.x) * 0.055;
