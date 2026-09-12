@@ -26,6 +26,11 @@ export async function getViewer() {
   };
 }
 
+export async function redirectAuthenticatedUser() {
+  const viewer = await getViewer();
+  if (viewer) redirect("/settings");
+}
+
 export async function requireUser() {
   const viewer = await getViewer();
   if (!viewer) redirect("/sign-in?next=/settings");
