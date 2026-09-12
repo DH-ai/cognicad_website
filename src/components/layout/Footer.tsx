@@ -12,13 +12,17 @@ const FOOTER_LINKS = {
     { label: "Join us", href: "/join-us" },
     { label: "Contact", href: "/contact" },
   ],
+  Legal: [
+    { label: "Privacy policy", href: "/privacy" },
+    { label: "Terms", href: "/terms" },
+  ],
 };
 
 export default function Footer() {
   return (
     <footer className="relative z-10 bg-canvas border-t border-line">
       <div className="container-jc py-16 md:py-24">
-        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] gap-12 md:gap-16 mb-16 md:mb-24">
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-12 md:gap-16 mb-16 md:mb-24">
           <div className="flex flex-col gap-6">
             <Link
               href="/"

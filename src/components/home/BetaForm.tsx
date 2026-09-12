@@ -2,6 +2,10 @@
 
 import { useState, useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import Link from "next/link";
+import { SpamProtection } from "@/components/forms/SpamProtection";
+import { betaApplicationSchema } from "@/lib/forms/schemas";
+import { track } from "@vercel/analytics";
 
 type FormState = "idle" | "loading" | "success" | "error";
 
@@ -62,6 +66,9 @@ export default function BetaForm() {
   const isInView = useInView(sectionRef, { amount: 0.1, once: true });
   const [formState, setFormState] = useState<FormState>("idle");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitError, setSubmitError] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const startedAt = useRef(0);
 
   const [fields, setFields] = useState({
     name: "",
@@ -75,10 +82,9 @@ export default function BetaForm() {
   });
 
   function validate() {
+    const result = betaApplicationSchema.safeParse({ ...fields, website: "", startedAt: startedAt.current || Date.now(), turnstileToken });
     const errs: Record<string, string> = {};
-    if (!fields.name.trim()) errs.name = "Name is required.";
-    if (!fields.email.trim() || !fields.email.includes("@"))
-      errs.email = "Valid email is required.";
+    if (!result.success) result.error.issues.forEach((issue) => { const key = String(issue.path[0] ?? "form"); if (!errs[key]) errs[key] = issue.message; });
     return errs;
   }
 
@@ -90,17 +96,21 @@ export default function BetaForm() {
       return;
     }
     setErrors({});
+    setSubmitError("");
     setFormState("loading");
 
     try {
       const res = await fetch("/api/beta", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(fields),
+        body: JSON.stringify({ ...fields, website: "", startedAt: startedAt.current || Date.now(), turnstileToken }),
       });
-      if (!res.ok) throw new Error("Failed");
+      const result = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(result.error ?? "Submission failed.");
+      track("beta_form_submitted");
       setFormState("success");
-    } catch {
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : "Submission failed.");
       setFormState("error");
     }
   }
@@ -163,6 +173,7 @@ export default function BetaForm() {
             ) : (
               <form
                 onSubmit={handleSubmit}
+                onFocusCapture={() => { if (!startedAt.current) startedAt.current = Date.now(); }}
                 noValidate
                 className="panel p-6 md:p-10 flex flex-col gap-8"
               >
@@ -320,9 +331,11 @@ export default function BetaForm() {
                 {formState === "error" && (
                   <p className="status status-error" role="alert">
                     <span aria-hidden="true">✕</span>
-                    Submission failed. Please try again or reach out directly.
+                    {submitError || "Submission failed. Please try again or reach out directly."}
                   </p>
                 )}
+
+                <SpamProtection onToken={setTurnstileToken} />
 
                 <div className="pt-2">
                   <button
@@ -332,6 +345,7 @@ export default function BetaForm() {
                   >
                     {formState === "loading" ? "Submitting…" : "Request access"}
                   </button>
+                  <p className="field-help mt-4">By requesting access, you agree to our <Link href="/terms" className="underline underline-offset-4">Terms</Link> and <Link href="/privacy" className="underline underline-offset-4">Privacy Policy</Link>.</p>
                 </div>
               </form>
             )}

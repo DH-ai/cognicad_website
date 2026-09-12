@@ -50,6 +50,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     // read it back so React state matches the DOM.
     const fromDom = normalize(document.documentElement.dataset.theme);
     if (fromDom) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTheme(fromDom);
       return;
     }

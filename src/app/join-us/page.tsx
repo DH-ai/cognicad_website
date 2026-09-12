@@ -1,6 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import Link from "next/link";
+import { SpamProtection } from "@/components/forms/SpamProtection";
+import { jobApplicationSchema } from "@/lib/forms/schemas";
+import { track } from "@vercel/analytics";
 
 const OPEN_ROLES = [
   // {
@@ -77,6 +81,9 @@ type FormState = "idle" | "loading" | "success" | "error";
 
 function ApplicationForm({ role }: { role: string }) {
   const [state, setState] = useState<FormState>("idle");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const startedAt = useRef(0);
   const slug = role.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
   async function handleSubmit(e: React.FormEvent) {
@@ -85,21 +92,27 @@ function ApplicationForm({ role }: { role: string }) {
     const form = e.currentTarget as HTMLFormElement;
     const formData = new FormData(form);
 
+    const payload = {
+      name: String(formData.get("name") ?? ""), email: String(formData.get("email") ?? ""),
+      portfolio: String(formData.get("portfolio") ?? ""), whyJuscad: String(formData.get("whyJuscad") ?? ""),
+      favoriteProblem: String(formData.get("favoriteProblem") ?? ""), role,
+      website: "", startedAt: startedAt.current || Date.now(), turnstileToken,
+    };
+    const parsed = jobApplicationSchema.safeParse(payload);
+    if (!parsed.success) { setErrorMessage(parsed.error.issues[0]?.message ?? "Review the form."); setState("error"); return; }
+    setErrorMessage("");
     try {
       const res = await fetch("/api/join", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: String(formData.get("name") ?? ""),
-          email: String(formData.get("email") ?? ""),
-          portfolio: String(formData.get("portfolio") ?? ""),
-          whyJuscad: String(formData.get("whyJuscad") ?? ""),
-          favoriteProblem: String(formData.get("favoriteProblem") ?? ""),
-          role,
-        }),
+        body: JSON.stringify(payload),
       });
-      setState(res.ok ? "success" : "error");
-    } catch {
+      const result = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(result.error ?? "Submission failed.");
+      track("job_application_submitted");
+      setState("success");
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : "Submission failed.");
       setState("error");
     }
   }
@@ -121,6 +134,8 @@ function ApplicationForm({ role }: { role: string }) {
   return (
     <form
       onSubmit={handleSubmit}
+      onFocusCapture={() => { if (!startedAt.current) startedAt.current = Date.now(); }}
+      noValidate
       className="panel p-6 md:p-8 mt-8 flex flex-col gap-6"
       aria-label={`Application for ${role}`}
     >
@@ -198,9 +213,11 @@ function ApplicationForm({ role }: { role: string }) {
       {state === "error" && (
         <p className="status status-error" role="alert">
           <span aria-hidden="true">✕</span>
-          Submission failed. Please try again or email us at hello@juscad.io.
+          {errorMessage || "Submission failed. Please try again or email us at enquire@juscad.com."}
         </p>
       )}
+
+      <SpamProtection onToken={setTurnstileToken} />
 
       <div>
         <button
@@ -210,6 +227,7 @@ function ApplicationForm({ role }: { role: string }) {
         >
           {state === "loading" ? "Submitting…" : "Submit application"}
         </button>
+        <p className="field-help mt-4">By applying, you agree to our <Link href="/privacy" className="underline underline-offset-4">Privacy Policy</Link>.</p>
       </div>
     </form>
   );

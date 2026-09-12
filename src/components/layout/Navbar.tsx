@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { List, X, Sun, Moon } from "@phosphor-icons/react";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { LogoHorizontal } from "@/components/brand/Logo";
+import { createClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
@@ -66,6 +68,7 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const lastScroll = useRef(0);
   const [hidden, setHidden] = useState(false);
+  const [account, setAccount] = useState<{ signedIn: boolean; admin: boolean }>({ signedIn: false, admin: false });
 
   useEffect(() => {
     const onScroll = () => {
@@ -78,10 +81,19 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close the drawer on navigation
   useEffect(() => {
-    setMobileOpen(false);
-  }, [pathname]);
+    if (!isSupabaseConfigured) return;
+    const supabase = createClient();
+    async function loadAccount() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return setAccount({ signedIn: false, admin: false });
+      const { data } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+      setAccount({ signedIn: true, admin: data?.role === "admin" });
+    }
+    void loadAccount();
+    const { data: listener } = supabase.auth.onAuthStateChange(() => { void loadAccount(); });
+    return () => listener.subscription.unsubscribe();
+  }, []);
 
   return (
     <>
@@ -141,6 +153,10 @@ export default function Navbar() {
 
           <div className="hidden md:flex items-center gap-2">
             <ThemeToggle />
+            {account.admin && <Link href="/admin/blog" className="btn btn-ghost btn-sm">Admin</Link>}
+            <Link href={account.signedIn ? "/settings" : "/sign-in"} className="btn btn-secondary btn-sm">
+              {account.signedIn ? "Account" : "Sign in"}
+            </Link>
             <Link href="/beta" className="btn btn-primary btn-sm">
               Join the beta
             </Link>
@@ -200,9 +216,17 @@ export default function Navbar() {
                 );
               })}
               <Link
+                href={account.signedIn ? "/settings" : "/sign-in"}
+                onClick={() => setMobileOpen(false)}
+                className="btn btn-secondary mt-6 w-full"
+              >
+                {account.signedIn ? "Account" : "Sign in"}
+              </Link>
+              {account.admin && <Link href="/admin/blog" onClick={() => setMobileOpen(false)} className="btn btn-secondary mt-3 w-full">Admin</Link>}
+              <Link
                 href="/beta"
                 onClick={() => setMobileOpen(false)}
-                className="btn btn-primary mt-6 w-full"
+                className="btn btn-primary mt-3 w-full"
               >
                 Join the beta
               </Link>

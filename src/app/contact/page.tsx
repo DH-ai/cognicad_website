@@ -1,12 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import Link from "next/link";
+import { SpamProtection } from "@/components/forms/SpamProtection";
+import { contactInquirySchema } from "@/lib/forms/schemas";
+import { track } from "@vercel/analytics";
 import {
   PhoneIcon,
   MapPinIcon,
   EnvelopeSimpleIcon,
   ArrowUpRightIcon,
-  DiscordLogoIcon,
   InstagramLogoIcon,
   XLogoIcon,
   WhatsappLogoIcon
@@ -74,6 +77,9 @@ type State = "idle" | "loading" | "success" | "error";
 
 export default function ContactPage() {
   const [state, setState] = useState<State>("idle");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const startedAt = useRef(0);
   const [fields, setFields] = useState({
     name: "",
     email: "",
@@ -83,16 +89,23 @@ export default function ContactPage() {
 
   async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!fields.email || !fields.name || !fields.message) return;
+    const payload = { ...fields, website: "", startedAt: startedAt.current || Date.now(), turnstileToken };
+    const parsed = contactInquirySchema.safeParse(payload);
+    if (!parsed.success) { setErrorMessage(parsed.error.issues[0]?.message ?? "Review the form."); setState("error"); return; }
+    setErrorMessage("");
     setState("loading");
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(fields),
+        body: JSON.stringify(payload),
       });
-      setState(res.ok ? "success" : "error");
-    } catch {
+      const result = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(result.error ?? "Submission failed.");
+      track("contact_form_submitted");
+      setState("success");
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : "Submission failed.");
       setState("error");
     }
   }
@@ -209,6 +222,8 @@ export default function ContactPage() {
             ) : (
               <form
                 onSubmit={handleSubmit}
+                onFocusCapture={() => { if (!startedAt.current) startedAt.current = Date.now(); }}
+                noValidate
                 className="panel p-6 md:p-10 flex flex-col gap-6"
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -295,10 +310,11 @@ export default function ContactPage() {
                 {state === "error" && (
                   <p className="status status-error" role="alert">
                     <span aria-hidden="true">✕</span>
-                    Submission failed. Please try again or email us at
-                    enquiry@juscad.com.
+                    {errorMessage || "Submission failed. Please try again or email us at enquire@juscad.com."}
                   </p>
                 )}
+
+                <SpamProtection onToken={setTurnstileToken} />
 
                 <div>
                   <button
@@ -311,6 +327,7 @@ export default function ContactPage() {
                       <ArrowUpRightIcon size={16} weight="regular" aria-hidden="true" />
                     )}
                   </button>
+                  <p className="field-help mt-4">By sending this message, you agree to our <Link href="/privacy" className="underline underline-offset-4">Privacy Policy</Link>.</p>
                 </div>
               </form>
             )}

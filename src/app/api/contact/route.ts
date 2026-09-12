@@ -1,114 +1,32 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
-import { appendToSheet } from "@/lib/google-sheets";
 import { contactConfirmationEmail, teamNotificationTemplate } from "@/lib/email-templates";
+import { checkSubmissionSecurity } from "@/lib/forms/security";
+import { contactInquirySchema } from "@/lib/forms/schemas";
+import { appendToSheet } from "@/lib/google-sheets";
 import { getTimeStamp } from "@/lib/get-time-stamp";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export const runtime = "nodejs";
 
-interface ContactInquiry {
-  name: string;
-  email: string;
-  type?: string;
-  message: string;
-}
-
 export async function POST(request: Request) {
+  const parsed = contactInquirySchema.safeParse(await request.json().catch(() => null));
+  if (!parsed.success) return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Invalid submission." }, { status: 400 });
+  const security = await checkSubmissionSecurity(request, parsed.data, "contact");
+  if (!security.ok) return NextResponse.json({ error: security.error }, { status: security.status });
+  const admin = createAdminClient();
+  if (!admin) return NextResponse.json({ error: "Submission service is not configured." }, { status: 503 });
+  const body = parsed.data;
+  const { data: saved, error: saveError } = await admin.from("contact_submissions").insert({ name: body.name, email: body.email, inquiry_type: body.type || null, message: body.message }).select("id").single();
+  if (saveError || !saved) return NextResponse.json({ error: "We could not save your message. Please try again." }, { status: 503 });
+  let emailSent = false; let sheetSynced = false; const deliveryErrors: string[] = [];
+  try { if (!process.env.GOOGLE_SHEETS_SPREADSHEET_ID) throw new Error("Sheets not configured"); await appendToSheet(process.env.GOOGLE_SHEETS_SPREADSHEET_ID, "Contact Inquiries", { timestamp: getTimeStamp(), name: body.name, email: body.email, inquiry: body.type || "General Inquiry", inquiry_message: body.message }); sheetSynced = true; } catch (error) { deliveryErrors.push(error instanceof Error ? error.message : "Sheets delivery failed"); }
   try {
-    const body: ContactInquiry = await request.json();
-
-    if (!body.name?.trim() || !body.email?.trim() || !body.message?.trim()) {
-      return NextResponse.json(
-        { error: "Name, email, and message are required." },
-        { status: 400 }
-      );
-    }
-    if (!body.email.includes("@")) {
-      return NextResponse.json(
-        { error: "Valid email address is required." },
-        { status: 400 }
-      );
-    }
-
-    let sheetSuccess = false;
-    let emailSuccess = false;
-    const resendKey = process.env.RESEND_API_KEY;
-    const spreadsheetId = process.env.GOOGLE_SHEETS_SPREADSHEET_ID;
-    // Save to Google Sheets if credentials available
-
-    try {
-
-      if (spreadsheetId) { // temperory will remove it later
-        try {
-          await appendToSheet(spreadsheetId, "Contact Inquiries", {
-            timestamp: getTimeStamp(),
-            name: body.name,
-            email: body.email,
-            inquiry: body.type || "General Inquiry",
-            inquiry_message:body.message || "",
-          });
-        } catch (sheetError) {
-          console.error("Failed to save to Google Sheets:", sheetError);
-          // Continue with email even if sheet save fails
-        }
-      }
-      sheetSuccess = true
-
-    }catch  {
-      sheetSuccess = false
-      // console.error("Error saving to Google Sheets:", error);
-    }
-    try {
-
-      if (resendKey) {
-        const resend = new Resend(resendKey);
-  
-        // Notify team
-        const confirmation_team= await resend.emails.send({
-          from: "JusCAD <noreply@juscad.com>",
-          to: "dhruvchaturvedi@juscad.com",
-          replyTo: body.email,
-          subject: `Contact: ${body.type ?? "General Inquiry"} — ${body.name}`,
-          html: teamNotificationTemplate("Contact Inquiry", {
-            Name: body.name,
-            Email: body.email,
-            Inquiry: body.type || "General Inquiry",
-            Message: body.message,
-          }),
-        });
-  
-        // Confirmation to sender
-        const confirmation_sender = await resend.emails.send({
-          from: "JusCAD <noreply@juscad.com>",
-          to: body.email,
-          subject: "We received your message",
-          html: contactConfirmationEmail(body.name),
-        });
-      }
-
-       emailSuccess = true
-
-    }catch  {
-      emailSuccess = false
-      // console.error("Error sending email:", error);
-    }
-    
-    if (!sheetSuccess && !emailSuccess) {
-      return NextResponse.json(
-        { error: 'All services failed' },
-        { status: 500 }
-      );
-    }
-    return NextResponse.json({
-      success: true,
-      sheet: sheetSuccess,
-      email: emailSuccess,
-    });
-  } catch (error) {
-    console.error("Error in contact route:", error);
-    return NextResponse.json(
-      { error: "Invalid request body." },
-      { status: 400 }
-    );
-  }
+    if (!process.env.RESEND_API_KEY) throw new Error("Email not configured"); const resend = new Resend(process.env.RESEND_API_KEY); const recipient = process.env.JUSCAD_NOTIFICATION_EMAIL ?? "enquire@juscad.com";
+    const team = await resend.emails.send({ from: "JusCAD <noreply@juscad.com>", to: recipient, replyTo: body.email, subject: `Contact: ${body.type || "General inquiry"} — ${body.name}`, html: teamNotificationTemplate("Contact Inquiry", { Name: body.name, Email: body.email, Inquiry: body.type || "General inquiry", Message: body.message }) });
+    const confirmation = await resend.emails.send({ from: "JusCAD <noreply@juscad.com>", to: body.email, subject: "We received your message", html: contactConfirmationEmail(body.name) });
+    if (team.error || confirmation.error) throw new Error(team.error?.message ?? confirmation.error?.message ?? "Email delivery failed"); emailSent = true;
+  } catch (error) { deliveryErrors.push(error instanceof Error ? error.message : "Email delivery failed"); }
+  await admin.from("contact_submissions").update({ email_sent_at: emailSent ? new Date().toISOString() : null, sheet_synced_at: sheetSynced ? new Date().toISOString() : null, delivery_error: deliveryErrors.join("; ") || null }).eq("id", (saved as { id: string }).id);
+  return NextResponse.json({ success: true }, { status: 201 });
 }

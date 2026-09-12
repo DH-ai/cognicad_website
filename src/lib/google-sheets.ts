@@ -1,3 +1,5 @@
+import "server-only";
+
 import { google } from "googleapis";
 
 const sheets = google.sheets("v4");

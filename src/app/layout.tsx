@@ -6,6 +6,8 @@ import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { MotionProvider } from "@/components/providers/MotionProvider";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const adwaitaSans = localFont({
   src: "./fonts/AdwaitaSans-Variable.woff2",
@@ -26,12 +28,14 @@ export const metadata: Metadata = {
   title: "JusCAD — Cognitive Engineering Systems",
   description:
     "An AI-native cognitive engineering system. Built for engineering thought, not just engineering commands.",
+  alternates: { canonical: "/" },
+  twitter: { card: "summary_large_image", title: "JusCAD — Cognitive Engineering Systems", description: "An AI-native cognitive engineering system." },
   openGraph: {
     title: "JusCAD — Cognitive Engineering Systems",
     description:
       "The next generation of engineering software will not be defined by menus and commands. It will be defined by cognition.",
     type: "website",
-    images: [{ url: "/logo/juscad-stacked-ink.png", width: 2000, height: 2000, alt: "JusCAD" }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "JusCAD — Cognitive Engineering Systems" }],
   },
 };
 
@@ -73,6 +77,8 @@ export default function RootLayout({
               <Navbar />
               {children}
               <Footer />
+              <Analytics />
+              <SpeedInsights />
             </SmoothScrollProvider>
           </MotionProvider>
         </ThemeProvider>
