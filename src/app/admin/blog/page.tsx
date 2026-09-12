@@ -5,7 +5,15 @@ import { createClient } from "@/lib/supabase/server";
 import type { BlogPost } from "@/types/database";
 
 export const metadata: Metadata = { title: "Blog administration — JusCAD", robots: { index: false, follow: false } };
-const notices: Record<string, string> = { saved: "Post saved.", invalid: "Review the post fields and try again.", "save-failed": "The post could not be saved.", "not-configured": "Supabase is not configured." };
+const notices: Record<string, string> = {
+  saved: "Post saved.",
+  deleted: "Post permanently deleted.",
+  "deleted-media-warning": "Post deleted. Some unused media could not be removed from storage.",
+  "delete-failed": "The post could not be deleted.",
+  invalid: "Review the post fields and try again.",
+  "save-failed": "The post could not be saved.",
+  "not-configured": "Supabase is not configured.",
+};
 
 export default async function AdminBlogPage({ searchParams }: { searchParams: Promise<{ notice?: string; detail?: string }> }) {
   await requireAdmin();

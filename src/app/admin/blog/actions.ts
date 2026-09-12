@@ -2,9 +2,27 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { z } from "zod";
 import { requireAdmin } from "@/lib/auth";
 import { blogPostSchema } from "@/lib/blog-schema";
 import { createClient } from "@/lib/supabase/server";
+
+const deletePostSchema = z.object({ id: z.string().uuid() });
+
+function referencedMediaPaths(post: { cover_image_path: string | null; content_markdown: string }) {
+  const paths = new Set<string>();
+  if (post.cover_image_path) paths.add(post.cover_image_path);
+
+  const pattern = /\/storage\/v1\/object\/public\/blog-media\/([^\s)"']+)/g;
+  for (const match of post.content_markdown.matchAll(pattern)) {
+    try {
+      paths.add(match[1].split("/").map(decodeURIComponent).join("/"));
+    } catch {
+      // Ignore malformed URLs. Deleting a post must not delete an uncertain object.
+    }
+  }
+  return paths;
+}
 
 export async function saveBlogPost(formData: FormData) {
   const viewer = await requireAdmin();
@@ -44,4 +62,48 @@ export async function saveBlogPost(formData: FormData) {
   revalidatePath("/blog");
   revalidatePath(`/blog/${post.slug}`);
   redirect("/admin/blog?notice=saved");
+}
+
+export async function deleteBlogPost(formData: FormData) {
+  await requireAdmin();
+  const parsed = deletePostSchema.safeParse({ id: formData.get("id") });
+  if (!parsed.success) redirect("/admin/blog?notice=delete-failed");
+
+  const supabase = await createClient();
+  if (!supabase) redirect("/admin/blog?notice=not-configured");
+
+  const { data: post, error: postError } = await supabase
+    .from("blog_posts")
+    .select("slug, cover_image_path, content_markdown")
+    .eq("id", parsed.data.id)
+    .maybeSingle();
+  if (postError || !post) redirect("/admin/blog?notice=delete-failed");
+
+  const { data: otherPosts, error: otherPostsError } = await supabase
+    .from("blog_posts")
+    .select("cover_image_path, content_markdown")
+    .neq("id", parsed.data.id);
+  const mediaInUseElsewhere = new Set(
+    (otherPosts ?? []).flatMap((otherPost) => [...referencedMediaPaths(otherPost)]),
+  );
+  const mediaToRemove = otherPostsError
+    ? []
+    : [...referencedMediaPaths(post)].filter((path) => !mediaInUseElsewhere.has(path));
+
+  const { error: deleteError } = await supabase
+    .from("blog_posts")
+    .delete()
+    .eq("id", parsed.data.id);
+  if (deleteError) {
+    redirect(`/admin/blog?notice=delete-failed&detail=${encodeURIComponent(deleteError.message)}`);
+  }
+
+  const mediaResult = mediaToRemove.length
+    ? await supabase.storage.from("blog-media").remove(mediaToRemove)
+    : { error: null };
+
+  revalidatePath("/admin/blog");
+  revalidatePath("/blog");
+  revalidatePath(`/blog/${post.slug}`);
+  redirect(`/admin/blog?notice=${mediaResult.error ? "deleted-media-warning" : "deleted"}`);
 }
