@@ -74,7 +74,7 @@ export const betaWelcomeEmail = (name: string) => `
       <p>We are currently in active development and gearing up for our first release. We will reach out to you the moment we are ready to onboard you.</p>
 
       <div class="partner-box">
-        <p style="margin: 0;"><strong>Shape the product:</strong> If you want to be design partners and collaborate closely with us, contact us at <a href="mailto:design-partners@juscad.xyz" style="color: #00769d; text-decoration: none; font-weight: 600;">design-partners@juscad.xyz</a>.</p>
+        <p style="margin: 0;"><strong>Shape the product:</strong> If you want to be design partners and collaborate closely with us, contact us at <a href="mailto:enquire@juscad.com" style="color: #00769d; text-decoration: none; font-weight: 600;">enquire@juscad.com</a>.</p>
       </div>
 
       <div class="links-section">
@@ -83,7 +83,7 @@ export const betaWelcomeEmail = (name: string) => `
         <a href="https://instagram.com/juscad/" class="button">Follow on Instagram</a>
       </div>
 
-      <p>If you have any questions or feedback, please don't hesitate to reach out to us at <strong>hello@juscad.xyz</strong>.</p>
+      <p>If you have any questions or feedback, please don't hesitate to reach out to us at <strong>enquire@juscad.com</strong>.</p>
 
       <p>Looking forward to building the future of engineering with you!</p>
 
@@ -179,7 +179,7 @@ export const contactConfirmationEmail = (name: string) => `
       </div>
 
       <p style="text-align: center; margin: 25px 0;">
-        <a href="https://juscad.xyz" class="button">Visit Our Website</a>
+        <a href="https://juscad.com" class="button">Visit Our Website</a>
       </p>
 
       <p>Best regards,<br>The JusCAD Team</p>
@@ -283,8 +283,8 @@ export const jobApplicationConfirmationEmail = (name: string, role: string) => `
 
       <p>In the meantime, feel free to learn more about what we're building:</p>
       <div style="margin: 20px 0;">
-        <a href="https://juscad.xyz/blog" class="button">Read Our Blog</a>
-        <a href="https://juscad.xyz/about" class="button">About the Team</a>
+        <a href="https://juscad.com/blog" class="button">Read Our Blog</a>
+        <a href="https://juscad.com/about" class="button">About the Team</a>
       </div>
 
       <p>Thanks again for your interest in joining JusCAD!</p>

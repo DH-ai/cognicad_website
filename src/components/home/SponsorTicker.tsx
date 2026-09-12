@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 export type Sponsor = {
   name: string;
   phrase?: string;
@@ -16,10 +18,12 @@ const NAMES: Record<string, string> = {
 function Badge({ sponsor }: { sponsor: Sponsor }) {
   const label = NAMES[sponsor.name] ?? sponsor.name;
   const content = sponsor.badge ? (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
+    <Image
       src={`/sponsors/${sponsor.badge}`}
       alt={label}
+      width={220}
+      height={96}
+      sizes="220px"
       className="sponsor-badge h-16 sm:h-20 md:h-24 w-auto max-w-[220px] object-contain"
     />
   ) : (

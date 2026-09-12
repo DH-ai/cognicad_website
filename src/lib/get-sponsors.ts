@@ -17,13 +17,13 @@ export async function getSponsors(): Promise<Sponsor[]> {
       const raw = fs.readFileSync(path.join(dir, file), "utf8");
       try {
         return JSON.parse(raw) as Sponsor;
-      } catch (e) {
+      } catch {
         return { name: file.replace(/\.json$/, ""), order: 999 } as Sponsor;
       }
     });
     sponsors.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
     return sponsors;
-  } catch (e) {
+  } catch {
     return [];
   }
 }

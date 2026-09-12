@@ -16,9 +16,12 @@ export default function FluidBackground() {
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
+    const prefersDataSaving = (navigator as Navigator & {
+      connection?: { saveData?: boolean };
+    }).connection?.saveData === true;
     // The canvas remains mounted for the first themed paint, but rendering
     // waits for the provider state so its shader palette matches the document.
-    if (!canvas || prefersReducedMotion) return;
+    if (!canvas || prefersReducedMotion || prefersDataSaving) return;
 
     let active = true;
     let destroy = () => {};
